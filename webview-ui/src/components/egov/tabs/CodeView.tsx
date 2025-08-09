@@ -1,4 +1,4 @@
-import { VSCodeButton, VSCodeTextArea, VSCodeLink, VSCodeProgressRing, VSCodeTextField } from "@vscode/webview-ui-toolkit/react"
+import { Button, TextArea, Link, ProgressRing, TextField } from "../../ui"
 import { useState, useEffect } from "react"
 import { parseDDL, validateDDL, generateSampleDDL, ParsedDDL } from "../../../utils/ddlParser"
 import { getTemplateContext } from "../../../utils/templateContext"
@@ -255,18 +255,45 @@ const CodeView = () => {
 						}}>
 						Generate CRUD operations and database-related code from DDL (Data Definition Language) statements.
 						Supports Oracle, MySQL, PostgreSQL and more. Uses Handlebars template engine. Learn more at{" "}
-						<VSCodeLink href="https://github.com/chris-yoon/egovframe-pack" style={{ display: "inline" }}>
+						<Link href="https://github.com/chris-yoon/egovframe-pack" style={{ display: "inline" }}>
 							GitHub
-						</VSCodeLink>
+						</Link>
 					</p>
 				</div>
 
 				{/* Toolbar */}
 				<div style={{ display: "flex", gap: "8px", marginBottom: "16px" }}>
-					<VSCodeButton appearance="secondary" onClick={handleInsertSampleDDL}>
+					<button
+						style={{
+							backgroundColor: "var(--vscode-button-secondaryBackground)",
+							color: "var(--vscode-button-secondaryForeground)",
+							border: "1px solid var(--vscode-button-border)",
+							borderRadius: "4px",
+							padding: "8px 12px",
+							cursor: "pointer",
+							display: "inline-flex",
+							alignItems: "center",
+							fontSize: "13px",
+							fontFamily: "inherit",
+							outline: "none",
+						}}
+						onMouseOver={(e) => {
+							(e.target as HTMLButtonElement).style.backgroundColor = "var(--vscode-button-secondaryHoverBackground)"
+						}}
+						onMouseOut={(e) => {
+							(e.target as HTMLButtonElement).style.backgroundColor = "var(--vscode-button-secondaryBackground)"
+						}}
+						onFocus={(e) => {
+							(e.target as HTMLButtonElement).style.outline = "1px solid var(--vscode-focusBorder)"
+						}}
+						onBlur={(e) => {
+							(e.target as HTMLButtonElement).style.outline = "none"
+						}}
+						onClick={handleInsertSampleDDL}
+					>
 						<span className="codicon codicon-code" style={{ marginRight: "6px" }}></span>
 						Insert Sample DDL
-					</VSCodeButton>
+					</button>
 				</div>
 
 				{/* DDL Input Section */}
@@ -284,16 +311,30 @@ const CodeView = () => {
 							</span>
 						)}
 					</h4>
-					<VSCodeTextArea
+					<textarea
 						rows={15}
 						style={{
 							width: "100%",
+							padding: "12px",
 							fontFamily: "monospace",
-							borderColor: error ? "var(--vscode-errorBorder)" : undefined,
+							backgroundColor: "var(--vscode-input-background)",
+							color: "var(--vscode-input-foreground)",
+							border: `1px solid ${error ? "var(--vscode-errorBorder)" : "var(--vscode-input-border)"}`,
+							borderRadius: "4px",
+							fontSize: "13px",
+							resize: "vertical",
+							outline: "none",
+							minHeight: "200px",
+						}}
+						onFocus={(e) => {
+							e.target.style.borderColor = "var(--vscode-focusBorder)"
+						}}
+						onBlur={(e) => {
+							e.target.style.borderColor = error ? "var(--vscode-errorBorder)" : "var(--vscode-input-border)"
 						}}
 						placeholder="Enter your DDL statements here..."
 						value={ddlContent}
-						onInput={(e: any) => setDdlContent(e.target.value)}
+						onChange={(e: any) => setDdlContent(e.target.value)}
 					/>
 					{error && (
 						<div
@@ -342,12 +383,12 @@ const CodeView = () => {
 
 						{/* Package Name */}
 						<div style={{ marginBottom: "15px" }}>
-							<label style={{ display: "block", marginBottom: "5px", fontSize: "12px" }}>Package Name *</label>
-							<VSCodeTextField
+							<TextField
+								label="Package Name"
 								value={packageName}
+								onChange={(e: any) => setPackageName(e.target.value)}
 								placeholder="e.g., com.example.project"
-								style={{ width: "100%" }}
-								onInput={(e: any) => setPackageName(e.target.value)}
+								isRequired
 							/>
 							<div style={{ fontSize: "10px", color: "var(--vscode-descriptionForeground)", marginTop: "2px" }}>
 								Java package naming convention (e.g., com.company.project)
@@ -358,16 +399,43 @@ const CodeView = () => {
 						<div style={{ marginBottom: "15px" }}>
 							<label style={{ display: "block", marginBottom: "5px", fontSize: "12px" }}>Output Path *</label>
 							<div style={{ display: "flex", gap: "10px" }}>
-								<VSCodeTextField
+								<TextField
+									label=""
 									value={outputPath}
+									onChange={(e: any) => setOutputPath(e.target.value)}
 									placeholder="Select output directory"
-									style={{ flex: 1 }}
-									onInput={(e: any) => setOutputPath(e.target.value)}
 								/>
-								<VSCodeButton appearance="secondary" onClick={handleSelectOutputPath}>
+								<button
+									style={{
+										backgroundColor: "var(--vscode-button-secondaryBackground)",
+										color: "var(--vscode-button-secondaryForeground)",
+										border: "1px solid var(--vscode-button-border)",
+										borderRadius: "4px",
+										padding: "8px 12px",
+										cursor: "pointer",
+										display: "inline-flex",
+										alignItems: "center",
+										fontSize: "13px",
+										fontFamily: "inherit",
+										outline: "none",
+									}}
+									onMouseOver={(e) => {
+										(e.target as HTMLButtonElement).style.backgroundColor = "var(--vscode-button-secondaryHoverBackground)"
+									}}
+									onMouseOut={(e) => {
+										(e.target as HTMLButtonElement).style.backgroundColor = "var(--vscode-button-secondaryBackground)"
+									}}
+									onFocus={(e) => {
+										(e.target as HTMLButtonElement).style.outline = "1px solid var(--vscode-focusBorder)"
+									}}
+									onBlur={(e) => {
+										(e.target as HTMLButtonElement).style.outline = "none"
+									}}
+									onClick={handleSelectOutputPath}
+								>
 									<span className="codicon codicon-folder-opened" style={{ marginRight: "6px" }}></span>
 									Browse
-								</VSCodeButton>
+								</button>
 							</div>
 							<div style={{ fontSize: "10px", color: "var(--vscode-descriptionForeground)", marginTop: "2px" }}>
 								Generated files will be saved to: {outputPath || "Not selected"}
@@ -381,14 +449,45 @@ const CodeView = () => {
 					<h4 style={{ color: "var(--vscode-foreground)", marginBottom: "10px" }}>Code Generation</h4>
 
 					<div style={{ display: "flex", flexDirection: "column", gap: "12px" }}>
-						<VSCodeButton
-							appearance="primary"
-							style={{ width: "100%" }}
+						<button
+							style={{
+								width: "100%",
+								backgroundColor: "var(--vscode-button-background)",
+								color: "var(--vscode-button-foreground)",
+								border: "1px solid var(--vscode-button-border)",
+								borderRadius: "4px",
+								padding: "12px 16px",
+								cursor: !isValid || isLoading || !packageName.trim() || !outputPath.trim() ? "not-allowed" : "pointer",
+								display: "inline-flex",
+								alignItems: "center",
+								justifyContent: "center",
+								fontSize: "13px",
+								fontFamily: "inherit",
+								outline: "none",
+								opacity: !isValid || isLoading || !packageName.trim() || !outputPath.trim() ? 0.5 : 1,
+							}}
+							onMouseOver={(e) => {
+								if (!(!isValid || isLoading || !packageName.trim() || !outputPath.trim())) {
+									(e.target as HTMLButtonElement).style.backgroundColor = "var(--vscode-button-hoverBackground)"
+								}
+							}}
+							onMouseOut={(e) => {
+								if (!(!isValid || isLoading || !packageName.trim() || !outputPath.trim())) {
+									(e.target as HTMLButtonElement).style.backgroundColor = "var(--vscode-button-background)"
+								}
+							}}
+							onFocus={(e) => {
+								(e.target as HTMLButtonElement).style.outline = "1px solid var(--vscode-focusBorder)"
+							}}
+							onBlur={(e) => {
+								(e.target as HTMLButtonElement).style.outline = "none"
+							}}
 							onClick={handleGenerateCode}
-							disabled={!isValid || isLoading || !packageName.trim() || !outputPath.trim()}>
+							disabled={!isValid || isLoading || !packageName.trim() || !outputPath.trim()}
+						>
 							{isLoading ? (
 								<>
-									<VSCodeProgressRing style={{ marginRight: "8px", width: "16px", height: "16px" }} />
+									         <ProgressRing className="mr-2 w-4 h-4" />
 									Generating...
 								</>
 							) : (
@@ -397,25 +496,87 @@ const CodeView = () => {
 									Generate CRUD Code
 								</>
 							)}
-						</VSCodeButton>
+						</button>
 
-						<VSCodeButton
-							appearance="secondary"
-							style={{ width: "100%" }}
+						<button
+							style={{
+								width: "100%",
+								backgroundColor: "var(--vscode-button-secondaryBackground)",
+								color: "var(--vscode-button-secondaryForeground)",
+								border: "1px solid var(--vscode-button-border)",
+								borderRadius: "4px",
+								padding: "12px 16px",
+								cursor: !isValid || isLoading ? "not-allowed" : "pointer",
+								display: "inline-flex",
+								alignItems: "center",
+								justifyContent: "center",
+								fontSize: "13px",
+								fontFamily: "inherit",
+								outline: "none",
+								opacity: !isValid || isLoading ? 0.5 : 1,
+							}}
+							onMouseOver={(e) => {
+								if (!(!isValid || isLoading)) {
+									(e.target as HTMLButtonElement).style.backgroundColor = "var(--vscode-button-secondaryHoverBackground)"
+								}
+							}}
+							onMouseOut={(e) => {
+								if (!(!isValid || isLoading)) {
+									(e.target as HTMLButtonElement).style.backgroundColor = "var(--vscode-button-secondaryBackground)"
+								}
+							}}
+							onFocus={(e) => {
+								(e.target as HTMLButtonElement).style.outline = "1px solid var(--vscode-focusBorder)"
+							}}
+							onBlur={(e) => {
+								(e.target as HTMLButtonElement).style.outline = "none"
+							}}
 							onClick={handleUploadTemplates}
-							disabled={!isValid || isLoading}>
+							disabled={!isValid || isLoading}
+						>
 							<span className="codicon codicon-file-code" style={{ marginRight: "6px" }}></span>
 							Generate with Custom Templates
-						</VSCodeButton>
+						</button>
 
-						<VSCodeButton
-							appearance="secondary"
-							style={{ width: "100%" }}
+						<button
+							style={{
+								width: "100%",
+								backgroundColor: "var(--vscode-button-secondaryBackground)",
+								color: "var(--vscode-button-secondaryForeground)",
+								border: "1px solid var(--vscode-button-border)",
+								borderRadius: "4px",
+								padding: "12px 16px",
+								cursor: !isValid || isLoading ? "not-allowed" : "pointer",
+								display: "inline-flex",
+								alignItems: "center",
+								justifyContent: "center",
+								fontSize: "13px",
+								fontFamily: "inherit",
+								outline: "none",
+								opacity: !isValid || isLoading ? 0.5 : 1,
+							}}
+							onMouseOver={(e) => {
+								if (!(!isValid || isLoading)) {
+									(e.target as HTMLButtonElement).style.backgroundColor = "var(--vscode-button-secondaryHoverBackground)"
+								}
+							}}
+							onMouseOut={(e) => {
+								if (!(!isValid || isLoading)) {
+									(e.target as HTMLButtonElement).style.backgroundColor = "var(--vscode-button-secondaryBackground)"
+								}
+							}}
+							onFocus={(e) => {
+								(e.target as HTMLButtonElement).style.outline = "1px solid var(--vscode-focusBorder)"
+							}}
+							onBlur={(e) => {
+								(e.target as HTMLButtonElement).style.outline = "none"
+							}}
 							onClick={handleDownloadTemplateContext}
-							disabled={!isValid || isLoading}>
+							disabled={!isValid || isLoading}
+						>
 							<span className="codicon codicon-json" style={{ marginRight: "6px" }}></span>
 							Download Template Context
-						</VSCodeButton>
+						</button>
 					</div>
 
 					<div style={{ fontSize: "12px", color: "var(--vscode-descriptionForeground)", marginTop: "10px" }}>

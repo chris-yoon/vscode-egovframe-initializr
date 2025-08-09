@@ -1,12 +1,5 @@
 import React, { useState, useEffect } from "react"
-import {
-	VSCodeButton,
-	VSCodeTextField,
-	VSCodeRadioGroup,
-	VSCodeRadio,
-	VSCodeDropdown,
-	VSCodeOption,
-} from "@vscode/webview-ui-toolkit/react"
+import { Button, TextField, TextArea, Select, RadioGroup, ProgressRing, Link, Divider } from "../../ui"
 import { ConfigFormData, ConfigGenerationType, FormComponentProps } from "../types/templates"
 import { vscode } from "../../../utils/vscode"
 
@@ -111,75 +104,75 @@ const PropertyForm: React.FC<FormComponentProps> = ({ onSubmit, onCancel, templa
 
 			<form onSubmit={handleSubmit}>
 				<div style={{ marginBottom: "20px" }}>
-					<h3 style={{ color: "var(--vscode-foreground)", marginBottom: "10px" }}>Generation Type</h3>
-					<VSCodeRadioGroup
-						orientation="horizontal"
+					<RadioGroup
+						label="Generation Type"
+						name="generationType"
 						value={formData.generationType}
-						onChange={(e: any) => handleGenerationTypeChange(e.target.value as ConfigGenerationType)}>
-						<VSCodeRadio value={ConfigGenerationType.XML}>XML</VSCodeRadio>
-						<VSCodeRadio value={ConfigGenerationType.JAVA_CONFIG}>JavaConfig</VSCodeRadio>
-					</VSCodeRadioGroup>
+						onChange={(value) => handleGenerationTypeChange(value as ConfigGenerationType)}
+						orientation="horizontal"
+						options={[
+							{ value: ConfigGenerationType.XML, label: "XML" },
+							{ value: ConfigGenerationType.JAVA_CONFIG, label: "JavaConfig" }
+						]}
+					/>
 				</div>
 
 				<div style={{ marginBottom: "20px" }}>
-					<h3 style={{ color: "var(--vscode-foreground)", marginBottom: "10px" }}>Generation File</h3>
-					<VSCodeTextField
+					<TextField
+						label="File Name"
 						value={formData.txtFileName}
 						placeholder="Enter file name"
-						onInput={(e: any) => handleInputChange("txtFileName", e.target.value)}
-						style={{ width: "100%" }}
-						required>
-						File Name <span style={{ color: "var(--vscode-errorForeground)" }}>*</span>
-					</VSCodeTextField>
+						onChange={(e) => handleInputChange("txtFileName", e.target.value)}
+						isRequired
+					/>
 				</div>
 
 				<div style={{ marginBottom: "20px" }}>
 					<h3 style={{ color: "var(--vscode-foreground)", marginBottom: "10px" }}>Configuration</h3>
 
 					<div style={{ marginBottom: "15px" }}>
-						<VSCodeTextField
+						<TextField
+							label="Property Service Name"
 							value={formData.txtPropertyServiceName}
 							placeholder="Enter property service name"
-							onInput={(e: any) => handleInputChange("txtPropertyServiceName", e.target.value)}
-							style={{ width: "100%" }}
-							required>
-							Property Service Name <span style={{ color: "var(--vscode-errorForeground)" }}>*</span>
-						</VSCodeTextField>
+							onChange={(e) => handleInputChange("txtPropertyServiceName", e.target.value)}
+							isRequired
+						/>
 					</div>
 
-					<div style={{ marginBottom: "15px" }}>
-						<label style={{ display: "block", marginBottom: "5px", color: "var(--vscode-foreground)" }}>
-							Type <span style={{ color: "var(--vscode-errorForeground)" }}>*</span>
-						</label>
-						<VSCodeRadioGroup
-							orientation="vertical"
-							value={formData.rdoPropertyType}
-							onChange={(e: any) => handleInputChange("rdoPropertyType", e.target.value)}>
-							<VSCodeRadio value="Internal Properties">Internal Properties</VSCodeRadio>
-							<VSCodeRadio value="External File">External File</VSCodeRadio>
-						</VSCodeRadioGroup>
-					</div>
+									<div style={{ marginBottom: "15px" }}>
+					<RadioGroup
+						label="Type"
+						name="propertyType"
+						value={formData.rdoPropertyType}
+						onChange={(value) => handleInputChange("rdoPropertyType", value)}
+						orientation="vertical"
+						isRequired
+						options={[
+							{ value: "Internal Properties", label: "Internal Properties" },
+							{ value: "External File", label: "External File" }
+						]}
+					/>
+				</div>
 
 					{isInternalProperties && (
 						<div>
 							<div style={{ marginBottom: "15px" }}>
-								<VSCodeTextField
+								<TextField
+									label="Key"
 									value={formData.txtKey}
 									placeholder="Enter key"
-									onInput={(e: any) => handleInputChange("txtKey", e.target.value)}
-									style={{ width: "100%" }}>
-									Key
-								</VSCodeTextField>
+									onChange={(e) => handleInputChange("txtKey", e.target.value)}
+								/>
 							</div>
 
 							<div style={{ marginBottom: "15px" }}>
-								<VSCodeTextField
+								<TextField
+									label="Value"
 									value={formData.txtValue}
 									placeholder="Enter value"
-									onInput={(e: any) => handleInputChange("txtValue", e.target.value)}
-									style={{ width: "100%" }}>
-									Value
-								</VSCodeTextField>
+									onChange={(e) => handleInputChange("txtValue", e.target.value)}
+								/>
 							</div>
 						</div>
 					)}
@@ -187,39 +180,37 @@ const PropertyForm: React.FC<FormComponentProps> = ({ onSubmit, onCancel, templa
 					{!isInternalProperties && (
 						<div>
 							<div style={{ marginBottom: "15px" }}>
-								<label style={{ display: "block", marginBottom: "5px", color: "var(--vscode-foreground)" }}>
-									Encoding
-								</label>
-								<VSCodeDropdown
+								<Select
+									label="Encoding"
 									value={formData.cboEncoding}
-									onInput={(e: any) => handleInputChange("cboEncoding", e.target.value)}
-									style={{ width: "100%" }}>
-									<VSCodeOption value="UTF-8">UTF-8</VSCodeOption>
-									<VSCodeOption value="ISO-8859-1">ISO-8859-1</VSCodeOption>
-									<VSCodeOption value="Windows-1252">Windows-1252</VSCodeOption>
-								</VSCodeDropdown>
+									onChange={(e) => handleInputChange("cboEncoding", e.target.value)}
+									options={[
+										{ value: "UTF-8", label: "UTF-8" },
+										{ value: "ISO-8859-1", label: "ISO-8859-1" },
+										{ value: "Windows-1252", label: "Windows-1252" }
+									]}
+								/>
 							</div>
 
 							<div style={{ marginBottom: "15px" }}>
-								<VSCodeTextField
+								<TextField
+									label="Property File Name"
 									value={formData.txtPropertyFile}
 									placeholder="Enter property file name"
-									onInput={(e: any) => handleInputChange("txtPropertyFile", e.target.value)}
-									style={{ width: "100%" }}>
-									Property File Name
-								</VSCodeTextField>
+									onChange={(e) => handleInputChange("txtPropertyFile", e.target.value)}
+								/>
 							</div>
 						</div>
 					)}
 				</div>
 
 				<div style={{ display: "flex", gap: "10px", justifyContent: "flex-end" }}>
-					<VSCodeButton appearance="secondary" onClick={onCancel}>
+					<Button variant="secondary" onClick={onCancel}>
 						Cancel
-					</VSCodeButton>
-					<VSCodeButton type="submit" appearance="primary">
+					</Button>
+					<Button type="submit" variant="primary">
 						Generate
-					</VSCodeButton>
+					</Button>
 				</div>
 			</form>
 		</div>

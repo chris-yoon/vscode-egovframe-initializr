@@ -1,7 +1,6 @@
-import { VSCodeButton } from "@vscode/webview-ui-toolkit/react"
 import { useState, useEffect, memo } from "react"
-import styled from "styled-components"
 import { EgovViewTab } from "../../shared/egovframe"
+import { Button, useVSCodeTheme } from "../ui"
 import ProjectsView from "./tabs/ProjectsView"
 import CodeView from "./tabs/CodeView"
 import ConfigView from "./tabs/ConfigView"
@@ -13,6 +12,7 @@ interface EgovViewProps {
 
 const EgovView = memo(({ onDone, initialTab }: EgovViewProps) => {
 	const [activeTab, setActiveTab] = useState<EgovViewTab>(initialTab || "projects")
+	const theme = useVSCodeTheme()
 
 	const handleTabChange = (tab: EgovViewTab) => {
 		setActiveTab(tab)
@@ -52,8 +52,8 @@ const EgovView = memo(({ onDone, initialTab }: EgovViewProps) => {
 					alignItems: "center",
 					padding: "10px 17px 5px 20px",
 				}}>
-				<h3 style={{ color: "var(--vscode-foreground)", margin: 0 }}>eGovFrame Initializr</h3>
-				<VSCodeButton onClick={onDone}>Done</VSCodeButton>
+				<h3 style={{ color: theme.colors.foreground, margin: 0 }}>eGovFrame Initializr</h3>
+				<Button onClick={onDone} variant="secondary" size="sm">Done</Button>
 			</div>
 
 			<div style={{ flex: 1, overflow: "auto" }}>
@@ -63,7 +63,7 @@ const EgovView = memo(({ onDone, initialTab }: EgovViewProps) => {
 						display: "flex",
 						gap: "1px",
 						padding: "0 20px 0 20px",
-						borderBottom: "1px solid var(--vscode-panel-border)",
+						borderBottom: `1px solid ${theme.colors.panelBorder}`,
 					}}>
 					<TabButton isActive={activeTab === "projects"} onClick={() => handleTabChange("projects")}>
 						Projects
@@ -87,22 +87,6 @@ const EgovView = memo(({ onDone, initialTab }: EgovViewProps) => {
 	)
 })
 
-const StyledTabButton = styled.button<{ isActive: boolean }>`
-	background: none;
-	border: none;
-	border-bottom: 2px solid ${(props) => (props.isActive ? "var(--vscode-foreground)" : "transparent")};
-	color: ${(props) => (props.isActive ? "var(--vscode-foreground)" : "var(--vscode-descriptionForeground)")};
-	padding: 8px 16px;
-	cursor: pointer;
-	font-size: 13px;
-	margin-bottom: -1px;
-	font-family: inherit;
-
-	&:hover {
-		color: var(--vscode-foreground);
-	}
-`
-
 export const TabButton = ({
 	children,
 	isActive,
@@ -111,11 +95,35 @@ export const TabButton = ({
 	children: React.ReactNode
 	isActive: boolean
 	onClick: () => void
-}) => (
-	<StyledTabButton isActive={isActive} onClick={onClick}>
-		{children}
-	</StyledTabButton>
-)
+}) => {
+	const theme = useVSCodeTheme()
+	
+	return (
+		<button
+			onClick={onClick}
+			style={{
+				background: 'none',
+				border: 'none',
+				borderBottom: `2px solid ${isActive ? theme.colors.foreground : 'transparent'}`,
+				color: isActive ? theme.colors.foreground : theme.colors.descriptionForeground,
+				padding: '8px 16px',
+				cursor: 'pointer',
+				fontSize: theme.fontSize.sm,
+				marginBottom: '-1px',
+				fontFamily: 'inherit',
+				transition: 'color 0.2s ease',
+			}}
+			onMouseEnter={(e) => {
+				e.currentTarget.style.color = theme.colors.foreground
+			}}
+			onMouseLeave={(e) => {
+				e.currentTarget.style.color = isActive ? theme.colors.foreground : theme.colors.descriptionForeground
+			}}
+		>
+			{children}
+		</button>
+	)
+}
 
 EgovView.displayName = "EgovView"
 

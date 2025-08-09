@@ -16,8 +16,6 @@
 	},
 	"dependencies": {
 		"@floating-ui/react": "^0.27.4",
-		"@heroui/react": "^2.8.0-beta.2",
-		"@vscode/webview-ui-toolkit": "^1.4.0",
 		"clsx": "^2.1.1",
 		"debounce": "^2.1.1",
 		"dompurify": "^3.2.4",
@@ -44,7 +42,6 @@
 		"rehype-remark": "^10.0.1",
 		"remark-math": "^6.0.0",
 		"remark-stringify": "^11.0.0",
-		"styled-components": "^6.1.15",
 		"tailwind-merge": "^3.3.0",
 		"unified": "^11.0.5",
 		"uuid": "^9.0.1"

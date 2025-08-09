@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react"
-import { VSCodeButton, VSCodeTextField, VSCodeRadioGroup, VSCodeRadio } from "@vscode/webview-ui-toolkit/react"
+import { Button, TextField, RadioGroup } from "../../ui"
 import { ConfigFormData, ConfigGenerationType, FormComponentProps } from "../types/templates"
 import { vscode } from "../../../utils/vscode"
 
@@ -100,60 +100,61 @@ const JndiDatasourceForm: React.FC<FormComponentProps> = ({ onSubmit, onCancel, 
 			<form onSubmit={handleSubmit}>
 				<div style={{ marginBottom: "20px" }}>
 					<h3 style={{ color: "var(--vscode-foreground)", marginBottom: "10px" }}>Generation Type</h3>
-					<VSCodeRadioGroup
-						orientation="horizontal"
-						value={formData.generationType}
-						onChange={(e: any) => handleGenerationTypeChange(e.target.value as ConfigGenerationType)}>
-						<VSCodeRadio value={ConfigGenerationType.XML}>XML</VSCodeRadio>
-						<VSCodeRadio value={ConfigGenerationType.JAVA_CONFIG}>JavaConfig</VSCodeRadio>
-					</VSCodeRadioGroup>
+					<RadioGroup
+        label="Generation Type"
+        name="generationType"
+        value={formData.generationType}
+        onChange={(value: string) => handleGenerationTypeChange(value as ConfigGenerationType)}
+        orientation="horizontal"
+        options={[
+          { value: ConfigGenerationType.XML, label: "XML" },
+          { value: ConfigGenerationType.JAVA_CONFIG, label: "JavaConfig" }
+        ]}
+      />
 				</div>
 
 				<div style={{ marginBottom: "20px" }}>
 					<h3 style={{ color: "var(--vscode-foreground)", marginBottom: "10px" }}>Generation File</h3>
-					<VSCodeTextField
+					<TextField
+						label="File Name"
 						value={formData.txtFileName}
+						onChange={(e: any) => handleInputChange("txtFileName", e.target.value)}
 						placeholder="Enter file name"
-						onInput={(e: any) => handleInputChange("txtFileName", e.target.value)}
-						style={{ width: "100%" }}
-						required>
-						File Name <span style={{ color: "var(--vscode-errorForeground)" }}>*</span>
-					</VSCodeTextField>
+						isRequired
+					/>
 				</div>
 
 				<div style={{ marginBottom: "20px" }}>
 					<h3 style={{ color: "var(--vscode-foreground)", marginBottom: "10px" }}>Configuration</h3>
 
 					<div style={{ marginBottom: "15px" }}>
-						<VSCodeTextField
-							value={formData.txtDatasourceName}
-							placeholder="Enter datasource name"
-							onInput={(e: any) => handleInputChange("txtDatasourceName", e.target.value)}
-							style={{ width: "100%" }}
-							required>
-							DataSource Name <span style={{ color: "var(--vscode-errorForeground)" }}>*</span>
-						</VSCodeTextField>
+						<TextField
+        label="DataSource Name"
+        value={formData.txtDatasourceName}
+        onChange={(e: any) => handleInputChange("txtDatasourceName", e.target.value)}
+        placeholder="Enter datasource name"
+        isRequired
+      />
 					</div>
 
 					<div style={{ marginBottom: "15px" }}>
-						<VSCodeTextField
-							value={formData.txtJndiName}
-							placeholder="Enter JNDI name"
-							onInput={(e: any) => handleInputChange("txtJndiName", e.target.value)}
-							style={{ width: "100%" }}
-							required>
-							JNDI Name <span style={{ color: "var(--vscode-errorForeground)" }}>*</span>
-						</VSCodeTextField>
+						<TextField
+        label="JNDI Name"
+        value={formData.txtJndiName}
+        onChange={(e: any) => handleInputChange("txtJndiName", e.target.value)}
+        placeholder="Enter jndi name"
+        isRequired
+      />
 					</div>
 				</div>
 
 				<div style={{ display: "flex", gap: "10px", justifyContent: "flex-end" }}>
-					<VSCodeButton appearance="secondary" onClick={onCancel}>
+					<Button variant="secondary" onClick={onCancel}>
 						Cancel
-					</VSCodeButton>
-					<VSCodeButton type="submit" appearance="primary">
+					</Button>
+					<Button type="submit" variant="primary">
 						Generate
-					</VSCodeButton>
+					</Button>
 				</div>
 			</form>
 		</div>

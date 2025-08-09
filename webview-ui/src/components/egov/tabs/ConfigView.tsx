@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react"
-import { VSCodeButton, VSCodeDropdown, VSCodeOption, VSCodeDivider, VSCodeLink } from "@vscode/webview-ui-toolkit/react"
+import { Button, TextField, TextArea, Select, RadioGroup, ProgressRing, Link, Divider } from "../../ui"
 import { TemplateConfig, GroupedTemplates, ConfigFormData } from "../types/templates"
 import { loadTemplates } from "../utils/templateUtils"
 import FormFactory from "../forms/FormFactory"
@@ -16,10 +16,10 @@ const ConfigView: React.FC = () => {
 	const [error, setError] = useState<string | null>(null)
 
 	useEffect(() => {
-		const initializeTemplates = async () => {
+		const initializeTemplates = () => {
 			try {
 				setLoading(true)
-				const loadedTemplates = await loadTemplates()
+				const loadedTemplates = loadTemplates()
 				console.log("Loaded templates:", loadedTemplates)
 				setTemplates(loadedTemplates)
 
@@ -27,10 +27,12 @@ const ConfigView: React.FC = () => {
 				const grouped: GroupedTemplates = {}
 				loadedTemplates.forEach((template) => {
 					const [category, subcategory] = template.displayName.split(" > ")
-					if (!grouped[category]) {
-						grouped[category] = {}
+					if (category && subcategory) {
+						if (!grouped[category]) {
+							grouped[category] = {}
+						}
+						grouped[category][subcategory] = template
 					}
-					grouped[category][subcategory] = template
 				})
 
 				console.log("Grouped templates:", grouped)
@@ -115,7 +117,7 @@ const ConfigView: React.FC = () => {
 		return (
 			<div style={{ padding: "20px", textAlign: "center" }}>
 				<p style={{ color: "var(--vscode-errorForeground)" }}>{error}</p>
-				<VSCodeButton onClick={() => window.location.reload()}>Retry</VSCodeButton>
+				<Button onClick={() => window.location.reload()}>Retry</Button>
 			</div>
 		)
 	}
@@ -142,9 +144,9 @@ const ConfigView: React.FC = () => {
 						marginTop: "5px",
 					}}>
 					Generate configuration files for eGovFrame projects. Learn more at{" "}
-					<VSCodeLink href="https://github.com/chris-yoon/egovframe-pack" style={{ display: "inline" }}>
+					<Link href="https://github.com/chris-yoon/egovframe-pack" style={{ display: "inline" }}>
 						GitHub
-					</VSCodeLink>
+					</Link>
 				</p>
 			</div>
 
@@ -153,17 +155,35 @@ const ConfigView: React.FC = () => {
 					<label style={{ display: "block", marginBottom: "5px", color: "var(--vscode-foreground)" }}>
 						Select Category
 					</label>
-					<VSCodeDropdown
+					<select
 						value={selectedCategory}
-						onInput={(e: any) => handleCategoryChange(e.target.value)}
-						style={{ width: "100%" }}>
-						<VSCodeOption value="">-- Select Category --</VSCodeOption>
-						{categories.map((category) => (
-							<VSCodeOption key={category} value={category}>
-								{category}
-							</VSCodeOption>
+						onChange={(e) => handleCategoryChange(e.target.value)}
+						style={{
+							width: "100%",
+							padding: "8px 12px",
+							backgroundColor: "var(--vscode-input-background)",
+							color: "var(--vscode-input-foreground)",
+							border: "1px solid var(--vscode-input-border)",
+							borderRadius: "4px",
+							fontSize: "13px",
+							fontFamily: "inherit",
+							outline: "none",
+							appearance: "none",
+							WebkitAppearance: "none",
+							MozAppearance: "none",
+						}}
+						onFocus={(e) => {
+							(e.target as HTMLSelectElement).style.borderColor = "var(--vscode-focusBorder)"
+						}}
+						onBlur={(e) => {
+							(e.target as HTMLSelectElement).style.borderColor = "var(--vscode-input-border)"
+						}}
+					>
+						<option value="">Choose a category...</option>
+						{categories.map(category => (
+							<option key={category} value={category}>{category}</option>
 						))}
-					</VSCodeDropdown>
+					</select>
 				</div>
 
 				{selectedCategory && (
@@ -171,23 +191,41 @@ const ConfigView: React.FC = () => {
 						<label style={{ display: "block", marginBottom: "5px", color: "var(--vscode-foreground)" }}>
 							Select Configuration Type
 						</label>
-						<VSCodeDropdown
+						<select
 							value={selectedSubcategory}
-							onInput={(e: any) => handleSubcategoryChange(e.target.value)}
-							style={{ width: "100%" }}>
-							<VSCodeOption value="">-- Select Configuration Type --</VSCodeOption>
-							{subcategories.map((subcategory) => (
-								<VSCodeOption key={subcategory} value={subcategory}>
-									{subcategory}
-								</VSCodeOption>
+							onChange={(e) => handleSubcategoryChange(e.target.value)}
+							style={{
+								width: "100%",
+								padding: "8px 12px",
+								backgroundColor: "var(--vscode-input-background)",
+								color: "var(--vscode-input-foreground)",
+								border: "1px solid var(--vscode-input-border)",
+								borderRadius: "4px",
+								fontSize: "13px",
+								fontFamily: "inherit",
+								outline: "none",
+								appearance: "none",
+								WebkitAppearance: "none",
+								MozAppearance: "none",
+							}}
+							onFocus={(e) => {
+								(e.target as HTMLSelectElement).style.borderColor = "var(--vscode-focusBorder)"
+							}}
+							onBlur={(e) => {
+								(e.target as HTMLSelectElement).style.borderColor = "var(--vscode-input-border)"
+							}}
+						>
+							<option value="">Choose a configuration type...</option>
+							{subcategories.map(subcategory => (
+								<option key={subcategory} value={subcategory}>{subcategory}</option>
 							))}
-						</VSCodeDropdown>
+						</select>
 					</div>
 				)}
 
 				{selectedTemplate && (
 					<div style={{ marginTop: "20px" }}>
-						<VSCodeDivider />
+						<Divider  />
 						<div
 							style={{
 								marginTop: "20px",
@@ -205,9 +243,9 @@ const ConfigView: React.FC = () => {
 							<p style={{ color: "var(--vscode-foreground)", marginBottom: "15px" }}>
 								<strong>Folder:</strong> {selectedTemplate.templateFolder}
 							</p>
-							<VSCodeButton onClick={handleConfigureClick} appearance="primary">
+							<Button onClick={handleConfigureClick} variant="primary">
 								Configure
-							</VSCodeButton>
+							</Button>
 						</div>
 					</div>
 				)}

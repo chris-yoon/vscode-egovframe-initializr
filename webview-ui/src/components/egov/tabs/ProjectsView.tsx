@@ -1,14 +1,5 @@
 import { useState, useEffect } from "react"
-import {
-	VSCodeButton,
-	VSCodeDropdown,
-	VSCodeOption,
-	VSCodeTextField,
-	VSCodeTextArea,
-	VSCodeLink,
-	VSCodeRadio,
-	VSCodeRadioGroup,
-} from "@vscode/webview-ui-toolkit/react"
+import { Button, TextField, TextArea, Select, RadioGroup, ProgressRing, Link, Divider } from "../../ui"
 import { vscode } from "../../../utils/vscode"
 import {
 	ProjectTemplate,
@@ -191,9 +182,9 @@ export const ProjectsView = () => {
 					}}>
 					Generate new eGovFrame projects from predefined templates. Choose from various project templates including
 					basic Spring applications, web applications, and more. Learn more at{" "}
-					<VSCodeLink href="https://github.com/chris-yoon/egovframe-pack" style={{ display: "inline" }}>
+					<Link href="https://github.com/chris-yoon/egovframe-pack" style={{ display: "inline" }}>
 						GitHub
-					</VSCodeLink>
+					</Link>
 				</p>
 			</div>
 
@@ -231,10 +222,16 @@ export const ProjectsView = () => {
 			{/* Generation Method Selection */}
 			<div style={{ marginBottom: "20px" }}>
 				<h4 style={{ color: "var(--vscode-foreground)", marginBottom: "10px", marginTop: 0 }}>Generation Method</h4>
-				<VSCodeRadioGroup value={generationMethod} onChange={(e: any) => setGenerationMethod(e.target.value)}>
-					<VSCodeRadio value="form">Form-based Generation (Recommended)</VSCodeRadio>
-					<VSCodeRadio value="command">Command-based Generation</VSCodeRadio>
-				</VSCodeRadioGroup>
+				<RadioGroup
+        label="Generation Method"
+        name="generationMethod"
+        value={generationMethod}
+        onChange={(value: string) => setGenerationMethod(value as "form" | "command")}
+        options={[
+          { value: "form", label: "Form-based Generation (Recommended)" },
+          { value: "command", label: "Command-based Generation" }
+        ]}
+      />
 			</div>
 
 			{generationMethod === "command" ? (
@@ -250,10 +247,37 @@ export const ProjectsView = () => {
 						</p>
 
 						<div style={{ display: "flex", gap: "10px", flexWrap: "wrap" }}>
-							<VSCodeButton appearance="primary" onClick={handleGenerateByCommand}>
+							<button
+								style={{
+									backgroundColor: "var(--vscode-button-background)",
+									color: "var(--vscode-button-foreground)",
+									border: "1px solid var(--vscode-button-border)",
+									borderRadius: "4px",
+									padding: "8px 12px",
+									cursor: "pointer",
+									display: "inline-flex",
+									alignItems: "center",
+									fontSize: "13px",
+									fontFamily: "inherit",
+									outline: "none",
+								}}
+								onMouseOver={(e) => {
+									(e.target as HTMLButtonElement).style.backgroundColor = "var(--vscode-button-hoverBackground)"
+								}}
+								onMouseOut={(e) => {
+									(e.target as HTMLButtonElement).style.backgroundColor = "var(--vscode-button-background)"
+								}}
+								onFocus={(e) => {
+									(e.target as HTMLButtonElement).style.outline = "1px solid var(--vscode-focusBorder)"
+								}}
+								onBlur={(e) => {
+									(e.target as HTMLButtonElement).style.outline = "none"
+								}}
+								onClick={handleGenerateByCommand}
+							>
 								<span className="codicon codicon-debug-step-over" style={{ marginRight: "6px" }}></span>
 								Start Interactive Generation
-							</VSCodeButton>
+							</button>
 						</div>
 
 						<div
@@ -284,13 +308,34 @@ export const ProjectsView = () => {
 						<h4 style={{ color: "var(--vscode-foreground)", marginBottom: "10px", marginTop: 0 }}>
 							Template Category
 						</h4>
-						<VSCodeDropdown value={selectedCategory} onChange={handleCategoryChange}>
-							{PROJECT_CATEGORIES.map((category) => (
-								<VSCodeOption key={category} value={category}>
-									{category}
-								</VSCodeOption>
+						<select
+							value={selectedCategory}
+							onChange={handleCategoryChange}
+							style={{
+								width: "100%",
+								padding: "8px 12px",
+								backgroundColor: "var(--vscode-input-background)",
+								color: "var(--vscode-input-foreground)",
+								border: "1px solid var(--vscode-input-border)",
+								borderRadius: "4px",
+								fontSize: "13px",
+								fontFamily: "inherit",
+								outline: "none",
+								appearance: "none",
+								WebkitAppearance: "none",
+								MozAppearance: "none",
+							}}
+							onFocus={(e) => {
+								(e.target as HTMLSelectElement).style.borderColor = "var(--vscode-focusBorder)"
+							}}
+							onBlur={(e) => {
+								(e.target as HTMLSelectElement).style.borderColor = "var(--vscode-input-border)"
+							}}
+						>
+							{PROJECT_CATEGORIES.map(category => (
+								<option key={category} value={category}>{category}</option>
 							))}
-						</VSCodeDropdown>
+						</select>
 					</div>
 
 					{/* Template Selection */}
@@ -341,11 +386,11 @@ export const ProjectsView = () => {
 							{/* Project Name */}
 							<div style={{ marginBottom: "15px" }}>
 								<label style={{ display: "block", marginBottom: "5px", fontSize: "12px" }}>Project Name *</label>
-								<VSCodeTextField
+								<TextField
+									label=""
 									value={projectName}
+									onChange={handleProjectNameChange}
 									placeholder="Enter project name (letters, numbers, hyphens, underscores)"
-									style={{ width: "100%" }}
-									onInput={handleProjectNameChange}
 								/>
 								<div style={{ fontSize: "10px", color: "var(--vscode-descriptionForeground)", marginTop: "2px" }}>
 									Will be used as the project folder name
@@ -356,11 +401,11 @@ export const ProjectsView = () => {
 							{selectedTemplate.pomFile && (
 								<div style={{ marginBottom: "15px" }}>
 									<label style={{ display: "block", marginBottom: "5px", fontSize: "12px" }}>Group ID *</label>
-									<VSCodeTextField
+									<TextField
+										label=""
 										value={groupID}
+										onChange={(e: any) => setGroupID(e.target.value)}
 										placeholder="e.g., egovframework.example.sample"
-										style={{ width: "100%" }}
-										onInput={(e: any) => setGroupID(e.target.value)}
 									/>
 									<div
 										style={{
@@ -377,16 +422,43 @@ export const ProjectsView = () => {
 							<div style={{ marginBottom: "15px" }}>
 								<label style={{ display: "block", marginBottom: "5px", fontSize: "12px" }}>Output Path *</label>
 								<div style={{ display: "flex", gap: "10px" }}>
-									<VSCodeTextField
+									<TextField
+										label=""
 										value={outputPath}
+										onChange={(e: any) => setOutputPath(e.target.value)}
 										placeholder="Select output directory"
-										style={{ flex: 1 }}
-										onInput={(e: any) => setOutputPath(e.target.value)}
 									/>
-									<VSCodeButton appearance="secondary" onClick={handleSelectOutputPath}>
+									<button
+										style={{
+											backgroundColor: "var(--vscode-button-secondaryBackground)",
+											color: "var(--vscode-button-secondaryForeground)",
+											border: "1px solid var(--vscode-button-border)",
+											borderRadius: "4px",
+											padding: "8px 12px",
+											cursor: "pointer",
+											display: "inline-flex",
+											alignItems: "center",
+											fontSize: "13px",
+											fontFamily: "inherit",
+											outline: "none",
+										}}
+										onMouseOver={(e) => {
+											(e.target as HTMLButtonElement).style.backgroundColor = "var(--vscode-button-secondaryHoverBackground)"
+										}}
+										onMouseOut={(e) => {
+											(e.target as HTMLButtonElement).style.backgroundColor = "var(--vscode-button-secondaryBackground)"
+										}}
+										onFocus={(e) => {
+											(e.target as HTMLButtonElement).style.outline = "1px solid var(--vscode-focusBorder)"
+										}}
+										onBlur={(e) => {
+											(e.target as HTMLButtonElement).style.outline = "none"
+										}}
+										onClick={handleSelectOutputPath}
+									>
 										<span className="codicon codicon-folder-opened" style={{ marginRight: "6px" }}></span>
 										Browse
-									</VSCodeButton>
+									</button>
 								</div>
 								<div style={{ fontSize: "10px", color: "var(--vscode-descriptionForeground)", marginTop: "2px" }}>
 									Project will be created in: {outputPath ? `${outputPath}/${projectName}` : "Not selected"}
@@ -450,11 +522,42 @@ export const ProjectsView = () => {
 
 					{/* Action Buttons */}
 					<div style={{ display: "flex", gap: "10px", marginBottom: "20px" }}>
-						<VSCodeButton
-							appearance="primary"
+						<button
 							disabled={isGenerating || !selectedTemplate || !projectName || !outputPath}
 							onClick={handleGenerateProject}
-							style={{ flex: 1 }}>
+							style={{
+								flex: 1,
+								backgroundColor: "var(--vscode-button-background)",
+								color: "var(--vscode-button-foreground)",
+								border: "1px solid var(--vscode-button-border)",
+								borderRadius: "4px",
+								padding: "12px 16px",
+								cursor: isGenerating || !selectedTemplate || !projectName || !outputPath ? "not-allowed" : "pointer",
+								display: "inline-flex",
+								alignItems: "center",
+								justifyContent: "center",
+								fontSize: "13px",
+								fontFamily: "inherit",
+								outline: "none",
+								opacity: isGenerating || !selectedTemplate || !projectName || !outputPath ? 0.5 : 1,
+							}}
+							onMouseOver={(e) => {
+								if (!(isGenerating || !selectedTemplate || !projectName || !outputPath)) {
+									(e.target as HTMLButtonElement).style.backgroundColor = "var(--vscode-button-hoverBackground)"
+								}
+							}}
+							onMouseOut={(e) => {
+								if (!(isGenerating || !selectedTemplate || !projectName || !outputPath)) {
+									(e.target as HTMLButtonElement).style.backgroundColor = "var(--vscode-button-background)"
+								}
+							}}
+							onFocus={(e) => {
+								(e.target as HTMLButtonElement).style.outline = "1px solid var(--vscode-focusBorder)"
+							}}
+							onBlur={(e) => {
+								(e.target as HTMLButtonElement).style.outline = "none"
+							}}
+						>
 							{isGenerating ? (
 								<>
 									<span
@@ -468,11 +571,39 @@ export const ProjectsView = () => {
 									Generate Project
 								</>
 							)}
-						</VSCodeButton>
-						<VSCodeButton appearance="secondary" onClick={handleInsertSample}>
+						</button>
+						<button
+							onClick={handleInsertSample}
+							style={{
+								backgroundColor: "var(--vscode-button-secondaryBackground)",
+								color: "var(--vscode-button-secondaryForeground)",
+								border: "1px solid var(--vscode-button-border)",
+								borderRadius: "4px",
+								padding: "12px 16px",
+								cursor: "pointer",
+								display: "inline-flex",
+								alignItems: "center",
+								justifyContent: "center",
+								fontSize: "13px",
+								fontFamily: "inherit",
+								outline: "none",
+							}}
+							onMouseOver={(e) => {
+								(e.target as HTMLButtonElement).style.backgroundColor = "var(--vscode-button-secondaryHoverBackground)"
+							}}
+							onMouseOut={(e) => {
+								(e.target as HTMLButtonElement).style.backgroundColor = "var(--vscode-button-secondaryBackground)"
+							}}
+							onFocus={(e) => {
+								(e.target as HTMLButtonElement).style.outline = "1px solid var(--vscode-focusBorder)"
+							}}
+							onBlur={(e) => {
+								(e.target as HTMLButtonElement).style.outline = "none"
+							}}
+						>
 							<span className="codicon codicon-beaker" style={{ marginRight: "6px" }}></span>
 							Sample
-						</VSCodeButton>
+						</button>
 					</div>
 				</div>
 			)}

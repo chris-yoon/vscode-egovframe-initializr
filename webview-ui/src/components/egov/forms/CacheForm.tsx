@@ -1,13 +1,11 @@
 import React, { useState, useEffect } from "react"
 import {
-	VSCodeButton,
-	VSCodeTextField,
-	VSCodeRadioGroup,
-	VSCodeRadio,
-	VSCodeDropdown,
-	VSCodeOption,
-	VSCodeCheckbox,
-} from "@vscode/webview-ui-toolkit/react"
+	Button,
+	TextField,
+	RadioGroup,
+	Select,
+	Checkbox,
+} from "../../ui"
 import { ConfigFormData, ConfigGenerationType, FormComponentProps } from "../types/templates"
 import { vscode } from "../../../utils/vscode"
 
@@ -139,88 +137,78 @@ const CacheForm: React.FC<FormComponentProps> = ({ onSubmit, onCancel, template,
 				{currentPage === 1 && (
 					<div>
 						<div style={{ marginBottom: "20px" }}>
-							<h3 style={{ color: "var(--vscode-foreground)", marginBottom: "10px" }}>Generation Type</h3>
-							<VSCodeRadioGroup
-								orientation="horizontal"
+							<RadioGroup
+								label="Generation Type"
+								name="generationType"
 								value={formData.generationType}
-								onChange={(e: any) => handleGenerationTypeChange(e.target.value as ConfigGenerationType)}>
-								<VSCodeRadio value={ConfigGenerationType.XML}>XML</VSCodeRadio>
-								<VSCodeRadio value={ConfigGenerationType.JAVA_CONFIG}>JavaConfig</VSCodeRadio>
-							</VSCodeRadioGroup>
+								onChange={(value) => handleGenerationTypeChange(value as ConfigGenerationType)}
+								orientation="horizontal"
+								options={[
+									{ value: ConfigGenerationType.XML, label: "XML" },
+									{ value: ConfigGenerationType.JAVA_CONFIG, label: "JavaConfig" }
+								]}
+							/>
 						</div>
 
 						<div style={{ marginBottom: "20px" }}>
 							<h3 style={{ color: "var(--vscode-foreground)", marginBottom: "10px" }}>Generation File</h3>
-							<VSCodeTextField
+							<TextField
+								label="File Name"
 								value={formData.txtFileName}
+								onChange={(e) => handleInputChange("txtFileName", e.target.value)}
 								placeholder="Enter file name"
-								onInput={(e: any) => handleInputChange("txtFileName", e.target.value)}
-								style={{ width: "100%" }}
-								required>
-								File Name <span style={{ color: "var(--vscode-errorForeground)" }}>*</span>
-							</VSCodeTextField>
+								isRequired
+							/>
 						</div>
 
 						<div style={{ marginBottom: "20px" }}>
 							<h3 style={{ color: "var(--vscode-foreground)", marginBottom: "10px" }}>Configuration</h3>
 
 							<div style={{ marginBottom: "15px" }}>
-								<VSCodeTextField
+								<TextField
+									label="Disk Store Path"
 									value={formData.txtDiskStore}
+									onChange={(e) => handleInputChange("txtDiskStore", e.target.value)}
 									placeholder="Enter disk store path"
-									onInput={(e: any) => handleInputChange("txtDiskStore", e.target.value)}
-									style={{ width: "100%" }}
-									required>
-									Disk Store Path <span style={{ color: "var(--vscode-errorForeground)" }}>*</span>
-								</VSCodeTextField>
+									isRequired
+								/>
 							</div>
 
 							<div style={{ marginBottom: "15px" }}>
-								<VSCodeTextField
-									value={formData.txtDftMaxElements}
-									placeholder="Enter default cache max elements"
-									onInput={(e: any) => handleInputChange("txtDftMaxElements", e.target.value)}
-									style={{ width: "100%" }}
-									required>
-									Default Cache Max Elements <span style={{ color: "var(--vscode-errorForeground)" }}>*</span>
-								</VSCodeTextField>
+								<TextField
+        label="Default Cache Max Elements"
+        value={formData.txtDftMaxElements}
+        onChange={(e) => handleInputChange("txtDftMaxElements", e.target.value)}
+        placeholder="Enter default cache max elements"
+        isRequired
+      />
 							</div>
 
 							<div style={{ marginBottom: "15px" }}>
 								<label style={{ display: "block", marginBottom: "5px", color: "var(--vscode-foreground)" }}>
 									Default Cache Eternal <span style={{ color: "var(--vscode-errorForeground)" }}>*</span>
 								</label>
-								<VSCodeDropdown
-									value={formData.txtDftEternal}
-									onInput={(e: any) => handleInputChange("txtDftEternal", e.target.value)}
-									style={{ width: "100%" }}>
-									<VSCodeOption value="true">True</VSCodeOption>
-									<VSCodeOption value="false">False</VSCodeOption>
-								</VSCodeDropdown>
+								<Select options={[]} />
 							</div>
 
 							<div style={{ marginBottom: "15px" }}>
-								<VSCodeTextField
+								<TextField
+									label="Default Cache Idle Time (sec)"
 									value={formData.txtDftIdelTime}
-									placeholder="Enter default cache idle time"
-									onInput={(e: any) => handleInputChange("txtDftIdelTime", e.target.value)}
-									style={{ width: "100%" }}
-									required>
-									Default Cache Idle Time (sec){" "}
-									<span style={{ color: "var(--vscode-errorForeground)" }}>*</span>
-								</VSCodeTextField>
+									onChange={(e) => handleInputChange("txtDftIdelTime", e.target.value)}
+									placeholder="Enter default cache idle time (sec)"
+									isRequired
+								/>
 							</div>
 
 							<div style={{ marginBottom: "15px" }}>
-								<VSCodeTextField
+								<TextField
+									label="Default Cache Live Time (sec)"
 									value={formData.txtDftLiveTime}
-									placeholder="Enter default cache live time"
-									onInput={(e: any) => handleInputChange("txtDftLiveTime", e.target.value)}
-									style={{ width: "100%" }}
-									required>
-									Default Cache Live Time (sec){" "}
-									<span style={{ color: "var(--vscode-errorForeground)" }}>*</span>
-								</VSCodeTextField>
+									onChange={(e) => handleInputChange("txtDftLiveTime", e.target.value)}
+									placeholder="Enter default cache live time (sec)"
+									isRequired
+								/>
 							</div>
 
 							<div style={{ marginBottom: "15px" }}>
@@ -228,13 +216,7 @@ const CacheForm: React.FC<FormComponentProps> = ({ onSubmit, onCancel, template,
 									Default Cache Overflow to Disk{" "}
 									<span style={{ color: "var(--vscode-errorForeground)" }}>*</span>
 								</label>
-								<VSCodeDropdown
-									value={formData.txtDftOverfow}
-									onInput={(e: any) => handleInputChange("txtDftOverfow", e.target.value)}
-									style={{ width: "100%" }}>
-									<VSCodeOption value="true">True</VSCodeOption>
-									<VSCodeOption value="false">False</VSCodeOption>
-								</VSCodeDropdown>
+								<Select options={[]} />
 							</div>
 
 							<div style={{ marginBottom: "15px" }}>
@@ -242,33 +224,25 @@ const CacheForm: React.FC<FormComponentProps> = ({ onSubmit, onCancel, template,
 									Default Cache Disk Persistent{" "}
 									<span style={{ color: "var(--vscode-errorForeground)" }}>*</span>
 								</label>
-								<VSCodeDropdown
-									value={formData.txtDftDiskPersistence}
-									onInput={(e: any) => handleInputChange("txtDftDiskPersistence", e.target.value)}
-									style={{ width: "100%" }}>
-									<VSCodeOption value="true">True</VSCodeOption>
-									<VSCodeOption value="false">False</VSCodeOption>
-								</VSCodeDropdown>
+								<Select options={[]} />
 							</div>
 
 							<div style={{ marginBottom: "20px" }}>
-								<VSCodeTextField
+								<TextField
+									label="Default Cache Disk Expiry (sec)"
 									value={formData.txtDftDiskExpiry}
-									placeholder="Enter default cache disk expiry"
-									onInput={(e: any) => handleInputChange("txtDftDiskExpiry", e.target.value)}
-									style={{ width: "100%" }}
-									required>
-									Default Cache Disk Expiry (sec){" "}
-									<span style={{ color: "var(--vscode-errorForeground)" }}>*</span>
-								</VSCodeTextField>
+									onChange={(e) => handleInputChange("txtDftDiskExpiry", e.target.value)}
+									placeholder="Enter default cache disk expiry (sec)"
+									isRequired
+								/>
 							</div>
 						</div>
 
 						<div style={{ display: "flex", gap: "10px", justifyContent: "flex-end" }}>
-							<VSCodeButton appearance="secondary" onClick={onCancel}>
+							<Button variant="secondary" onClick={onCancel}>
 								Cancel
-							</VSCodeButton>
-							<VSCodeButton onClick={() => setCurrentPage(2)}>Next</VSCodeButton>
+							</Button>
+							<Button onClick={() => setCurrentPage(2)}>Next</Button>
 						</div>
 					</div>
 				)}
@@ -279,113 +253,84 @@ const CacheForm: React.FC<FormComponentProps> = ({ onSubmit, onCancel, template,
 							<h3 style={{ color: "var(--vscode-foreground)", marginBottom: "10px" }}>Set Custom Cache</h3>
 
 							<div style={{ marginBottom: "15px" }}>
-								<VSCodeTextField
-									value={formData.txtCacheName}
-									placeholder="Enter cache name"
-									onInput={(e: any) => handleInputChange("txtCacheName", e.target.value)}
-									style={{ width: "100%" }}
-									required>
-									Cache Name <span style={{ color: "var(--vscode-errorForeground)" }}>*</span>
-								</VSCodeTextField>
+								<TextField
+        label="Cache Name"
+        value={formData.txtCacheName}
+        onChange={(e) => handleInputChange("txtCacheName", e.target.value)}
+        placeholder="Enter cache name"
+        isRequired
+      />
 							</div>
 
 							<div style={{ marginBottom: "15px" }}>
-								<VSCodeTextField
-									value={formData.txtMaxElements}
-									placeholder="Enter max elements"
-									onInput={(e: any) => handleInputChange("txtMaxElements", e.target.value)}
-									style={{ width: "100%" }}
-									required>
-									Max Elements <span style={{ color: "var(--vscode-errorForeground)" }}>*</span>
-								</VSCodeTextField>
+								<TextField
+        label="Max Elements"
+        value={formData.txtMaxElements}
+        onChange={(e) => handleInputChange("txtMaxElements", e.target.value)}
+        placeholder="Enter max elements"
+        isRequired
+      />
 							</div>
 
 							<div style={{ marginBottom: "15px" }}>
 								<label style={{ display: "block", marginBottom: "5px", color: "var(--vscode-foreground)" }}>
 									Eternal <span style={{ color: "var(--vscode-errorForeground)" }}>*</span>
 								</label>
-								<VSCodeDropdown
-									value={formData.txtEternal}
-									onInput={(e: any) => handleInputChange("txtEternal", e.target.value)}
-									style={{ width: "100%" }}>
-									<VSCodeOption value="true">True</VSCodeOption>
-									<VSCodeOption value="false">False</VSCodeOption>
-								</VSCodeDropdown>
+								<Select options={[]} />
 							</div>
 
 							<div style={{ marginBottom: "15px" }}>
-								<VSCodeTextField
-									value={formData.txtIdleTime}
-									placeholder="Enter idle time"
-									onInput={(e: any) => handleInputChange("txtIdleTime", e.target.value)}
-									style={{ width: "100%" }}
-									required>
-									Idle Time (sec) <span style={{ color: "var(--vscode-errorForeground)" }}>*</span>
-								</VSCodeTextField>
+								<TextField
+        label="Idle Time (sec)"
+        value={formData.txtIdleTime}
+        onChange={(e) => handleInputChange("txtIdleTime", e.target.value)}
+        placeholder="Enter idle time (sec)"
+        isRequired
+      />
 							</div>
 
 							<div style={{ marginBottom: "15px" }}>
-								<VSCodeTextField
-									value={formData.txtLiveTime}
-									placeholder="Enter live time"
-									onInput={(e: any) => handleInputChange("txtLiveTime", e.target.value)}
-									style={{ width: "100%" }}
-									required>
-									Live Time (sec) <span style={{ color: "var(--vscode-errorForeground)" }}>*</span>
-								</VSCodeTextField>
+								<TextField
+        label="Live Time (sec)"
+        value={formData.txtLiveTime}
+        onChange={(e) => handleInputChange("txtLiveTime", e.target.value)}
+        placeholder="Enter live time (sec)"
+        isRequired
+      />
 							</div>
 
 							<div style={{ marginBottom: "15px" }}>
 								<label style={{ display: "block", marginBottom: "5px", color: "var(--vscode-foreground)" }}>
 									Overflow to Disk <span style={{ color: "var(--vscode-errorForeground)" }}>*</span>
 								</label>
-								<VSCodeDropdown
-									value={formData.txtOverflowToDisk}
-									onInput={(e: any) => handleInputChange("txtOverflowToDisk", e.target.value)}
-									style={{ width: "100%" }}>
-									<VSCodeOption value="true">True</VSCodeOption>
-									<VSCodeOption value="false">False</VSCodeOption>
-								</VSCodeDropdown>
+								<Select options={[]} />
 							</div>
 
 							<div style={{ marginBottom: "15px" }}>
 								<label style={{ display: "block", marginBottom: "5px", color: "var(--vscode-foreground)" }}>
 									Disk Persistent <span style={{ color: "var(--vscode-errorForeground)" }}>*</span>
 								</label>
-								<VSCodeDropdown
-									value={formData.txtDiskPersistent}
-									onInput={(e: any) => handleInputChange("txtDiskPersistent", e.target.value)}
-									style={{ width: "100%" }}>
-									<VSCodeOption value="true">True</VSCodeOption>
-									<VSCodeOption value="false">False</VSCodeOption>
-								</VSCodeDropdown>
+								<Select options={[]} />
 							</div>
 
 							<div style={{ marginBottom: "20px" }}>
 								<label style={{ display: "block", marginBottom: "5px", color: "var(--vscode-foreground)" }}>
 									Memory Store Eviction Policy <span style={{ color: "var(--vscode-errorForeground)" }}>*</span>
 								</label>
-								<VSCodeDropdown
-									value={formData.cboMemoryPolicy}
-									onInput={(e: any) => handleInputChange("cboMemoryPolicy", e.target.value)}
-									style={{ width: "100%" }}>
-									<VSCodeOption value="LRU">LRU</VSCodeOption>
-									<VSCodeOption value="FIFO">FIFO</VSCodeOption>
-									<VSCodeOption value="LFU">LFU</VSCodeOption>
-								</VSCodeDropdown>
+								<Select options={[]} />
 							</div>
 						</div>
 
 						<div style={{ display: "flex", gap: "10px", justifyContent: "flex-end" }}>
-							<VSCodeButton appearance="secondary" onClick={() => setCurrentPage(1)}>
+							<Button variant="secondary" onClick={() => setCurrentPage(1)}>
 								Previous
-							</VSCodeButton>
-							<VSCodeButton appearance="secondary" onClick={onCancel}>
+							</Button>
+							<Button variant="secondary" onClick={onCancel}>
 								Cancel
-							</VSCodeButton>
-							<VSCodeButton type="submit" appearance="primary">
+							</Button>
+							<Button type="submit" variant="primary">
 								Generate
-							</VSCodeButton>
+							</Button>
 						</div>
 					</div>
 				)}

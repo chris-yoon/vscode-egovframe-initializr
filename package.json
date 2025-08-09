@@ -126,7 +126,12 @@
 	},
 	"dependencies": {
 		"archiver": "^7.0.1",
+		"extract-zip": "^2.0.1",
 		"fs-extra": "^11.2.0",
-		"handlebars": "^4.7.8"
+		"get-folder-size": "^5.0.0",
+		"globby": "^14.1.0",
+		"handlebars": "^4.7.8",
+		"tree-sitter-wasms": "^0.1.12",
+		"web-tree-sitter": "^0.25.8"
 	}
 }

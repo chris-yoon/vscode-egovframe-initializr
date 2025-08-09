@@ -9,6 +9,11 @@ node_modules
 # Temporary files
 tmp
 
+# Migration scripts (temporary)
+fix-*.js
+replace-*.js
+migrate-*.sh
+
 # VS Code Extension testing
 .vscode-test/
 *.vsix

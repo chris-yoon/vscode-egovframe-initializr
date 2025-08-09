@@ -1,12 +1,5 @@
 import { useState, useEffect } from "react"
-import {
-	VSCodeButton,
-	VSCodeDropdown,
-	VSCodeOption,
-	VSCodeTextField,
-	VSCodeRadio,
-	VSCodeRadioGroup,
-} from "@vscode/webview-ui-toolkit/react"
+import { Button, TextField, TextArea, Select, RadioGroup, ProgressRing, Link, Divider } from "../../ui"
 import { ConfigGenerationType, ConfigFormData } from "../types/templates"
 import { vscode } from "../../../utils/vscode"
 
@@ -146,103 +139,101 @@ const LoggingForm: React.FC<LoggingFormProps> = ({ onSubmit, onCancel, loggingTy
 			<form onSubmit={handleSubmit}>
 				<div style={{ marginBottom: "20px" }}>
 					<h3 style={{ color: "var(--vscode-foreground)", marginBottom: "10px" }}>Generation Type</h3>
-					<VSCodeRadioGroup
-						orientation="horizontal"
-						value={formData.generationType}
-						onChange={(e: any) => handleGenerationTypeChange(e.target.value as ConfigGenerationType)}>
-						<VSCodeRadio value={ConfigGenerationType.XML}>XML</VSCodeRadio>
-						<VSCodeRadio value={ConfigGenerationType.YAML}>YAML</VSCodeRadio>
-						<VSCodeRadio value={ConfigGenerationType.PROPERTIES}>Properties</VSCodeRadio>
-					</VSCodeRadioGroup>
+					<RadioGroup
+        label="Generation Type"
+        name="generationType"
+        value={formData.generationType}
+        onChange={(value: string) => handleGenerationTypeChange(value as ConfigGenerationType)}
+        orientation="horizontal"
+        options={[
+          { value: ConfigGenerationType.XML, label: "XML" },
+          { value: ConfigGenerationType.YAML, label: "YAML" },
+          { value: ConfigGenerationType.PROPERTIES, label: "Properties" }
+        ]}
+      />
 				</div>
 
 				<div style={{ marginBottom: "20px" }}>
 					<h3 style={{ color: "var(--vscode-foreground)", marginBottom: "10px" }}>Generation File</h3>
-					<VSCodeTextField
-						value={formData.txtFileName}
-						placeholder="Enter file name"
-						onInput={(e: any) => handleInputChange("txtFileName", e.target.value)}
-						style={{ width: "100%" }}
-						required>
-						File Name <span style={{ color: "var(--vscode-errorForeground)" }}>*</span>
-					</VSCodeTextField>
+					<TextField
+        label="File Name"
+        value={formData.txtFileName}
+        onChange={(e: any) => handleInputChange("txtFileName", e.target.value)}
+        placeholder="Enter file name"
+        isRequired
+      />
 				</div>
 
 				<div style={{ marginBottom: "20px" }}>
 					<h3 style={{ color: "var(--vscode-foreground)", marginBottom: "10px" }}>Configuration</h3>
 
 					<div style={{ marginBottom: "15px" }}>
-						<VSCodeTextField
+						<TextField
+							label="Appender Name"
 							value={formData.txtAppenderName}
 							placeholder="Enter appender name"
-							onInput={(e: any) => handleInputChange("txtAppenderName", e.target.value)}
-							style={{ width: "100%" }}
-							required>
-							Appender Name <span style={{ color: "var(--vscode-errorForeground)" }}>*</span>
-						</VSCodeTextField>
+							onChange={(e: any) => handleInputChange("txtAppenderName", e.target.value)}
+							isRequired
+						/>
 					</div>
 
 					<div style={{ marginBottom: "15px" }}>
-						<label style={{ display: "block", marginBottom: "5px", color: "var(--vscode-foreground)" }}>
-							Log Level
-						</label>
-						<VSCodeDropdown
+						<Select
+							label="Log Level"
 							value={formData.txtLevel}
-							onInput={(e: any) => handleInputChange("txtLevel", e.target.value)}
-							style={{ width: "100%" }}>
-							<VSCodeOption value="TRACE">TRACE</VSCodeOption>
-							<VSCodeOption value="DEBUG">DEBUG</VSCodeOption>
-							<VSCodeOption value="INFO">INFO</VSCodeOption>
-							<VSCodeOption value="WARN">WARN</VSCodeOption>
-							<VSCodeOption value="ERROR">ERROR</VSCodeOption>
-						</VSCodeDropdown>
+							onChange={(e: any) => handleInputChange("txtLevel", e.target.value)}
+							options={[
+								{ value: "TRACE", label: "TRACE" },
+								{ value: "DEBUG", label: "DEBUG" },
+								{ value: "INFO", label: "INFO" },
+								{ value: "WARN", label: "WARN" },
+								{ value: "ERROR", label: "ERROR" }
+							]}
+						/>
 					</div>
 
 					<div style={{ marginBottom: "15px" }}>
-						<VSCodeTextField
+						<TextField
+							label="Log Pattern"
 							value={formData.txtPattern}
 							placeholder="Enter log pattern"
-							onInput={(e: any) => handleInputChange("txtPattern", e.target.value)}
-							style={{ width: "100%" }}
-							required>
-							Log Pattern <span style={{ color: "var(--vscode-errorForeground)" }}>*</span>
-						</VSCodeTextField>
+							onChange={(e: any) => handleInputChange("txtPattern", e.target.value)}
+							isRequired
+						/>
 					</div>
 
 					<div style={{ marginBottom: "15px" }}>
-						<VSCodeTextField
+						<TextField
+							label="Logger Name"
 							value={formData.txtLoggerName}
 							placeholder="Enter logger name"
-							onInput={(e: any) => handleInputChange("txtLoggerName", e.target.value)}
-							style={{ width: "100%" }}>
-							Logger Name
-						</VSCodeTextField>
+							onChange={(e: any) => handleInputChange("txtLoggerName", e.target.value)}
+						/>
 					</div>
 
 					<div style={{ marginBottom: "20px" }}>
-						<label style={{ display: "block", marginBottom: "5px", color: "var(--vscode-foreground)" }}>
-							Logger Level
-						</label>
-						<VSCodeDropdown
+						<Select
+							label="Logger Level"
 							value={formData.txtLoggerLevel}
-							onInput={(e: any) => handleInputChange("txtLoggerLevel", e.target.value)}
-							style={{ width: "100%" }}>
-							<VSCodeOption value="TRACE">TRACE</VSCodeOption>
-							<VSCodeOption value="DEBUG">DEBUG</VSCodeOption>
-							<VSCodeOption value="INFO">INFO</VSCodeOption>
-							<VSCodeOption value="WARN">WARN</VSCodeOption>
-							<VSCodeOption value="ERROR">ERROR</VSCodeOption>
-						</VSCodeDropdown>
+							onChange={(e: any) => handleInputChange("txtLoggerLevel", e.target.value)}
+							options={[
+								{ value: "TRACE", label: "TRACE" },
+								{ value: "DEBUG", label: "DEBUG" },
+								{ value: "INFO", label: "INFO" },
+								{ value: "WARN", label: "WARN" },
+								{ value: "ERROR", label: "ERROR" }
+							]}
+						/>
 					</div>
 				</div>
 
 				<div style={{ display: "flex", gap: "10px", justifyContent: "flex-end" }}>
-					<VSCodeButton appearance="secondary" onClick={onCancel}>
+					<Button variant="secondary" onClick={onCancel}>
 						Cancel
-					</VSCodeButton>
-					<VSCodeButton type="submit" appearance="primary">
+					</Button>
+					<Button type="submit" variant="primary">
 						Generate
-					</VSCodeButton>
+					</Button>
 				</div>
 			</form>
 		</div>

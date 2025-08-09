@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react"
-import { VSCodeButton, VSCodeTextField, VSCodeRadioGroup, VSCodeRadio } from "@vscode/webview-ui-toolkit/react"
+import { Button, TextField, TextArea, Select, RadioGroup, ProgressRing, Link, Divider } from "../../ui"
 import { ConfigFormData, ConfigGenerationType, FormComponentProps } from "../types/templates"
 import { vscode } from "../../../utils/vscode"
 
@@ -150,127 +150,124 @@ const IdGenerationForm: React.FC<FormComponentProps> = ({ onSubmit, onCancel, te
 			<form onSubmit={handleSubmit}>
 				<div style={{ marginBottom: "20px" }}>
 					<h3 style={{ color: "var(--vscode-foreground)", marginBottom: "10px" }}>Generation Type</h3>
-					<VSCodeRadioGroup
-						orientation="horizontal"
-						value={formData.generationType}
-						onChange={(e: any) => handleGenerationTypeChange(e.target.value as ConfigGenerationType)}>
-						<VSCodeRadio value={ConfigGenerationType.XML}>XML</VSCodeRadio>
-						<VSCodeRadio value={ConfigGenerationType.JAVA_CONFIG}>JavaConfig</VSCodeRadio>
-					</VSCodeRadioGroup>
+					<RadioGroup
+        label="Generation Type"
+        name="generationType"
+        value={formData.generationType}
+        onChange={(value: string) => handleGenerationTypeChange(value as ConfigGenerationType)}
+        orientation="horizontal"
+        options={[
+          { value: ConfigGenerationType.XML, label: "XML" },
+          { value: ConfigGenerationType.JAVA_CONFIG, label: "JavaConfig" }
+        ]}
+      />
 				</div>
 
 				<div style={{ marginBottom: "20px" }}>
 					<h3 style={{ color: "var(--vscode-foreground)", marginBottom: "10px" }}>Generation File</h3>
-					<VSCodeTextField
-						value={formData.txtFileName}
-						placeholder="Enter file name"
-						onInput={(e: any) => handleInputChange("txtFileName", e.target.value)}
-						style={{ width: "100%" }}
-						required>
-						File Name <span style={{ color: "var(--vscode-errorForeground)" }}>*</span>
-					</VSCodeTextField>
+					<TextField
+        label="File Name"
+        value={formData.txtFileName}
+        onChange={(e: any) => handleInputChange("txtFileName", e.target.value)}
+        placeholder="Enter file name"
+        isRequired
+      />
 				</div>
 
 				<div style={{ marginBottom: "20px" }}>
 					<h3 style={{ color: "var(--vscode-foreground)", marginBottom: "10px" }}>Configuration</h3>
 
 					<div style={{ marginBottom: "15px" }}>
-						<VSCodeTextField
-							value={formData.txtIdServiceName}
-							placeholder="Enter bean name"
-							onInput={(e: any) => handleInputChange("txtIdServiceName", e.target.value)}
-							style={{ width: "100%" }}
-							required>
-							Bean Name <span style={{ color: "var(--vscode-errorForeground)" }}>*</span>
-						</VSCodeTextField>
+						<TextField
+        label="Bean Name"
+        value={formData.txtIdServiceName}
+        onChange={(e: any) => handleInputChange("txtIdServiceName", e.target.value)}
+        placeholder="Enter bean name"
+        isRequired
+      />
 					</div>
 
 					{(formType === "sequence" || formType === "table") && (
 						<div style={{ marginBottom: "15px" }}>
-							<VSCodeTextField
-								value={formData.txtDataSourceName}
-								placeholder="Enter data source name"
-								onInput={(e: any) => handleInputChange("txtDataSourceName", e.target.value)}
-								style={{ width: "100%" }}
-								required>
-								Data Source Name <span style={{ color: "var(--vscode-errorForeground)" }}>*</span>
-							</VSCodeTextField>
+							<TextField
+        label="Data Source Name"
+        value={formData.txtDataSourceName}
+        onChange={(e: any) => handleInputChange("txtDataSourceName", e.target.value)}
+        placeholder="Enter data source name"
+        isRequired
+      />
 						</div>
 					)}
 
 					{formType === "sequence" && (
 						<div style={{ marginBottom: "15px" }}>
-							<VSCodeTextField
-								value={formData.txtQuery}
-								placeholder="Enter query"
-								onInput={(e: any) => handleInputChange("txtQuery", e.target.value)}
-								style={{ width: "100%" }}
-								required>
-								Query <span style={{ color: "var(--vscode-errorForeground)" }}>*</span>
-							</VSCodeTextField>
+							<TextField
+        label="Query"
+        value={formData.txtQuery}
+        onChange={(e: any) => handleInputChange("txtQuery", e.target.value)}
+        placeholder="Enter query"
+        isRequired
+      />
 						</div>
 					)}
 
 					{formType === "table" && (
 						<>
 							<div style={{ marginBottom: "15px" }}>
-								<VSCodeTextField
-									value={formData.txtTableName}
-									placeholder="Enter table name"
-									onInput={(e: any) => handleInputChange("txtTableName", e.target.value)}
-									style={{ width: "100%" }}
-									required>
-									Table Name <span style={{ color: "var(--vscode-errorForeground)" }}>*</span>
-								</VSCodeTextField>
+								<TextField
+        label="Table Name"
+        value={formData.txtTableName}
+        onChange={(e: any) => handleInputChange("txtTableName", e.target.value)}
+        placeholder="Enter table name"
+        isRequired
+      />
 							</div>
 
 							<div style={{ marginBottom: "15px" }}>
-								<VSCodeTextField
-									value={formData.txtNextIdColumnName}
-									placeholder="Enter next ID column name"
-									onInput={(e: any) => handleInputChange("txtNextIdColumnName", e.target.value)}
-									style={{ width: "100%" }}
-									required>
-									Next ID Column Name <span style={{ color: "var(--vscode-errorForeground)" }}>*</span>
-								</VSCodeTextField>
+								<TextField
+        label="Next ID Column Name"
+        value={formData.txtNextIdColumnName}
+        onChange={(e: any) => handleInputChange("txtNextIdColumnName", e.target.value)}
+        placeholder="Enter next id column name"
+        isRequired
+      />
 							</div>
 
 							<div style={{ marginBottom: "15px" }}>
-								<VSCodeTextField
-									value={formData.txtBlockSize}
-									placeholder="Enter block size"
-									onInput={(e: any) => handleInputChange("txtBlockSize", e.target.value)}
-									style={{ width: "100%" }}
-									required>
-									Block Size <span style={{ color: "var(--vscode-errorForeground)" }}>*</span>
-								</VSCodeTextField>
+								<TextField
+        label="Block Size"
+        value={formData.txtBlockSize}
+        onChange={(e: any) => handleInputChange("txtBlockSize", e.target.value)}
+        placeholder="Enter block size"
+        isRequired
+      />
 							</div>
 						</>
 					)}
 
 					{(formType === "sequence" || formType === "table") && (
 						<div style={{ marginBottom: "15px" }}>
-							<label style={{ display: "block", marginBottom: "5px", color: "var(--vscode-foreground)" }}>
-								Type
-							</label>
-							<VSCodeRadioGroup
-								orientation="horizontal"
+							<RadioGroup
+								label="Type"
+								name="idType"
 								value={formData.rdoIdType}
-								onChange={(e: any) => handleInputChange("rdoIdType", e.target.value)}>
-								<VSCodeRadio value="BigDecimal">BigDecimal</VSCodeRadio>
-								<VSCodeRadio value="Base">Default</VSCodeRadio>
-							</VSCodeRadioGroup>
+								onChange={(value: string) => handleInputChange("rdoIdType", value)}
+								options={[
+									{ value: "BigDecimal", label: "BigDecimal" },
+									{ value: "Base", label: "Default" }
+								]}
+							/>
 						</div>
 					)}
 				</div>
 
 				<div style={{ display: "flex", gap: "10px", justifyContent: "flex-end" }}>
-					<VSCodeButton appearance="secondary" onClick={onCancel}>
+					<Button variant="secondary" onClick={onCancel}>
 						Cancel
-					</VSCodeButton>
-					<VSCodeButton type="submit" appearance="primary">
+					</Button>
+					<Button type="submit" variant="primary">
 						Generate
-					</VSCodeButton>
+					</Button>
 				</div>
 			</form>
 		</div>

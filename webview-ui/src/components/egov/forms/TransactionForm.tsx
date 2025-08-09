@@ -1,15 +1,7 @@
-import React, { useState, useEffect } from "react"
-import {
-	VSCodeButton,
-	VSCodeTextField,
-	VSCodeRadioGroup,
-	VSCodeRadio,
-	VSCodeDropdown,
-	VSCodeOption,
-	VSCodeCheckbox,
-} from "@vscode/webview-ui-toolkit/react"
-import { ConfigFormData, ConfigGenerationType, FormComponentProps } from "../types/templates"
-import { vscode } from "../../../utils/vscode"
+import React, { useState, useEffect } from "react";
+import { Button, TextField, RadioGroup, Select, Checkbox } from "../../ui";
+import { ConfigFormData, ConfigGenerationType, FormComponentProps } from "../types/templates";
+import { vscode } from "../../../utils/vscode";
 
 const TransactionForm: React.FC<FormComponentProps> = ({ onSubmit, onCancel, template, initialData }) => {
 	const [formData, setFormData] = useState<ConfigFormData>({
@@ -160,106 +152,90 @@ const TransactionForm: React.FC<FormComponentProps> = ({ onSubmit, onCancel, tem
 			<form onSubmit={handleSubmit}>
 				<div style={{ marginBottom: "20px" }}>
 					<h3 style={{ color: "var(--vscode-foreground)", marginBottom: "10px" }}>Generation Type</h3>
-					<VSCodeRadioGroup
-						orientation="horizontal"
-						value={formData.generationType}
-						onChange={(e: any) => handleGenerationTypeChange(e.target.value as ConfigGenerationType)}>
-						<VSCodeRadio value={ConfigGenerationType.XML}>XML</VSCodeRadio>
-						<VSCodeRadio value={ConfigGenerationType.JAVA_CONFIG}>JavaConfig</VSCodeRadio>
-					</VSCodeRadioGroup>
+					<RadioGroup
+        label="Generation Type"
+        name="generationType"
+        value={formData.generationType}
+        onChange={(value: string) => handleGenerationTypeChange(value as ConfigGenerationType)}
+        orientation="horizontal"
+        options={[
+          { value: ConfigGenerationType.XML, label: "XML" },
+          { value: ConfigGenerationType.JAVA_CONFIG, label: "JavaConfig" }
+        ]}
+      />
 				</div>
 
 				<div style={{ marginBottom: "20px" }}>
 					<h3 style={{ color: "var(--vscode-foreground)", marginBottom: "10px" }}>Generation File</h3>
-					<VSCodeTextField
-						value={formData.txtFileName}
-						placeholder="Enter file name"
-						onInput={(e: any) => handleInputChange("txtFileName", e.target.value)}
-						style={{ width: "100%" }}
-						required>
-						File Name <span style={{ color: "var(--vscode-errorForeground)" }}>*</span>
-					</VSCodeTextField>
+					<TextField
+        label="File Name"
+        value={formData.txtFileName}
+        onChange={(e: any) => handleInputChange("txtFileName", e.target.value)}
+        placeholder="Enter file name"
+        isRequired
+      />
 				</div>
 
 				<div style={{ marginBottom: "20px" }}>
 					<h3 style={{ color: "var(--vscode-foreground)", marginBottom: "10px" }}>Configuration</h3>
 
 					<div style={{ marginBottom: "15px" }}>
-						<VSCodeTextField
-							value={formData.txtTransactionName}
-							placeholder="Enter transaction manager name"
-							onInput={(e: any) => handleInputChange("txtTransactionName", e.target.value)}
-							style={{ width: "100%" }}
-							required>
-							Transaction Manager Name <span style={{ color: "var(--vscode-errorForeground)" }}>*</span>
-						</VSCodeTextField>
+						<TextField
+        label="Transaction Manager Name"
+        value={formData.txtTransactionName}
+        onChange={(e: any) => handleInputChange("txtTransactionName", e.target.value)}
+        placeholder="Enter transaction manager name"
+        isRequired
+      />
 					</div>
 
 					<div style={{ marginBottom: "15px" }}>
-						<VSCodeTextField
-							value={formData.txtDataSourceName}
-							placeholder="Enter data source name"
-							onInput={(e: any) => handleInputChange("txtDataSourceName", e.target.value)}
-							style={{ width: "100%" }}
-							required>
-							Data Source Name <span style={{ color: "var(--vscode-errorForeground)" }}>*</span>
-						</VSCodeTextField>
+						<TextField
+        label="Data Source Name"
+        value={formData.txtDataSourceName}
+        onChange={(e: any) => handleInputChange("txtDataSourceName", e.target.value)}
+        placeholder="Enter data source name"
+        isRequired
+      />
 					</div>
 
 					{formType === "jpa" && (
 						<>
 							<div style={{ marginBottom: "15px" }}>
-								<VSCodeTextField
-									value={formData.txtEttMgrFactory}
-									placeholder="Enter entity manager factory name"
-									onInput={(e: any) => handleInputChange("txtEttMgrFactory", e.target.value)}
-									style={{ width: "100%" }}
-									required>
-									Entity Manager Factory Name <span style={{ color: "var(--vscode-errorForeground)" }}>*</span>
-								</VSCodeTextField>
+								<TextField
+        label="Entity Manager Factory Name"
+        value={formData.txtEttMgrFactory}
+        onChange={(e: any) => handleInputChange("txtEttMgrFactory", e.target.value)}
+        placeholder="Enter entity manager factory name"
+        isRequired
+      />
 							</div>
 
 							<div style={{ marginBottom: "15px" }}>
-								<VSCodeTextField
-									value={formData.txtEntityPackages}
-									placeholder="com.example.domain"
-									onInput={(e: any) => handleInputChange("txtEntityPackages", e.target.value)}
-									style={{ width: "100%" }}
-									required>
-									Entity Packages to Scan <span style={{ color: "var(--vscode-errorForeground)" }}>*</span>
-								</VSCodeTextField>
+								<TextField
+        label="Entity Packages to Scan"
+        value={formData.txtEntityPackages}
+        onChange={(e: any) => handleInputChange("txtEntityPackages", e.target.value)}
+        placeholder="Enter entity packages to scan"
+        isRequired
+      />
 							</div>
 
 							<div style={{ marginBottom: "15px" }}>
 								<label style={{ display: "block", marginBottom: "5px", color: "var(--vscode-foreground)" }}>
 									Dialect Name <span style={{ color: "var(--vscode-errorForeground)" }}>*</span>
 								</label>
-								<VSCodeDropdown
-									value={formData.cmbDialect}
-									onInput={(e: any) => handleInputChange("cmbDialect", e.target.value)}
-									style={{ width: "100%" }}>
-									<VSCodeOption value="org.hibernate.dialect.H2Dialect">H2 Dialect</VSCodeOption>
-									<VSCodeOption value="org.hibernate.dialect.MySQL5Dialect">MySQL 5 Dialect</VSCodeOption>
-									<VSCodeOption value="org.hibernate.dialect.MySQL8Dialect">MySQL 8 Dialect</VSCodeOption>
-									<VSCodeOption value="org.hibernate.dialect.PostgreSQL12Dialect">
-										PostgreSQL 12 Dialect
-									</VSCodeOption>
-									<VSCodeOption value="org.hibernate.dialect.Oracle12cDialect">Oracle 12c Dialect</VSCodeOption>
-									<VSCodeOption value="org.hibernate.dialect.SQLServer2016Dialect">
-										SQL Server 2016 Dialect
-									</VSCodeOption>
-								</VSCodeDropdown>
+								<Select options={[]} />
 							</div>
 
 							<div style={{ marginBottom: "15px" }}>
-								<VSCodeTextField
-									value={formData.txtRepositoryPackage}
-									placeholder="com.example.repository"
-									onInput={(e: any) => handleInputChange("txtRepositoryPackage", e.target.value)}
-									style={{ width: "100%" }}
-									required>
-									Repository Package <span style={{ color: "var(--vscode-errorForeground)" }}>*</span>
-								</VSCodeTextField>
+								<TextField
+        label="Repository Package"
+        value={formData.txtRepositoryPackage}
+        onChange={(e: any) => handleInputChange("txtRepositoryPackage", e.target.value)}
+        placeholder="Enter repository package"
+        isRequired
+      />
 							</div>
 						</>
 					)}
@@ -269,110 +245,74 @@ const TransactionForm: React.FC<FormComponentProps> = ({ onSubmit, onCancel, tem
 					<h3 style={{ color: "var(--vscode-foreground)", marginBottom: "10px" }}>Transaction Attributes</h3>
 
 					<div style={{ marginBottom: "15px" }}>
-						<VSCodeTextField
-							value={formData.txtPointCutName}
-							placeholder="Enter pointcut name"
-							onInput={(e: any) => handleInputChange("txtPointCutName", e.target.value)}
-							style={{ width: "100%" }}>
-							Pointcut Name
-						</VSCodeTextField>
+						<TextField
+        label="Pointcut Name"
+        value={formData.txtPointCutName}
+        onChange={(e: any) => handleInputChange("txtPointCutName", e.target.value)}
+        placeholder="Enter pointcut name"
+        isRequired
+      />
 					</div>
 
 					<div style={{ marginBottom: "15px" }}>
-						<VSCodeTextField
-							value={formData.txtPointCutExpression}
-							placeholder="Enter pointcut expression"
-							onInput={(e: any) => handleInputChange("txtPointCutExpression", e.target.value)}
-							style={{ width: "100%" }}>
-							Pointcut Expression
-						</VSCodeTextField>
+						<TextField label="Field" placeholder="Enter value" />
 					</div>
 
 					<div style={{ marginBottom: "15px" }}>
-						<VSCodeTextField
-							value={formData.txtAdviceName}
-							placeholder="Enter advice name"
-							onInput={(e: any) => handleInputChange("txtAdviceName", e.target.value)}
-							style={{ width: "100%" }}>
-							Advice Name
-						</VSCodeTextField>
+						<TextField label="Field" placeholder="Enter value" />
 					</div>
 
 					<div style={{ marginBottom: "15px" }}>
-						<VSCodeTextField
-							value={formData.txtMethodName}
-							placeholder="Enter method name"
-							onInput={(e: any) => handleInputChange("txtMethodName", e.target.value)}
-							style={{ width: "100%" }}>
-							Method Name
-						</VSCodeTextField>
+						<TextField label="Field" placeholder="Enter value" />
 					</div>
 
 					<div style={{ marginBottom: "15px" }}>
-						<VSCodeCheckbox
-							checked={formData.chkReadOnly}
-							onChange={(e: any) => handleInputChange("chkReadOnly", e.target.checked)}>
-							Read-Only
-						</VSCodeCheckbox>
+						<Checkbox
+        label="Read-Only"
+        checked={formData.chkReadOnly}
+        onChange={(e: React.ChangeEvent<HTMLInputElement>) => handleInputChange("chkReadOnly", e.target.checked)}
+      />
 					</div>
 
 					<div style={{ marginBottom: "15px" }}>
-						<VSCodeCheckbox
-							checked={formData.chkRollbackFor}
-							onChange={(e: any) => handleInputChange("chkRollbackFor", e.target.checked)}>
-							Rollback For Exception
-						</VSCodeCheckbox>
+						<Checkbox
+        label="Rollback For Exception"
+        checked={formData.chkRollbackFor}
+        onChange={(e: React.ChangeEvent<HTMLInputElement>) => handleInputChange("chkRollbackFor", e.target.checked)}
+      />
 					</div>
 
 					{formData.chkRollbackFor && (
 						<div style={{ marginBottom: "15px" }}>
-							<VSCodeTextField
-								value={formData.txtRollbackFor}
-								placeholder="Enter rollback-for exception"
-								onInput={(e: any) => handleInputChange("txtRollbackFor", e.target.value)}
-								style={{ width: "100%" }}>
-								Rollback For
-							</VSCodeTextField>
+							<TextField label="Field" placeholder="Enter value" />
 						</div>
 					)}
 
 					<div style={{ marginBottom: "15px" }}>
-						<VSCodeCheckbox
-							checked={formData.chkNoRollbackFor}
-							onChange={(e: any) => handleInputChange("chkNoRollbackFor", e.target.checked)}>
-							No Rollback For Exception
-						</VSCodeCheckbox>
+						<Checkbox
+        label="No Rollback For Exception"
+        checked={formData.chkNoRollbackFor}
+        onChange={(e: React.ChangeEvent<HTMLInputElement>) => handleInputChange("chkNoRollbackFor", e.target.checked)}
+      />
 					</div>
 
 					{formData.chkNoRollbackFor && (
 						<div style={{ marginBottom: "15px" }}>
-							<VSCodeTextField
-								value={formData.txtNoRollbackFor}
-								placeholder="Enter no-rollback-for exception"
-								onInput={(e: any) => handleInputChange("txtNoRollbackFor", e.target.value)}
-								style={{ width: "100%" }}>
-								No Rollback For
-							</VSCodeTextField>
+							<TextField label="Field" placeholder="Enter value" />
 						</div>
 					)}
 
 					<div style={{ marginBottom: "15px" }}>
-						<VSCodeCheckbox
+						<Checkbox
+							label="Set Timeout"
 							checked={formData.chkTimeout}
-							onChange={(e: any) => handleInputChange("chkTimeout", e.target.checked)}>
-							Set Timeout
-						</VSCodeCheckbox>
+							onChange={(e: React.ChangeEvent<HTMLInputElement>) => handleInputChange("chkTimeout", e.target.checked)}
+						/>
 					</div>
 
 					{formData.chkTimeout && (
 						<div style={{ marginBottom: "15px" }}>
-							<VSCodeTextField
-								value={formData.txtTimeout}
-								placeholder="Enter timeout in seconds"
-								onInput={(e: any) => handleInputChange("txtTimeout", e.target.value)}
-								style={{ width: "100%" }}>
-								Timeout (seconds)
-							</VSCodeTextField>
+							<TextField label="Field" placeholder="Enter value" />
 						</div>
 					)}
 
@@ -380,44 +320,20 @@ const TransactionForm: React.FC<FormComponentProps> = ({ onSubmit, onCancel, tem
 						<label style={{ display: "block", marginBottom: "5px", color: "var(--vscode-foreground)" }}>
 							Propagation
 						</label>
-						<VSCodeDropdown
-							value={formData.cmbPropagation}
-							onInput={(e: any) => handleInputChange("cmbPropagation", e.target.value)}
-							style={{ width: "100%" }}>
-							<VSCodeOption value="REQUIRED">REQUIRED</VSCodeOption>
-							<VSCodeOption value="SUPPORTS">SUPPORTS</VSCodeOption>
-							<VSCodeOption value="MANDATORY">MANDATORY</VSCodeOption>
-							<VSCodeOption value="REQUIRES_NEW">REQUIRES_NEW</VSCodeOption>
-							<VSCodeOption value="NOT_SUPPORTED">NOT_SUPPORTED</VSCodeOption>
-							<VSCodeOption value="NEVER">NEVER</VSCodeOption>
-							<VSCodeOption value="NESTED">NESTED</VSCodeOption>
-						</VSCodeDropdown>
+						<Select options={[]} />
 					</div>
 
 					<div style={{ marginBottom: "15px" }}>
 						<label style={{ display: "block", marginBottom: "5px", color: "var(--vscode-foreground)" }}>
 							Isolation
 						</label>
-						<VSCodeDropdown
-							value={formData.cmbIsolation}
-							onInput={(e: any) => handleInputChange("cmbIsolation", e.target.value)}
-							style={{ width: "100%" }}>
-							<VSCodeOption value="DEFAULT">DEFAULT</VSCodeOption>
-							<VSCodeOption value="READ_UNCOMMITTED">READ_UNCOMMITTED</VSCodeOption>
-							<VSCodeOption value="READ_COMMITTED">READ_COMMITTED</VSCodeOption>
-							<VSCodeOption value="REPEATABLE_READ">REPEATABLE_READ</VSCodeOption>
-							<VSCodeOption value="SERIALIZABLE">SERIALIZABLE</VSCodeOption>
-						</VSCodeDropdown>
+						<Select options={[]} />
 					</div>
 				</div>
 
 				<div style={{ display: "flex", gap: "10px", justifyContent: "flex-end" }}>
-					<VSCodeButton appearance="secondary" onClick={onCancel}>
-						Cancel
-					</VSCodeButton>
-					<VSCodeButton type="submit" appearance="primary">
-						Generate
-					</VSCodeButton>
+					<Button variant="secondary" onClick={onCancel}>Cancel</Button>
+					<Button type="submit" variant="primary">Generate</Button>
 				</div>
 			</form>
 		</div>

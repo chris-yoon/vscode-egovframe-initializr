@@ -1,13 +1,5 @@
 import React, { useState, useEffect } from "react"
-import {
-	VSCodeButton,
-	VSCodeTextField,
-	VSCodeRadioGroup,
-	VSCodeRadio,
-	VSCodeCheckbox,
-	VSCodeDropdown,
-	VSCodeOption,
-} from "@vscode/webview-ui-toolkit/react"
+import { Button, TextField, TextArea, Select, RadioGroup, ProgressRing, Link, Divider, Checkbox } from "../../ui"
 import { ConfigFormData, ConfigGenerationType, FormComponentProps } from "../types/templates"
 import { vscode } from "../../../utils/vscode"
 
@@ -176,25 +168,28 @@ const SchedulingForm: React.FC<FormComponentProps> = ({ onSubmit, onCancel, temp
 			<form onSubmit={handleSubmit}>
 				<div style={{ marginBottom: "20px" }}>
 					<h3 style={{ color: "var(--vscode-foreground)", marginBottom: "10px" }}>Generation Type</h3>
-					<VSCodeRadioGroup
-						orientation="horizontal"
-						value={formData.generationType}
-						onChange={(e: any) => handleGenerationTypeChange(e.target.value as ConfigGenerationType)}>
-						<VSCodeRadio value={ConfigGenerationType.XML}>XML</VSCodeRadio>
-						<VSCodeRadio value={ConfigGenerationType.JAVA_CONFIG}>JavaConfig</VSCodeRadio>
-					</VSCodeRadioGroup>
+					<RadioGroup
+        label="Generation Type"
+        name="generationType"
+        value={formData.generationType}
+        onChange={(value: string) => handleGenerationTypeChange(value as ConfigGenerationType)}
+        orientation="horizontal"
+        options={[
+          { value: ConfigGenerationType.XML, label: "XML" },
+          { value: ConfigGenerationType.JAVA_CONFIG, label: "JavaConfig" }
+        ]}
+      />
 				</div>
 
 				<div style={{ marginBottom: "20px" }}>
 					<h3 style={{ color: "var(--vscode-foreground)", marginBottom: "10px" }}>Generation File</h3>
-					<VSCodeTextField
-						value={formData.txtFileName}
-						placeholder="Enter file name"
-						onInput={(e: any) => handleInputChange("txtFileName", e.target.value)}
-						style={{ width: "100%" }}
-						required>
-						File Name <span style={{ color: "var(--vscode-errorForeground)" }}>*</span>
-					</VSCodeTextField>
+					<TextField
+        label="File Name"
+        value={formData.txtFileName}
+        onChange={(e: any) => handleInputChange("txtFileName", e.target.value)}
+        placeholder="Enter file name"
+        isRequired
+      />
 				</div>
 
 				<div style={{ marginBottom: "20px" }}>
@@ -202,52 +197,48 @@ const SchedulingForm: React.FC<FormComponentProps> = ({ onSubmit, onCancel, temp
 
 					{(formType === "beanJob" || formType === "methodJob") && (
 						<div style={{ marginBottom: "15px" }}>
-							<VSCodeTextField
-								value={formData.txtJobName}
-								placeholder="Enter job name"
-								onInput={(e: any) => handleInputChange("txtJobName", e.target.value)}
-								style={{ width: "100%" }}
-								required>
-								Job Name <span style={{ color: "var(--vscode-errorForeground)" }}>*</span>
-							</VSCodeTextField>
+							<TextField
+        label="Job Name"
+        value={formData.txtJobName}
+        onChange={(e: any) => handleInputChange("txtJobName", e.target.value)}
+        placeholder="Enter job name"
+        isRequired
+      />
 						</div>
 					)}
 
 					{formType === "beanJob" && (
 						<div style={{ marginBottom: "15px" }}>
-							<VSCodeTextField
-								value={formData.txtServiceClass}
-								placeholder="Enter service class name"
-								onInput={(e: any) => handleInputChange("txtServiceClass", e.target.value)}
-								style={{ width: "100%" }}
-								required>
-								Job Class <span style={{ color: "var(--vscode-errorForeground)" }}>*</span>
-							</VSCodeTextField>
+							<TextField
+        label="Job Class"
+        value={formData.txtServiceClass}
+        onChange={(e: any) => handleInputChange("txtServiceClass", e.target.value)}
+        placeholder="Enter job class"
+        isRequired
+      />
 						</div>
 					)}
 
 					{formType === "methodJob" && (
 						<>
 							<div style={{ marginBottom: "15px" }}>
-								<VSCodeTextField
-									value={formData.txtTargetObject}
-									placeholder="Enter target object"
-									onInput={(e: any) => handleInputChange("txtTargetObject", e.target.value)}
-									style={{ width: "100%" }}
-									required>
-									Target Object <span style={{ color: "var(--vscode-errorForeground)" }}>*</span>
-								</VSCodeTextField>
+								<TextField
+        label="Target Object"
+        value={formData.txtTargetObject}
+        onChange={(e: any) => handleInputChange("txtTargetObject", e.target.value)}
+        placeholder="Enter target object"
+        isRequired
+      />
 							</div>
 
 							<div style={{ marginBottom: "15px" }}>
-								<VSCodeTextField
-									value={formData.txtTargetMethod}
-									placeholder="Enter target method"
-									onInput={(e: any) => handleInputChange("txtTargetMethod", e.target.value)}
-									style={{ width: "100%" }}
-									required>
-									Target Method <span style={{ color: "var(--vscode-errorForeground)" }}>*</span>
-								</VSCodeTextField>
+								<TextField
+        label="Target Method"
+        value={formData.txtTargetMethod}
+        onChange={(e: any) => handleInputChange("txtTargetMethod", e.target.value)}
+        placeholder="Enter target method"
+        isRequired
+      />
 							</div>
 						</>
 					)}
@@ -255,33 +246,29 @@ const SchedulingForm: React.FC<FormComponentProps> = ({ onSubmit, onCancel, temp
 					{(formType === "beanJob" || formType === "methodJob") && (
 						<>
 							<div style={{ marginBottom: "15px" }}>
-								<VSCodeCheckbox
+								<Checkbox
+									label="Add Property"
 									checked={formData.chkProperty}
-									onChange={(e: any) => handleInputChange("chkProperty", e.target.checked)}>
-									Add Property
-								</VSCodeCheckbox>
+									onChange={(e: React.ChangeEvent<HTMLInputElement>) => handleInputChange("chkProperty", e.target.checked)}
+								/>
 							</div>
 
 							{formData.chkProperty && (
 								<>
 									<div style={{ marginBottom: "15px" }}>
-										<VSCodeTextField
-											value={formData.txtPropertyName}
-											placeholder="Enter property name"
-											onInput={(e: any) => handleInputChange("txtPropertyName", e.target.value)}
-											style={{ width: "100%" }}>
-											Property Name
-										</VSCodeTextField>
+										<TextField
+        label="Property Name"
+        value={formData.txtPropertyName}
+        onChange={(e: any) => handleInputChange("txtPropertyName", e.target.value)}
+      />
 									</div>
 
 									<div style={{ marginBottom: "15px" }}>
-										<VSCodeTextField
-											value={formData.txtPropertyValue}
-											placeholder="Enter property value"
-											onInput={(e: any) => handleInputChange("txtPropertyValue", e.target.value)}
-											style={{ width: "100%" }}>
-											Property Value
-										</VSCodeTextField>
+										<TextField
+        label="Property Value"
+        value={formData.txtPropertyValue}
+        onChange={(e: any) => handleInputChange("txtPropertyValue", e.target.value)}
+      />
 									</div>
 								</>
 							)}
@@ -291,97 +278,87 @@ const SchedulingForm: React.FC<FormComponentProps> = ({ onSubmit, onCancel, temp
 					{(formType === "cronTrigger" || formType === "simpleTrigger") && (
 						<>
 							<div style={{ marginBottom: "15px" }}>
-								<VSCodeTextField
-									value={formData.txtTriggerName}
-									placeholder="Enter trigger name"
-									onInput={(e: any) => handleInputChange("txtTriggerName", e.target.value)}
-									style={{ width: "100%" }}
-									required>
-									Trigger Name <span style={{ color: "var(--vscode-errorForeground)" }}>*</span>
-								</VSCodeTextField>
+								<TextField
+        label="Trigger Name"
+        value={formData.txtTriggerName}
+        onChange={(e: any) => handleInputChange("txtTriggerName", e.target.value)}
+        placeholder="Enter trigger name"
+        isRequired
+      />
 							</div>
 
 							<div style={{ marginBottom: "15px" }}>
-								<VSCodeTextField
-									value={formData.txtGroup}
-									placeholder="Enter trigger group"
-									onInput={(e: any) => handleInputChange("txtGroup", e.target.value)}
-									style={{ width: "100%" }}>
-									Trigger Group
-								</VSCodeTextField>
+								<TextField
+        label="Trigger Group"
+        value={formData.txtGroup}
+        onChange={(e: any) => handleInputChange("txtGroup", e.target.value)}
+      />
 							</div>
 
 							<div style={{ marginBottom: "15px" }}>
-								<VSCodeTextField
-									value={formData.txtJobGroup}
-									placeholder="Enter job group"
-									onInput={(e: any) => handleInputChange("txtJobGroup", e.target.value)}
-									style={{ width: "100%" }}>
-									Job Group
-								</VSCodeTextField>
+								<TextField
+        label="Job Group"
+        value={formData.txtJobGroup}
+        onChange={(e: any) => handleInputChange("txtJobGroup", e.target.value)}
+      />
 							</div>
 						</>
 					)}
 
 					{formType === "cronTrigger" && (
 						<div style={{ marginBottom: "15px" }}>
-							<VSCodeTextField
-								value={formData.txtCronExpression}
-								placeholder="Enter cron expression"
-								onInput={(e: any) => handleInputChange("txtCronExpression", e.target.value)}
-								style={{ width: "100%" }}
-								required>
-								Cron Expression <span style={{ color: "var(--vscode-errorForeground)" }}>*</span>
-							</VSCodeTextField>
+							<TextField
+        label="Cron Expression"
+        value={formData.txtCronExpression}
+        onChange={(e: any) => handleInputChange("txtCronExpression", e.target.value)}
+        placeholder="Enter cron expression"
+        isRequired
+      />
 						</div>
 					)}
 
 					{formType === "simpleTrigger" && (
 						<>
 							<div style={{ marginBottom: "15px" }}>
-								<VSCodeTextField
-									value={formData.txtRepeatInterval}
-									placeholder="Enter repeat interval"
-									onInput={(e: any) => handleInputChange("txtRepeatInterval", e.target.value)}
-									style={{ width: "100%" }}
-									required>
-									Repeat Interval <span style={{ color: "var(--vscode-errorForeground)" }}>*</span>
-								</VSCodeTextField>
+								<TextField
+        label="Repeat Interval"
+        value={formData.txtRepeatInterval}
+        onChange={(e: any) => handleInputChange("txtRepeatInterval", e.target.value)}
+        placeholder="Enter repeat interval"
+        isRequired
+      />
 							</div>
 
 							<div style={{ marginBottom: "15px" }}>
-								<VSCodeTextField
-									value={formData.txtRepeatCount}
-									placeholder="Enter repeat count"
-									onInput={(e: any) => handleInputChange("txtRepeatCount", e.target.value)}
-									style={{ width: "100%" }}>
-									Repeat Count
-								</VSCodeTextField>
+								<TextField
+        label="Repeat Count"
+        value={formData.txtRepeatCount}
+        onChange={(e: any) => handleInputChange("txtRepeatCount", e.target.value)}
+      />
 							</div>
 						</>
 					)}
 
 					{formType === "scheduler" && (
 						<div style={{ marginBottom: "15px" }}>
-							<VSCodeTextField
-								value={formData.txtSchedulerName}
-								placeholder="Enter scheduler name"
-								onInput={(e: any) => handleInputChange("txtSchedulerName", e.target.value)}
-								style={{ width: "100%" }}
-								required>
-								Scheduler Name <span style={{ color: "var(--vscode-errorForeground)" }}>*</span>
-							</VSCodeTextField>
+							<TextField
+        label="Scheduler Name"
+        value={formData.txtSchedulerName}
+        onChange={(e: any) => handleInputChange("txtSchedulerName", e.target.value)}
+        placeholder="Enter scheduler name"
+        isRequired
+      />
 						</div>
 					)}
 				</div>
 
 				<div style={{ display: "flex", gap: "10px", justifyContent: "flex-end" }}>
-					<VSCodeButton appearance="secondary" onClick={onCancel}>
+					<Button variant="secondary" onClick={onCancel}>
 						Cancel
-					</VSCodeButton>
-					<VSCodeButton type="submit" appearance="primary">
+					</Button>
+					<Button type="submit" variant="primary">
 						Generate
-					</VSCodeButton>
+					</Button>
 				</div>
 			</form>
 		</div>

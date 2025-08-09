@@ -1,12 +1,5 @@
 import { useState, useEffect } from "react"
-import {
-	VSCodeButton,
-	VSCodeDropdown,
-	VSCodeOption,
-	VSCodeTextField,
-	VSCodeRadio,
-	VSCodeRadioGroup,
-} from "@vscode/webview-ui-toolkit/react"
+import { Button, TextField, Select, RadioGroup } from "../../ui"
 import { ConfigGenerationType, ConfigFormData } from "../types/templates"
 import { vscode } from "../../../utils/vscode"
 
@@ -122,108 +115,104 @@ const DatasourceForm: React.FC<DatasourceFormProps> = ({ onSubmit, onCancel }) =
 
 			<form onSubmit={handleSubmit}>
 				<div style={{ marginBottom: "20px" }}>
-					<h3 style={{ color: "var(--vscode-foreground)", marginBottom: "10px" }}>Generation Type</h3>
-					<VSCodeRadioGroup
-						orientation="horizontal"
+					<RadioGroup
+						label="Generation Type"
+						name="generationType"
 						value={formData.generationType}
-						onChange={(e: any) => handleGenerationTypeChange(e.target.value as ConfigGenerationType)}>
-						<VSCodeRadio value={ConfigGenerationType.XML}>XML</VSCodeRadio>
-						<VSCodeRadio value={ConfigGenerationType.JAVA_CONFIG}>JavaConfig</VSCodeRadio>
-					</VSCodeRadioGroup>
+						onChange={(value) => handleGenerationTypeChange(value as ConfigGenerationType)}
+						orientation="horizontal"
+						options={[
+							{ value: ConfigGenerationType.XML, label: "XML" },
+							{ value: ConfigGenerationType.JAVA_CONFIG, label: "JavaConfig" }
+						]}
+					/>
 				</div>
 
 				<div style={{ marginBottom: "20px" }}>
-					<h3 style={{ color: "var(--vscode-foreground)", marginBottom: "10px" }}>Generation File</h3>
-					<VSCodeTextField
+					<TextField
+						label="File Name"
 						value={formData.txtFileName}
 						placeholder="Enter file name"
-						onInput={(e: any) => handleInputChange("txtFileName", e.target.value)}
-						style={{ width: "100%" }}
-						required>
-						File Name <span style={{ color: "var(--vscode-errorForeground)" }}>*</span>
-					</VSCodeTextField>
+						onChange={(e) => handleInputChange("txtFileName", e.target.value)}
+						isRequired
+					/>
 				</div>
 
 				<div style={{ marginBottom: "20px" }}>
 					<h3 style={{ color: "var(--vscode-foreground)", marginBottom: "10px" }}>Configuration</h3>
 
 					<div style={{ marginBottom: "15px" }}>
-						<VSCodeTextField
+						<TextField
+							label="DataSource Name"
 							value={formData.txtDatasourceName}
 							placeholder="Enter datasource name"
-							onInput={(e: any) => handleInputChange("txtDatasourceName", e.target.value)}
-							style={{ width: "100%" }}
-							required>
-							DataSource Name <span style={{ color: "var(--vscode-errorForeground)" }}>*</span>
-						</VSCodeTextField>
+							onChange={(e) => handleInputChange("txtDatasourceName", e.target.value)}
+							isRequired
+						/>
 					</div>
 
 					<div style={{ marginBottom: "15px" }}>
-						<label style={{ display: "block", marginBottom: "5px", color: "var(--vscode-foreground)" }}>
-							Driver Type <span style={{ color: "var(--vscode-errorForeground)" }}>*</span>
-						</label>
-						<VSCodeDropdown
+						<Select
+							label="Driver Type"
 							value={formData.rdoType}
-							onInput={(e: any) => handleInputChange("rdoType", e.target.value)}
-							style={{ width: "100%" }}>
-							<VSCodeOption value="DBCP">DBCP</VSCodeOption>
-							<VSCodeOption value="C3P0">C3P0</VSCodeOption>
-							<VSCodeOption value="JDBC">JDBC</VSCodeOption>
-						</VSCodeDropdown>
+							onChange={(e) => handleInputChange("rdoType", e.target.value)}
+							isRequired
+							options={[
+								{ value: "DBCP", label: "DBCP" },
+								{ value: "C3P0", label: "C3P0" },
+								{ value: "JDBC", label: "JDBC" }
+							]}
+						/>
 					</div>
 
 					<div style={{ marginBottom: "15px" }}>
-						<VSCodeTextField
+						<TextField
+							label="Driver"
 							value={formData.txtDriver}
 							placeholder="Enter driver class name"
-							onInput={(e: any) => handleInputChange("txtDriver", e.target.value)}
-							style={{ width: "100%" }}
-							required>
-							Driver <span style={{ color: "var(--vscode-errorForeground)" }}>*</span>
-						</VSCodeTextField>
+							onChange={(e) => handleInputChange("txtDriver", e.target.value)}
+							isRequired
+						/>
 					</div>
 
 					<div style={{ marginBottom: "15px" }}>
-						<VSCodeTextField
+						<TextField
+							label="URL"
 							value={formData.txtUrl}
 							placeholder="Enter database URL"
-							onInput={(e: any) => handleInputChange("txtUrl", e.target.value)}
-							style={{ width: "100%" }}
-							required>
-							URL <span style={{ color: "var(--vscode-errorForeground)" }}>*</span>
-						</VSCodeTextField>
+							onChange={(e) => handleInputChange("txtUrl", e.target.value)}
+							isRequired
+						/>
 					</div>
 
 					<div style={{ marginBottom: "15px" }}>
-						<VSCodeTextField
+						<TextField
+							label="User"
 							value={formData.txtUser}
 							placeholder="Enter username"
-							onInput={(e: any) => handleInputChange("txtUser", e.target.value)}
-							style={{ width: "100%" }}
-							required>
-							User <span style={{ color: "var(--vscode-errorForeground)" }}>*</span>
-						</VSCodeTextField>
+							onChange={(e) => handleInputChange("txtUser", e.target.value)}
+							isRequired
+						/>
 					</div>
 
 					<div style={{ marginBottom: "20px" }}>
-						<VSCodeTextField
+						<TextField
+							label="Password"
 							type="password"
 							value={formData.txtPasswd}
 							placeholder="Enter password"
-							onInput={(e: any) => handleInputChange("txtPasswd", e.target.value)}
-							style={{ width: "100%" }}>
-							Password
-						</VSCodeTextField>
+							onChange={(e) => handleInputChange("txtPasswd", e.target.value)}
+						/>
 					</div>
 				</div>
 
 				<div style={{ display: "flex", gap: "10px", justifyContent: "flex-end" }}>
-					<VSCodeButton appearance="secondary" onClick={onCancel}>
+					<Button variant="secondary" onClick={onCancel}>
 						Cancel
-					</VSCodeButton>
-					<VSCodeButton type="submit" appearance="primary">
+					</Button>
+					<Button type="submit" variant="primary">
 						Generate
-					</VSCodeButton>
+					</Button>
 				</div>
 			</form>
 		</div>
