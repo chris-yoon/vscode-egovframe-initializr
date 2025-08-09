@@ -66,3 +66,6 @@ src/core/controller/*/index.ts
 src/core/controller/grpc-service-config.ts
 webview-ui/src/services/grpc-client.ts
 src/standalone/server-setup.ts
+# Large template files (>10MB)
+templates/projects/examples/egovframe-common-components-msa-krds-4.3.1.zip
+templates/projects/examples/egovframework-all-in-oneAllNew_wizard.zip
