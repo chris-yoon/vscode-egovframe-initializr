@@ -94,31 +94,14 @@ export async function generateFile(
 		console.log("- fileNameProperty:", fileNameProperty)
 		console.log("- data:", data)
 
-		// Build template path - check both webview-ui and extension paths
-		let templatePath = path.join(
-			context.extensionPath,
-			"webview-ui",
-			"src",
-			"components",
-			"egov",
-			"templates",
-			"config",
-			templateFolder,
-			templateFile,
-		)
+		// Build template path - use only templates path
+		const templatePath = path.join(context.extensionPath, "templates", "config", templateFolder, templateFile)
 
-		console.log("- trying webview-ui path:", templatePath)
-		console.log("- webview-ui path exists:", await fs.pathExists(templatePath))
-
-		// Fallback to egovframe-pack path
-		if (!(await fs.pathExists(templatePath))) {
-			templatePath = path.join(context.extensionPath, "egovframe-pack", "templates", "config", templateFolder, templateFile)
-			console.log("- trying egovframe-pack path:", templatePath)
-			console.log("- egovframe-pack path exists:", await fs.pathExists(templatePath))
-		}
+		console.log("- using templates path:", templatePath)
+		console.log("- templates path exists:", await fs.pathExists(templatePath))
 
 		if (!(await fs.pathExists(templatePath))) {
-			console.error("Template file not found at either location")
+			console.error("Template file not found")
 			throw new Error(`Template file not found: ${templateFile} in folder ${templateFolder}`)
 		}
 

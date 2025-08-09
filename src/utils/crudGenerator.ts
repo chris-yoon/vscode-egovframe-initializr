@@ -82,7 +82,7 @@ function getTemplateFilesConfig(context: any): TemplateFileInfo[] {
 
 // Read template file content
 async function readTemplateFile(extensionContext: vscode.ExtensionContext, templateFileName: string): Promise<string> {
-	const templatePath = path.join(extensionContext.extensionPath, "egovframe-pack", "templates", "code", templateFileName)
+	const templatePath = path.join(extensionContext.extensionPath, "templates", "code", templateFileName)
 
 	try {
 		const content = await fs.readFile(templatePath, "utf-8")

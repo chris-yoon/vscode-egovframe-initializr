@@ -182,7 +182,7 @@ export const ProjectsView = () => {
 					}}>
 					Generate new eGovFrame projects from predefined templates. Choose from various project templates including
 					basic Spring applications, web applications, and more. Learn more at{" "}
-					<Link href="https://github.com/chris-yoon/egovframe-pack" style={{ display: "inline" }}>
+					<Link href="https://github.com/egovframework/vscode-egovframe-initializr" style={{ display: "inline" }}>
 						GitHub
 					</Link>
 				</p>
@@ -384,7 +384,7 @@ export const ProjectsView = () => {
 							<h4 style={{ color: "var(--vscode-foreground)", marginBottom: "10px" }}>Project Configuration</h4>
 
 							{/* Project Name */}
-							<div style={{ marginBottom: "15px" }}>
+							<div style={{ width: "calc(100% - 24px)", marginBottom: "15px" }}>
 								<label style={{ display: "block", marginBottom: "5px", fontSize: "12px" }}>Project Name *</label>
 								<TextField
 									label=""
@@ -399,7 +399,7 @@ export const ProjectsView = () => {
 
 							{/* Group ID (only if template has pomFile) */}
 							{selectedTemplate.pomFile && (
-								<div style={{ marginBottom: "15px" }}>
+								<div style={{ width: "calc(100% - 24px)", marginBottom: "15px" }}>
 									<label style={{ display: "block", marginBottom: "5px", fontSize: "12px" }}>Group ID *</label>
 									<TextField
 										label=""
@@ -421,13 +421,15 @@ export const ProjectsView = () => {
 							{/* Output Path */}
 							<div style={{ marginBottom: "15px" }}>
 								<label style={{ display: "block", marginBottom: "5px", fontSize: "12px" }}>Output Path *</label>
-								<div style={{ display: "flex", gap: "10px" }}>
-									<TextField
-										label=""
-										value={outputPath}
-										onChange={(e: any) => setOutputPath(e.target.value)}
-										placeholder="Select output directory"
-									/>
+								<div style={{ display: "flex", gap: "10px", maxWidth: "100%" }}>
+									<div style={{ flex: 1 }}>
+										<TextField
+											label=""
+											value={outputPath}
+											onChange={(e: any) => setOutputPath(e.target.value)}
+											placeholder="Select output directory"
+										/>
+									</div>
 									<button
 										style={{
 											backgroundColor: "var(--vscode-button-secondaryBackground)",
@@ -481,7 +483,7 @@ export const ProjectsView = () => {
 									{selectedTemplate.description}
 								</div>
 								<div style={{ fontSize: "10px", color: "var(--vscode-descriptionForeground)", marginTop: "5px" }}>
-									Source: egovframe-pack/examples/{selectedTemplate.fileName}
+									Source: templates/projects/examples/{selectedTemplate.fileName}
 								</div>
 								{selectedTemplate.pomFile && (
 									<div
@@ -645,7 +647,7 @@ export const ProjectsView = () => {
 						</li>
 					</ul>
 					<div style={{ marginTop: "10px", fontSize: "10px", opacity: 0.8 }}>
-						All templates are sourced from egovframe-pack/examples/ directory
+						All templates are sourced from templates/projects/examples/ directory
 					</div>
 				</div>
 			</div>

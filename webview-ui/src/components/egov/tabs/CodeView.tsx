@@ -314,7 +314,7 @@ const CodeView = () => {
 					<textarea
 						rows={15}
 						style={{
-							width: "100%",
+							width: "calc(100% - 24px)",
 							padding: "12px",
 							fontFamily: "monospace",
 							backgroundColor: "var(--vscode-input-background)",
@@ -382,7 +382,7 @@ const CodeView = () => {
 						<h4 style={{ color: "var(--vscode-foreground)", marginBottom: "10px" }}>Configuration</h4>
 
 						{/* Package Name */}
-						<div style={{ marginBottom: "15px" }}>
+						<div style={{ width: "calc(100% - 24px)", marginBottom: "15px" }}>
 							<TextField
 								label="Package Name"
 								value={packageName}
@@ -398,13 +398,15 @@ const CodeView = () => {
 						{/* Output Path */}
 						<div style={{ marginBottom: "15px" }}>
 							<label style={{ display: "block", marginBottom: "5px", fontSize: "12px" }}>Output Path *</label>
-							<div style={{ display: "flex", gap: "10px" }}>
-								<TextField
-									label=""
-									value={outputPath}
-									onChange={(e: any) => setOutputPath(e.target.value)}
-									placeholder="Select output directory"
-								/>
+							<div style={{ display: "flex", gap: "10px", maxWidth: "100%" }}>
+								<div style={{ flex: 1 }}>
+									<TextField
+										label=""
+										value={outputPath}
+										onChange={(e: any) => setOutputPath(e.target.value)}
+										placeholder="Select output directory"
+									/>
+								</div>
 								<button
 									style={{
 										backgroundColor: "var(--vscode-button-secondaryBackground)",

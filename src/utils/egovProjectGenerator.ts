@@ -1,118 +1,170 @@
 import * as vscode from "vscode"
-import * as path from "path"
 import * as fs from "fs-extra"
-import extract from "extract-zip"
-import * as Handlebars from "handlebars"
+import * as path from "path"
+import archiver from "archiver"
+import extractZip from "extract-zip"
 
 export interface EgovProjectTemplate {
-	displayName: string
+	id: string
+	name: string
+	description: string
 	fileName: string
-	pomFile: string
+	pomFile?: string
+	category?: string
+	tags?: string[]
+	version?: string
+	frameworkVersion?: string
+	dependencies?: string[]
 }
 
 export interface EgovProjectConfig {
 	projectName: string
-	groupID: string
 	outputPath: string
+	packageName: string
 	template: EgovProjectTemplate
+	includeSpringBoot?: boolean
+	includeJPA?: boolean
+	includeMyBatis?: boolean
+	includeThymeleaf?: boolean
+	author?: string
+	description?: string
 }
 
-export interface EgovProjectGenerationResult {
+export interface ProjectGenerationResult {
 	success: boolean
 	message: string
 	projectPath?: string
 	error?: string
 }
 
-/**
- * Generate eGovFrame project from template
- */
 export async function generateEgovProject(
 	config: EgovProjectConfig,
 	extensionPath: string,
 	progressCallback?: (message: string) => void,
-): Promise<EgovProjectGenerationResult> {
+): Promise<ProjectGenerationResult> {
 	try {
-		progressCallback?.("📦 Preparing project generation...")
+		// Validate config
+		if (!config.projectName?.trim()) {
+			throw new Error("Project name is required")
+		}
 
-		// Validate configuration
-		const validationResult = validateProjectConfig(config)
-		if (!validationResult.isValid) {
-			return {
-				success: false,
-				message: "Configuration validation failed",
-				error: validationResult.errors.join(", "),
-			}
+		if (!config.outputPath?.trim()) {
+			throw new Error("Output path is required")
+		}
+
+		if (!config.template?.fileName) {
+			throw new Error("Template file name is required")
 		}
 
 		// Setup paths
-		const zipFilePath = path.join(extensionPath, "egovframe-pack", "examples", config.template.fileName)
+		const zipFilePath = path.join(extensionPath, "templates", "projects", "examples", config.template.fileName)
 		const projectRoot = path.join(config.outputPath, config.projectName)
 
 		progressCallback?.("📁 Creating project directory...")
 
 		// Check if project directory already exists
 		if (await fs.pathExists(projectRoot)) {
-			return {
-				success: false,
-				message: "Project directory already exists",
-				error: `Directory ${projectRoot} already exists`,
-			}
+			throw new Error(`Project directory already exists: ${projectRoot}`)
 		}
 
-		// Ensure output directory exists
-		await fs.ensureDir(config.outputPath)
-
-		progressCallback?.("📦 Extracting template files...")
-
-		// Check if template zip file exists
+		// Check if template file exists
 		if (!(await fs.pathExists(zipFilePath))) {
-			return {
-				success: false,
-				message: "Template file not found",
-				error: `Template file ${zipFilePath} does not exist`,
-			}
+			throw new Error(`Template file not found: ${zipFilePath}`)
 		}
 
-		// Extract template
-		await extract(zipFilePath, { dir: projectRoot })
+		progressCallback?.("📦 Extracting template...")
 
-		progressCallback?.("⚙️ Configuring project...")
+		// Extract template ZIP
+		await extractZip(zipFilePath, { dir: projectRoot })
 
-		// Generate POM file if template has one
+		progressCallback?.("📝 Processing template files...")
+
+		// Process template files (replace placeholders)
+		await processTemplateFiles(projectRoot, config)
+
+		// Generate POM file if needed
 		if (config.template.pomFile) {
-			await generatePomFile(config, extensionPath, projectRoot, progressCallback)
+			await generatePomFile(config, projectRoot, extensionPath, progressCallback)
 		}
 
-		progressCallback?.("✅ Project generation completed!")
+		// Update package names in Java files
+		await updatePackageNames(projectRoot, config.packageName, progressCallback)
+
+		progressCallback?.("✅ Project generated successfully!")
+
+		// Notify completion
+		vscode.window.showInformationMessage(`eGovFrame project '${config.projectName}' created successfully!`, "Open Project").then((selection) => {
+			if (selection === "Open Project") {
+				vscode.commands.executeCommand("vscode.openFolder", vscode.Uri.file(projectRoot), true)
+			}
+		})
 
 		return {
 			success: true,
-			message: `Project ${config.projectName} created successfully`,
-			projectPath: projectRoot,
+			message: "Project generated successfully",
+			projectPath: projectRoot
 		}
 	} catch (error) {
+		console.error("Error generating eGovFrame project:", error)
+		const errorMessage = error instanceof Error ? error.message : "Unknown error occurred"
 		return {
 			success: false,
 			message: "Project generation failed",
-			error: error instanceof Error ? error.message : String(error),
+			error: errorMessage
 		}
 	}
 }
 
-/**
- * Generate Maven POM file with project configuration
- */
+async function processTemplateFiles(projectRoot: string, config: EgovProjectConfig): Promise<void> {
+	const placeholders = {
+		"{{PROJECT_NAME}}": config.projectName,
+		"{{PACKAGE_NAME}}": config.packageName,
+		"{{AUTHOR}}": config.author || "eGovFrame Developer",
+		"{{DESCRIPTION}}": config.description || `eGovFrame project: ${config.projectName}`,
+		"{{FRAMEWORK_VERSION}}": config.template.frameworkVersion || "4.3.0",
+	}
+
+	// Find all text files to process
+	const textFileExtensions = [".java", ".xml", ".jsp", ".html", ".js", ".css", ".properties", ".yml", ".yaml", ".md", ".txt"]
+
+	await processFilesRecursively(projectRoot, placeholders, textFileExtensions)
+}
+
+async function processFilesRecursively(dir: string, placeholders: Record<string, string>, extensions: string[]): Promise<void> {
+	const entries = await fs.readdir(dir, { withFileTypes: true })
+
+	for (const entry of entries) {
+		const fullPath = path.join(dir, entry.name)
+
+		if (entry.isDirectory()) {
+			await processFilesRecursively(fullPath, placeholders, extensions)
+		} else if (entry.isFile() && extensions.includes(path.extname(entry.name))) {
+			try {
+				let content = await fs.readFile(fullPath, "utf8")
+
+				// Replace placeholders
+				for (const [placeholder, value] of Object.entries(placeholders)) {
+					content = content.replace(new RegExp(placeholder, "g"), value)
+				}
+
+				await fs.writeFile(fullPath, content, "utf8")
+			} catch (error) {
+				console.warn(`Warning: Could not process file ${fullPath}:`, error)
+			}
+		}
+	}
+}
+
 async function generatePomFile(
 	config: EgovProjectConfig,
-	extensionPath: string,
 	projectRoot: string,
+	extensionPath: string,
 	progressCallback?: (message: string) => void,
 ): Promise<void> {
 	try {
 		progressCallback?.("📝 Generating Maven POM file...")
 
-		const templatePath = path.join(extensionPath, "egovframe-pack", "templates", "project", config.template.pomFile)
+		const templatePath = path.join(extensionPath, "templates", "projects", "pom", config.template.pomFile!)
 		const outputPath = path.join(projectRoot, "pom.xml")
 
 		// Check if POM template exists
@@ -120,58 +172,251 @@ async function generatePomFile(
 			throw new Error(`POM template not found: ${templatePath}`)
 		}
 
-		// Read template content
-		const templateContent = await fs.readFile(templatePath, "utf-8")
+		// Read POM template
+		let pomContent = await fs.readFile(templatePath, "utf8")
 
-		// Compile and render template
-		const template = Handlebars.compile(templateContent)
-		const renderedContent = template({
-			groupID: config.groupID,
-			projectName: config.projectName,
-		})
+		// Replace placeholders
+		const placeholders = {
+			"{{PROJECT_NAME}}": config.projectName,
+			"{{PACKAGE_NAME}}": config.packageName,
+			"{{DESCRIPTION}}": config.description || `eGovFrame project: ${config.projectName}`,
+			"{{FRAMEWORK_VERSION}}": config.template.frameworkVersion || "4.3.0",
+			"{{VERSION}}": "1.0.0",
+		}
+
+		for (const [placeholder, value] of Object.entries(placeholders)) {
+			pomContent = pomContent.replace(new RegExp(placeholder, "g"), value)
+		}
 
 		// Write POM file
-		await fs.writeFile(outputPath, renderedContent)
+		await fs.writeFile(outputPath, pomContent, "utf8")
 
-		progressCallback?.("📝 Maven POM file generated successfully")
+		progressCallback?.("📝 Maven POM file generated successfully!")
 	} catch (error) {
-		throw new Error(`Failed to generate POM file: ${error}`)
+		console.error("Error generating POM file:", error)
+		throw error
+	}
+}
+
+async function updatePackageNames(projectRoot: string, packageName: string, progressCallback?: (message: string) => void): Promise<void> {
+	try {
+		progressCallback?.("📦 Updating package names...")
+
+		// Find all Java files
+		const javaFiles = await findFilesByExtension(projectRoot, ".java")
+
+		for (const javaFile of javaFiles) {
+			try {
+				let content = await fs.readFile(javaFile, "utf8")
+
+				// Update package declaration
+				content = content.replace(/^package\s+[\w.]+;/m, `package ${packageName};`)
+
+				// Update import statements (if they reference the same base package)
+				const packageParts = packageName.split(".")
+				const basePackage = packageParts.slice(0, -1).join(".")
+				content = content.replace(/import\s+egovframework\.[\w.]+;/g, (match) => {
+					const importPath = match.match(/import\s+([\w.]+);/)?.[1]
+					if (importPath) {
+						const className = importPath.split(".").pop()
+						return `import ${basePackage}.${className};`
+					}
+					return match
+				})
+
+				await fs.writeFile(javaFile, content, "utf8")
+			} catch (error) {
+				console.warn(`Warning: Could not update package in ${javaFile}:`, error)
+			}
+		}
+
+		// Update directory structure to match package name
+		await updateDirectoryStructure(projectRoot, packageName)
+
+		progressCallback?.("📦 Package names updated successfully!")
+	} catch (error) {
+		console.error("Error updating package names:", error)
+		throw error
+	}
+}
+
+async function findFilesByExtension(dir: string, extension: string): Promise<string[]> {
+	const files: string[] = []
+	const entries = await fs.readdir(dir, { withFileTypes: true })
+
+	for (const entry of entries) {
+		const fullPath = path.join(dir, entry.name)
+
+		if (entry.isDirectory()) {
+			files.push(...(await findFilesByExtension(fullPath, extension)))
+		} else if (entry.isFile() && path.extname(entry.name) === extension) {
+			files.push(fullPath)
+		}
+	}
+
+	return files
+}
+
+async function updateDirectoryStructure(projectRoot: string, packageName: string): Promise<void> {
+	const srcMainJava = path.join(projectRoot, "src", "main", "java")
+
+	if (!(await fs.pathExists(srcMainJava))) {
+		return
+	}
+
+	// Create new package directory structure
+	const packageDirs = packageName.split(".")
+	const newPackageDir = path.join(srcMainJava, ...packageDirs)
+
+	await fs.ensureDir(newPackageDir)
+
+	// Move Java files to new package directory
+	const javaFiles = await findFilesByExtension(srcMainJava, ".java")
+
+	for (const javaFile of javaFiles) {
+		const fileName = path.basename(javaFile)
+		const newFilePath = path.join(newPackageDir, fileName)
+
+		// Skip if file is already in the correct location
+		if (javaFile === newFilePath) {
+			continue
+		}
+
+		await fs.move(javaFile, newFilePath, { overwrite: true })
 	}
 }
 
 /**
- * Validate project configuration
+ * Open project in VSCode
  */
-function validateProjectConfig(config: EgovProjectConfig): { isValid: boolean; errors: string[] } {
-	const errors: string[] = []
-
-	// Validate project name
-	if (!config.projectName || config.projectName.trim() === "") {
-		errors.push("Project name is required")
-	} else if (!/^[a-zA-Z][a-zA-Z0-9_-]*$/.test(config.projectName)) {
-		errors.push("Project name must start with a letter and contain only letters, numbers, hyphens, and underscores")
+export async function openProjectInVSCode(projectPath: string): Promise<void> {
+	try {
+		await vscode.commands.executeCommand("vscode.openFolder", vscode.Uri.file(projectPath), true)
+	} catch (error) {
+		console.error("Error opening project in VSCode:", error)
+		throw error
 	}
+}
 
-	// Validate group ID if POM file is required
-	if (config.template.pomFile && (!config.groupID || config.groupID.trim() === "")) {
-		errors.push("Group ID is required for this template")
-	} else if (config.groupID && !/^[a-zA-Z][a-zA-Z0-9._-]*$/.test(config.groupID)) {
-		errors.push("Group ID must be a valid Java package name")
-	}
+/**
+ * Start interactive project generation
+ */
+export async function startInteractiveProjectGeneration(context: vscode.ExtensionContext): Promise<void> {
+	try {
+		// Get available templates
+		const templates = await getAvailableTemplates(context.extensionPath)
+		
+		if (templates.length === 0) {
+			vscode.window.showErrorMessage("No project templates found")
+			return
+		}
 
-	// Validate output path
-	if (!config.outputPath || config.outputPath.trim() === "") {
-		errors.push("Output path is required")
-	}
+		// Step 1: Select template
+		const templateItems = templates.map(template => ({
+			label: template.name,
+			description: template.description,
+			detail: `Category: ${template.category || 'General'} | File: ${template.fileName}`,
+			template
+		}))
 
-	// Validate template
-	if (!config.template) {
-		errors.push("Template selection is required")
-	}
+		const selectedTemplateItem = await vscode.window.showQuickPick(templateItems, {
+			placeHolder: "Select a project template",
+			matchOnDescription: true,
+			matchOnDetail: true
+		})
 
-	return {
-		isValid: errors.length === 0,
-		errors,
+		if (!selectedTemplateItem) {
+			return
+		}
+
+		// Step 2: Enter project name
+		const projectName = await vscode.window.showInputBox({
+			prompt: "Enter project name",
+			validateInput: (value) => {
+				if (!value || !value.trim()) {
+					return "Project name is required"
+				}
+				if (!/^[a-zA-Z0-9_-]+$/.test(value.trim())) {
+					return "Project name can only contain letters, numbers, hyphens, and underscores"
+				}
+				return null
+			}
+		})
+
+		if (!projectName) {
+			return
+		}
+
+		// Step 3: Enter package name (if template has POM file)
+		let packageName = "egovframework.example.sample"
+		if (selectedTemplateItem.template.pomFile) {
+			const inputPackageName = await vscode.window.showInputBox({
+				prompt: "Enter Java package name (e.g., com.company.project)",
+				value: packageName,
+				validateInput: (value) => {
+					if (!value || !value.includes(".")) {
+						return "Please enter a valid package name (e.g., com.company.project)"
+					}
+					return null
+				}
+			})
+
+			if (!inputPackageName) {
+				return
+			}
+			packageName = inputPackageName
+		}
+
+		// Step 4: Select output directory
+		const folderOptions = await vscode.window.showOpenDialog({
+			canSelectFolders: true,
+			canSelectFiles: false,
+			canSelectMany: false,
+			openLabel: "Select Output Directory"
+		})
+
+		if (!folderOptions || folderOptions.length === 0) {
+			return
+		}
+
+		const outputPath = folderOptions[0].fsPath
+
+		// Step 5: Generate project
+		const config: EgovProjectConfig = {
+			projectName: projectName.trim(),
+			outputPath,
+			packageName,
+			template: selectedTemplateItem.template
+		}
+
+		vscode.window.withProgress({
+			location: vscode.ProgressLocation.Notification,
+			title: "Generating eGovFrame project...",
+			cancellable: false
+		}, async (progress) => {
+			const result = await generateEgovProject(config, context.extensionPath, (message) => {
+				progress.report({ message })
+			})
+
+			if (result.success) {
+				const selection = await vscode.window.showInformationMessage(
+					`Project '${projectName}' generated successfully!`,
+					"Open Project",
+					"Open in New Window"
+				)
+
+				if (selection === "Open Project") {
+					await openProjectInVSCode(result.projectPath!)
+				} else if (selection === "Open in New Window") {
+					await vscode.commands.executeCommand("vscode.openFolder", vscode.Uri.file(result.projectPath!), true)
+				}
+			} else {
+				vscode.window.showErrorMessage(`Failed to generate project: ${result.error}`)
+			}
+		})
+	} catch (error) {
+		console.error("Error in interactive project generation:", error)
+		vscode.window.showErrorMessage(`Interactive generation failed: ${error}`)
 	}
 }
 
@@ -180,7 +425,7 @@ function validateProjectConfig(config: EgovProjectConfig): { isValid: boolean; e
  */
 export async function getAvailableTemplates(extensionPath: string): Promise<EgovProjectTemplate[]> {
 	try {
-		const templatesConfigPath = path.join(extensionPath, "egovframe-pack", "templates-projects.json")
+		const templatesConfigPath = path.join(extensionPath, "templates", "templates-projects.json")
 
 		if (await fs.pathExists(templatesConfigPath)) {
 			const templatesData = await fs.readJSON(templatesConfigPath)
@@ -190,231 +435,104 @@ export async function getAvailableTemplates(extensionPath: string): Promise<Egov
 			return getDefaultTemplates()
 		}
 	} catch (error) {
-		console.warn("Failed to load templates config, using defaults:", error)
+		console.error("Error loading templates:", error)
 		return getDefaultTemplates()
 	}
 }
 
-/**
- * Get default templates if config file is not available
- */
 function getDefaultTemplates(): EgovProjectTemplate[] {
 	return [
 		{
-			displayName: "eGovFrame Web Project",
-			fileName: "example-web.zip",
-			pomFile: "example-web-pom.xml",
-		},
-		{
-			displayName: "eGovFrame Template Project > Simple Homepage",
+			id: "simple-web",
+			name: "Simple Web Application",
+			description: "Basic eGovFrame web application template",
 			fileName: "example-template-simple.zip",
-			pomFile: "example-template-simple-pom.xml",
+			pomFile: "simple-pom.xml",
+			category: "Web Application",
+			tags: ["web", "mvc", "basic"],
+			frameworkVersion: "4.3.0",
 		},
 		{
-			displayName: "eGovFrame Boot Web Project",
+			id: "enterprise",
+			name: "Enterprise Application",
+			description: "Full-featured enterprise application template",
+			fileName: "example-template-enterprise.zip",
+			pomFile: "enterprise-pom.xml",
+			category: "Enterprise",
+			tags: ["enterprise", "full-stack", "advanced"],
+			frameworkVersion: "4.3.0",
+		},
+		{
+			id: "mobile-hybrid",
+			name: "Mobile Hybrid Application",
+			description: "Mobile hybrid application template",
+			fileName: "egovframework-all-in-one-mobile-4.3.0.zip",
+			pomFile: "mobile-pom.xml",
+			category: "Mobile",
+			tags: ["mobile", "hybrid", "cordova"],
+			frameworkVersion: "4.3.0",
+		},
+		{
+			id: "msa-portal",
+			name: "MSA Portal",
+			description: "Microservices architecture portal template",
+			fileName: "egovframe-msa-portal-backend.zip",
+			pomFile: "msa-pom.xml",
+			category: "Microservices",
+			tags: ["msa", "microservices", "portal"],
+			frameworkVersion: "4.3.0",
+		},
+		{
+			id: "spring-boot",
+			name: "Spring Boot Web",
+			description: "Spring Boot based web application",
 			fileName: "example-boot-web.zip",
-			pomFile: "example-boot-web-pom.xml",
+			pomFile: "boot-pom.xml",
+			category: "Spring Boot",
+			tags: ["spring-boot", "web", "modern"],
+			frameworkVersion: "4.3.0",
 		},
 	]
 }
 
 /**
- * Start interactive project generation workflow using VS Code UI
+ * Get project size information
  */
-export async function startInteractiveProjectGeneration(
-	extensionPath: string,
-	progressCallback?: (message: string) => void,
-): Promise<void> {
+export async function getProjectSize(projectPath: string): Promise<{ files: number; size: number }> {
 	try {
-		progressCallback?.("🚀 Starting interactive project generation...")
-
-		// Step 1: Select category
-		const categories = ["All", "Web", "Template", "Mobile", "Boot", "MSA", "Batch"]
-		const selectedCategory = await vscode.window.showQuickPick(categories, {
-			placeHolder: "Select project category",
-			ignoreFocusOut: true,
+		const getFolderSize = require("get-folder-size")
+		const size = await new Promise<number>((resolve, reject) => {
+			getFolderSize(projectPath, (err: Error | null, size: number) => {
+				if (err) reject(err)
+				else resolve(size)
+			})
 		})
 
-		if (!selectedCategory) {
-			progressCallback?.("❌ Generation cancelled - no category selected")
-			return
-		}
-
-		progressCallback?.(`📁 Category selected: ${selectedCategory}`)
-
-		// Step 2: Get templates for category
-		const allTemplates = await getAvailableTemplates(extensionPath)
-		const filteredTemplates =
-			selectedCategory === "All"
-				? allTemplates
-				: allTemplates.filter((t) => t.displayName.toLowerCase().includes(selectedCategory.toLowerCase()))
-
-		if (filteredTemplates.length === 0) {
-			vscode.window.showWarningMessage(`No templates found for category: ${selectedCategory}`)
-			return
-		}
-
-		// Step 3: Select template
-		const templateItems = filteredTemplates.map((template) => ({
-			label: template.displayName,
-			description: template.fileName,
-			detail: `POM: ${template.pomFile || "Not required"}`,
-			template,
-		}))
-
-		const selectedTemplateItem = await vscode.window.showQuickPick(templateItems, {
-			placeHolder: `Select template from ${filteredTemplates.length} available`,
-			matchOnDescription: true,
-			matchOnDetail: true,
-			ignoreFocusOut: true,
-		})
-
-		if (!selectedTemplateItem) {
-			progressCallback?.("❌ Generation cancelled - no template selected")
-			return
-		}
-
-		progressCallback?.(`📦 Template selected: ${selectedTemplateItem.template.displayName}`)
-
-		// Step 4: Enter project name
-		const projectName = await vscode.window.showInputBox({
-			prompt: "Enter project name",
-			placeHolder: "my-egov-project",
-			validateInput: (value) => {
-				if (!value || value.trim() === "") {
-					return "Project name is required"
-				}
-				if (!/^[a-zA-Z][a-zA-Z0-9_-]*$/.test(value)) {
-					return "Project name must start with a letter and contain only letters, numbers, hyphens, and underscores"
-				}
-				return null
-			},
-			ignoreFocusOut: true,
-		})
-
-		if (!projectName) {
-			progressCallback?.("❌ Generation cancelled - no project name entered")
-			return
-		}
-
-		progressCallback?.(`✏️ Project name: ${projectName}`)
-
-		// Step 5: Enter Group ID (if needed)
-		let groupID = ""
-		if (selectedTemplateItem.template.pomFile) {
-			groupID =
-				(await vscode.window.showInputBox({
-					prompt: "Enter Maven Group ID",
-					placeHolder: "egovframework.example.sample",
-					value: "egovframework.example.sample",
-					validateInput: (value) => {
-						if (!value || value.trim() === "") {
-							return "Group ID is required for this template"
-						}
-						if (!/^[a-zA-Z][a-zA-Z0-9._-]*$/.test(value)) {
-							return "Group ID must be a valid Java package name"
-						}
-						return null
-					},
-					ignoreFocusOut: true,
-				})) || ""
-
-			if (!groupID) {
-				progressCallback?.("❌ Generation cancelled - no group ID entered")
-				return
-			}
-
-			progressCallback?.(`🏷️ Group ID: ${groupID}`)
-		}
-
-		// Step 6: Select output path
-		const outputPathOptions: vscode.OpenDialogOptions = {
-			canSelectMany: false,
-			canSelectFiles: false,
-			canSelectFolders: true,
-			openLabel: "Select Output Directory",
-			title: "Select where to create the project",
-		}
-
-		const outputPathResult = await vscode.window.showOpenDialog(outputPathOptions)
-		if (!outputPathResult || outputPathResult.length === 0) {
-			progressCallback?.("❌ Generation cancelled - no output path selected")
-			return
-		}
-
-		const outputPath = outputPathResult[0].fsPath
-		progressCallback?.(`📂 Output path: ${outputPath}`)
-
-		// Step 7: Confirm generation
-		const confirmMessage = `Generate eGovFrame project with the following settings?
-
-Project Name: ${projectName}
-Template: ${selectedTemplateItem.template.displayName}
-${groupID ? `Group ID: ${groupID}` : ""}
-Output Path: ${outputPath}
-
-The project will be created at: ${path.join(outputPath, projectName)}`
-
-		const confirmed = await vscode.window.showInformationMessage(
-			confirmMessage,
-			{ modal: true },
-			"Generate Project",
-			"Cancel",
-		)
-
-		if (confirmed !== "Generate Project") {
-			progressCallback?.("❌ Generation cancelled by user")
-			return
-		}
-
-		// Step 8: Generate project
-		const config: EgovProjectConfig = {
-			projectName,
-			groupID,
-			outputPath,
-			template: selectedTemplateItem.template,
-		}
-
-		const result = await generateEgovProject(config, extensionPath, progressCallback)
-
-		if (result.success) {
-			progressCallback?.("✅ Interactive generation completed successfully!")
-
-			// Offer to open project
-			const openProject = await vscode.window.showInformationMessage(
-				`✅ eGovFrame project "${projectName}" created successfully!`,
-				"Open Project",
-				"Open in New Window",
-				"Show in Explorer",
-			)
-
-			if (openProject === "Open Project") {
-				await openProjectInVSCode(result.projectPath!)
-			} else if (openProject === "Open in New Window") {
-				const projectUri = vscode.Uri.file(result.projectPath!)
-				await vscode.commands.executeCommand("vscode.openFolder", projectUri, {
-					forceNewWindow: true,
-				})
-			} else if (openProject === "Show in Explorer") {
-				await vscode.commands.executeCommand("revealFileInOS", vscode.Uri.file(result.projectPath!))
-			}
-		} else {
-			progressCallback?.(`❌ Interactive generation failed: ${result.error}`)
-			vscode.window.showErrorMessage(`Failed to generate project: ${result.error}`)
-		}
+		const files = await countFiles(projectPath)
+		return { files, size }
 	} catch (error) {
-		const errorMessage = error instanceof Error ? error.message : String(error)
-		progressCallback?.(`❌ Interactive generation error: ${errorMessage}`)
-		vscode.window.showErrorMessage(`Interactive generation failed: ${errorMessage}`)
+		console.error("Error getting project size:", error)
+		return { files: 0, size: 0 }
 	}
 }
 
-/**
- * Open project in VS Code
- */
-export async function openProjectInVSCode(projectPath: string): Promise<void> {
-	const projectUri = vscode.Uri.file(projectPath)
-	await vscode.commands.executeCommand("vscode.openFolder", projectUri, {
-		forceNewWindow: false,
-	})
+async function countFiles(dir: string): Promise<number> {
+	let count = 0
+	try {
+		const entries = await fs.readdir(dir, { withFileTypes: true })
+
+		for (const entry of entries) {
+			const fullPath = path.join(dir, entry.name)
+
+			if (entry.isDirectory()) {
+				count += await countFiles(fullPath)
+			} else if (entry.isFile()) {
+				count++
+			}
+		}
+	} catch (error) {
+		console.warn(`Warning: Could not read directory ${dir}:`, error)
+	}
+
+	return count
 }

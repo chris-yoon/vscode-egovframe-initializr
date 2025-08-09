@@ -123,12 +123,7 @@ export class Controller {
 				// Start interactive project generation workflow
 				try {
 					const { startInteractiveProjectGeneration } = await import("../../utils/egovProjectGenerator")
-					await startInteractiveProjectGeneration(this.context.extensionPath, (progressMessage: string) => {
-						this.postMessageToWebview({
-							type: "projectGenerationProgress",
-							text: progressMessage,
-						})
-					})
+					await startInteractiveProjectGeneration(this.context)
 				} catch (error) {
 					vscode.window.showErrorMessage(`Failed to start interactive generation: ${error}`)
 				}

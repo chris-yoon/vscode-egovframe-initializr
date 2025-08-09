@@ -39,16 +39,16 @@ graph TB
     B --> C[WebviewProvider]
     C --> D[Controller]
     D --> E[React Webview UI]
-    
+
     E --> F[EgovView]
     F --> G[ProjectsView]
     F --> H[CodeView]
     F --> I[ConfigView]
-    
+
     D --> J[Project Generator]
     D --> K[CRUD Generator]
     D --> L[Config Generator]
-    
+
     J --> M[Template System]
     K --> N[DDL Parser]
     L --> O[Handlebars Templates]
@@ -62,6 +62,12 @@ vscode-egovframe-initializr/
 ├── 📁 assets/              # 아이콘 및 리소스
 ├── 📁 src/                 # Extension 소스코드
 ├── 📁 webview-ui/          # React 웹뷰 UI
+├── 📁 templates/           # 새로운 템플릿 루트 디렉토리
+│   ├── 📁 projects/        # 프로젝트 템플릿
+│   │   ├── 📁 examples/    # ZIP 템플릿 파일들
+│   │   └── 📁 pom/         # Maven POM 템플릿들
+│   ├── 📁 config/          # Spring 설정 템플릿
+│   └── 📁 code/            # CRUD 코드 템플릿
 ├── 📄 package.json         # Extension 메니페스트
 ├── 📄 esbuild.js          # Extension 빌드 설정
 └── 📄 README.md           # 프로젝트 문서
@@ -90,6 +96,74 @@ src/
     ├── 📄 api.ts
     ├── 📄 ExtensionMessage.ts
     └── 📄 WebviewMessage.ts
+```
+
+### Templates 디렉토리 (`templates/`)
+
+```
+templates/
+├── 📄 templates-projects.json      # 프로젝트 템플릿 메타데이터
+├── 📄 templates-context-xml.json   # 설정 템플릿 메타데이터
+├── 📁 projects/                    # 프로젝트 템플릿
+│   ├── 📁 examples/                # ZIP 템플릿 파일들
+│   │   ├── 📦 egovframe-template-simple-backend.zip
+│   │   ├── 📦 egovframe-template-simple-react.zip
+│   │   ├── 📦 egovframework-all-in-one-mobile-4.3.0.zip
+│   │   ├── 📦 egovframe-msa-portal-backend.zip
+│   │   ├── 📦 example-boot-web.zip
+│   │   └── 📦 ... (총 22개 템플릿)
+│   └── 📁 pom/                     # Maven POM 템플릿들
+│       ├── 📄 simple-pom.xml
+│       ├── 📄 boot-pom.xml
+│       └── 📄 ... (총 15개 POM 템플릿)
+├── 📁 config/                      # Spring 설정 템플릿
+│   ├── 📁 datasource/              # 데이터소스 설정
+│   │   ├── 📄 datasource.hbs
+│   │   ├── 📄 datasource-java.hbs
+│   │   ├── 📄 jndiDatasource.hbs
+│   │   └── 📄 jndiDatasource-java.hbs
+│   ├── 📁 cache/                   # 캐시 설정
+│   │   ├── 📄 cache.hbs
+│   │   ├── 📄 cache-java.hbs
+│   │   ├── 📄 ehcacheConfigForSpring.hbs
+│   │   └── 📄 ehcacheConfigForSpring-java.hbs
+│   ├── 📁 logging/                 # 로깅 설정 (21개 템플릿)
+│   │   ├── 📄 console.hbs
+│   │   ├── 📄 console-java.hbs
+│   │   ├── 📄 console-yaml.hbs
+│   │   ├── 📄 console-properties.hbs
+│   │   ├── 📄 file.hbs
+│   │   ├── 📄 rollingFile.hbs
+│   │   └── 📄 ... (다양한 로깅 appender 템플릿)
+│   ├── 📁 scheduling/              # 스케줄링 설정 (10개 템플릿)
+│   │   ├── 📄 scheduler.hbs
+│   │   ├── 📄 beanJob.hbs
+│   │   ├── 📄 cronTrigger.hbs
+│   │   └── 📄 simpleTrigger.hbs
+│   ├── 📁 transaction/             # 트랜잭션 설정 (6개 템플릿)
+│   │   ├── 📄 datasource.hbs
+│   │   ├── 📄 jpa.hbs
+│   │   └── 📄 jta.hbs
+│   ├── 📁 idGeneration/            # ID 생성 설정 (6개 템플릿)
+│   │   ├── 📄 xml-id-gnr-sequence-service.hbs
+│   │   ├── 📄 xml-id-gnr-table-service.hbs
+│   │   └── 📄 xml-id-gnr-uuid-service.hbs
+│   └── 📁 property/                # 프로퍼티 설정 (2개 템플릿)
+│       ├── 📄 property.hbs
+│       └── 📄 property-java.hbs
+└── 📁 code/                        # CRUD 코드 템플릿
+    ├── 📄 sample-controller-template.hbs
+    ├── 📄 sample-service-template.hbs
+    ├── 📄 sample-service-impl-template.hbs
+    ├── 📄 sample-dao-template.hbs
+    ├── 📄 sample-vo-template.hbs
+    ├── 📄 sample-mapper-template.hbs
+    ├── 📄 sample-mapper-interface-template.hbs
+    ├── 📄 sample-jsp-list.hbs
+    ├── 📄 sample-jsp-register.hbs
+    ├── 📄 sample-thymeleaf-list.hbs
+    ├── 📄 sample-thymeleaf-register.hbs
+    └── 📄 sample-default-vo-template.hbs
 ```
 
 ### Webview UI (`webview-ui/`)
@@ -175,11 +249,11 @@ webview-ui/
 ```typescript
 // 예시: Button 컴포넌트의 테마 스타일
 const getButtonStyles = (variant: 'primary' | 'secondary') => ({
-  backgroundColor: variant === 'primary' 
+  backgroundColor: variant === 'primary'
     ? 'var(--vscode-button-background)'
     : 'var(--vscode-button-secondaryBackground)',
   color: variant === 'primary'
-    ? 'var(--vscode-button-foreground)' 
+    ? 'var(--vscode-button-foreground)'
     : 'var(--vscode-button-secondaryForeground)',
   border: '1px solid var(--vscode-button-border)',
   // 호버 효과
@@ -207,12 +281,12 @@ interface VSCodeTheme {
     background: string
     inputBackground: string
     buttonBackground: string
-    
+
     // 전경색
     foreground: string
     inputForeground: string
     buttonForeground: string
-    
+
     // 테두리
     inputBorder: string
     focusBorder: string
@@ -231,132 +305,6 @@ interface VSCodeTheme {
 - eGovFrame 표준 템플릿 기반 프로젝트 자동 생성
 - Maven/Gradle 프로젝트 구조 지원
 - 다양한 카테고리별 템플릿 제공
-
-#### 구현 위치
-- **UI**: `webview-ui/src/components/egov/tabs/ProjectsView.tsx`
-- **로직**: `src/utils/egovProjectGenerator.ts`
-
-#### 주요 타입
-```typescript
-interface EgovProjectConfig {
-    projectName: string
-    groupID: string
-    outputPath: string
-    template: EgovProjectTemplate
-}
-
-interface EgovProjectTemplate {
-    displayName: string
-    fileName: string
-    pomFile?: string
-}
-```
-
-#### 워크플로우
-1. 사용자가 프로젝트 카테고리 선택 (Web, Mobile, Boot, MSA, Batch 등)
-2. 해당 카테고리의 템플릿 목록 표시
-3. 프로젝트명, Group ID, 출력 경로 입력
-4. 템플릿 ZIP 파일 추출 및 프로젝트 구조 생성
-5. Maven POM 파일 커스터마이징
-6. VS Code에서 프로젝트 열기 옵션 제공
-
-### 2. 코드 생성 (Code Generator)
-
-#### 기능 개요
-- DDL(Data Definition Language) 기반 CRUD 코드 자동 생성
-- Controller, Service, DAO, VO 클래스 생성
-- MyBatis XML 매핑 파일 생성
-
-#### 구현 위치
-- **UI**: `webview-ui/src/components/egov/tabs/CodeView.tsx`
-- **로직**: `src/utils/crudGenerator.ts`, `src/utils/ddlParser.ts`
-
-#### DDL 파싱
-```typescript
-interface TableInfo {
-    tableName: string
-    attributes: ColumnInfo[]
-    pkAttributes: ColumnInfo[]
-}
-
-interface ColumnInfo {
-    name: string
-    type: string
-    isNullable: boolean
-    defaultValue?: string
-    comment?: string
-}
-```
-
-#### 생성되는 파일들
-```
-📁 {package}/
-├── 📁 web/
-│   └── 📄 {Entity}Controller.java     # REST API 컨트롤러
-├── 📁 service/
-│   ├── 📄 {Entity}Service.java        # 비즈니스 로직 인터페이스
-│   └── 📁 impl/
-│       └── 📄 {Entity}ServiceImpl.java # 서비스 구현체
-├── 📁 service/
-│   └── 📄 {Entity}DAO.java            # 데이터 액세스 객체
-└── 📁 vo/
-    └── 📄 {Entity}VO.java             # Value Object
-📁 resources/
-└── 📁 egovframework/mapper/
-    └── 📄 {Entity}_SQL.xml            # MyBatis 매핑
-```
-
-### 3. 설정 생성 (Configuration)
-
-#### 기능 개요
-- Spring Framework 다양한 설정 파일 생성
-- XML, Java Config, YAML, Properties 형식 지원
-- 실시간 미리보기 및 폼 유효성 검증
-
-#### 구현 위치
-- **UI**: `webview-ui/src/components/egov/tabs/ConfigView.tsx`
-- **폼들**: `webview-ui/src/components/egov/forms/`
-- **로직**: `src/utils/configGenerator.ts`
-
-#### 지원하는 설정 유형
-
-| 카테고리 | 설정 유형 | 설명 |
-|---------|----------|------|
-| **Cache** | New Cache | 기본 캐시 설정 |
-| | New Ehcache Configuration | Ehcache 설정 |
-| **Datasource** | New Datasource | 데이터소스 설정 |
-| | New JNDI Datasource | JNDI 데이터소스 |
-| **Transaction** | Datasource Transaction | 데이터소스 기반 트랜잭션 |
-| | JPA Transaction | JPA 트랜잭션 |
-| | JTA Transaction | JTA 트랜잭션 |
-| **ID Generation** | Sequence ID Generation | 시퀀스 기반 ID 생성 |
-| | Table ID Generation | 테이블 기반 ID 생성 |
-| | UUID Generation | UUID 생성 |
-| **Logging** | Console Appender | 콘솔 로그 |
-| | File Appender | 파일 로그 |
-| | Rolling File Appender | 롤링 파일 로그 |
-| | JDBC Appender | 데이터베이스 로그 |
-| **Scheduling** | Bean Job | Bean 기반 작업 |
-| | Method Job | 메소드 기반 작업 |
-| | Simple Trigger | 단순 트리거 |
-| | Cron Trigger | Cron 트리거 |
-
-#### 템플릿 시스템
-- **Handlebars** 템플릿 엔진 사용
-- 다중 출력 형식 지원 (XML, Java, YAML, Properties)
-- 조건부 렌더링 및 헬퍼 함수 지원
-
-```handlebars
-{{!-- Datasource XML 템플릿 예시 --}}
-<bean id="{{txtDatasourceName}}" class="org.springframework.jdbc.datasource.DriverManagerDataSource">
-    <property name="driverClassName" value="{{txtDriver}}" />
-    <property name="url" value="{{txtUrl}}" />
-    <property name="username" value="{{txtUser}}" />
-    {{#if txtPasswd}}
-    <property name="password" value="{{txtPasswd}}" />
-    {{/if}}
-</bean>
-```
 
 ## 🔧 빌드 시스템
 
@@ -516,7 +464,6 @@ vsce publish 1.0.1
 - **린터**: ESLint + TypeScript ESLint
 - **포매터**: Prettier
 - **타입 체킹**: TypeScript
-- **커밋 훅**: Husky (설정 가능)
 
 ## 🔍 트러블슈팅
 
@@ -543,7 +490,7 @@ npm run dev
 ```
 
 #### 3. 템플릿 생성 오류
-- `egovframe-pack` 폴더의 템플릿 파일 존재 확인
+- `templates` 폴더의 템플릿 파일 존재 확인
 - 출력 경로 권한 확인
 - Handlebars 템플릿 문법 오류 검토
 
@@ -557,7 +504,7 @@ npm run dev
 # Extension 로그
 VS Code > View > Output > eGovFrame Initializr
 
-# Webview 로그  
+# Webview 로그
 VS Code > Help > Toggle Developer Tools > Console
 ```
 
@@ -625,14 +572,14 @@ VS Code > Help > Toggle Developer Tools > Console
      size?: 'sm' | 'md' | 'lg'
    }
 
-   export const NewComponent: React.FC<NewComponentProps> = ({ 
-     variant = 'primary', 
+   export const NewComponent: React.FC<NewComponentProps> = ({
+     variant = 'primary',
      size = 'md',
      className,
-     ...props 
+     ...props
    }) => {
      const theme = useVSCodeTheme()
-     
+
      return (
        <div
          className={cn('custom-component', className)}
@@ -676,12 +623,12 @@ VS Code > Help > Toggle Developer Tools > Console
 
 1. **템플릿 파일 생성**
    ```
-   webview-ui/src/components/egov/templates/config/{category}/{template}.hbs
+   templates/config/{category}/{template}.hbs
    ```
 
 2. **메타데이터 추가**
    ```json
-   // templates-context-xml.json
+   // templates/templates-context-xml.json
    {
        "displayName": "Category > New Template",
        "templateFolder": "category",
@@ -698,7 +645,7 @@ VS Code > Help > Toggle Developer Tools > Console
    ```tsx
    // webview-ui/src/components/egov/forms/CategoryTemplateForm.tsx
    import { Button, TextField, Select, RadioGroup } from "../../ui"
-   
+
    const CategoryTemplateForm: React.FC<FormProps> = ({ onSubmit }) => {
      return (
        <form onSubmit={onSubmit}>
