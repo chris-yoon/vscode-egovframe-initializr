@@ -5,17 +5,30 @@ import { getTemplateContext } from "../../../utils/templateContext"
 import { WebviewMessage, ExtensionResponse } from "../../../utils/messageTypes"
 import { createSelectOutputPathMessage } from "../../../utils/egovUtils"
 import { vscode } from "../../../utils/vscode"
+import { useCodeViewState } from "../../../context/EgovTabsStateContext"
 
 const CodeView = () => {
 	console.log("CodeView component rendering...")
 
-	const [ddlContent, setDdlContent] = useState("")
-	const [parsedDDL, setParsedDDL] = useState<ParsedDDL | null>(null)
-	const [isValid, setIsValid] = useState(false)
-	const [isLoading, setIsLoading] = useState(false)
-	const [error, setError] = useState("")
-	const [outputPath, setOutputPath] = useState<string>("")
-	const [packageName, setPackageName] = useState<string>("com.example.project")
+	const { state, updateState } = useCodeViewState()
+	const {
+		ddlContent,
+		parsedDDL,
+		isValid,
+		isLoading,
+		error,
+		outputPath,
+		packageName
+	} = state
+
+	// Helper functions to update state
+	const setDdlContent = (value: string) => updateState({ ddlContent: value })
+	const setParsedDDL = (value: ParsedDDL | null) => updateState({ parsedDDL: value })
+	const setIsValid = (value: boolean) => updateState({ isValid: value })
+	const setIsLoading = (value: boolean) => updateState({ isLoading: value })
+	const setError = (value: string) => updateState({ error: value })
+	const setOutputPath = (value: string) => updateState({ outputPath: value })
+	const setPackageName = (value: string) => updateState({ packageName: value })
 
 	// DDL 유효성 검사 및 파싱
 	useEffect(() => {

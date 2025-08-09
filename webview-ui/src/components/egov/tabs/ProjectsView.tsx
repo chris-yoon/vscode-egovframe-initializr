@@ -17,17 +17,45 @@ import {
 	createGenerateProjectByCommandMessage,
 	validateFileSystemPath,
 } from "../../../utils/egovUtils"
+import { useProjectsViewState } from "../../../context/EgovTabsStateContext"
 
 export const ProjectsView = () => {
-	const [selectedCategory, setSelectedCategory] = useState<string>("All")
-	const [selectedTemplate, setSelectedTemplate] = useState<ProjectTemplate | null>(null)
-	const [projectName, setProjectName] = useState<string>("")
-	const [groupID, setGroupID] = useState<string>(getDefaultGroupId())
-	const [outputPath, setOutputPath] = useState<string>("")
-	const [generationMethod, setGenerationMethod] = useState<"form" | "command">("form")
+	const { state, updateState } = useProjectsViewState()
+	const {
+		selectedCategory,
+		outputPath,
+		packageName,
+		groupId,
+		artifactId,
+		version,
+		description,
+		generationMode
+	} = state
+
+	// Map groupId to groupID for compatibility
+	const groupID = groupId
+	const setGroupID = (value: string) => updateState({ groupId: value })
+	
+	// Get selectedTemplate from state
+	const { selectedTemplate } = state
+	
+	// Local states that don't need persistence
 	const [validationErrors, setValidationErrors] = useState<string[]>([])
 	const [isGenerating, setIsGenerating] = useState<boolean>(false)
 	const [generationStatus, setGenerationStatus] = useState<string>("")
+	
+	// Extract projectName from artifactId for compatibility
+	const projectName = artifactId
+	const setProjectName = (value: string) => updateState({ artifactId: value })
+	
+	// Map generationMethod to generationMode
+	const generationMethod = generationMode
+	const setGenerationMethod = (value: "form" | "command") => updateState({ generationMode: value })
+	
+	// Helper functions
+	const setSelectedCategory = (value: string) => updateState({ selectedCategory: value })
+	const setSelectedTemplate = (template: ProjectTemplate | null) => updateState({ selectedTemplate: template })
+	const setOutputPath = (value: string) => updateState({ outputPath: value })
 
 	const filteredTemplates = getTemplatesByCategory(selectedCategory)
 

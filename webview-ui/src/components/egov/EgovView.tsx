@@ -78,9 +78,15 @@ const EgovView = memo(({ onDone, initialTab }: EgovViewProps) => {
 
 				{/* Content container */}
 				<div style={{ width: "100%" }}>
-					{activeTab === "projects" && <ProjectsView />}
-					{activeTab === "code" && <CodeView />}
-					{activeTab === "config" && <ConfigView />}
+					<div style={{ display: activeTab === "projects" ? "block" : "none" }}>
+						<ProjectsView />
+					</div>
+					<div style={{ display: activeTab === "code" ? "block" : "none" }}>
+						<CodeView />
+					</div>
+					<div style={{ display: activeTab === "config" ? "block" : "none" }}>
+						<ConfigView />
+					</div>
 				</div>
 			</div>
 		</div>
