@@ -60,7 +60,18 @@ interface EgovTabsStateContextType {
 
 // 초기 상태
 const initialCodeViewState: CodeViewState = {
-  ddlContent: '',
+  ddlContent: `-- 간단한 게시판 테이블 예시
+-- 이 예시를 수정하여 원하는 테이블 구조를 만들어보세요!
+
+CREATE TABLE board (
+  id INT PRIMARY KEY AUTO_INCREMENT COMMENT '게시글 번호',
+  title VARCHAR(200) NOT NULL COMMENT '제목',
+  content TEXT COMMENT '내용',
+  author VARCHAR(100) NOT NULL COMMENT '작성자',
+  view_count INT DEFAULT 0 COMMENT '조회수',
+  created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP COMMENT '작성일시',
+  updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '수정일시'
+) COMMENT '게시판 테이블';`,
   parsedDDL: null,
   isValid: false,
   isLoading: false,
