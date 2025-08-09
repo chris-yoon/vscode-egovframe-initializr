@@ -10,6 +10,13 @@ interface CodeViewState {
   error: string
   outputPath: string
   packageName: string
+  // 미리보기 관련 상태 추가
+  previews: { [key: string]: string } | null
+  selectedPreviewTemplate: string
+  isPreviewLoading: boolean
+  previewError: string
+  // 자동 미리보기 업데이트 옵션
+  autoUpdatePreview: boolean
 }
 
 // ProjectsView 상태
@@ -59,7 +66,14 @@ const initialCodeViewState: CodeViewState = {
   isLoading: false,
   error: '',
   outputPath: '',
-  packageName: 'com.example.project'
+  packageName: 'com.example.project',
+  // 미리보기 관련 초기 상태
+  previews: null,
+  selectedPreviewTemplate: 'vo',
+  isPreviewLoading: false,
+  previewError: '',
+  // 자동 미리보기 업데이트 옵션 (기본값: false)
+  autoUpdatePreview: false
 }
 
 const initialProjectsViewState: ProjectsViewState = {

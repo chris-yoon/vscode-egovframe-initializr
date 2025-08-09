@@ -38,3 +38,10 @@ export type ExtensionMessage =
 	| {
 			type: "relinquishControl"
 	  }
+	| {
+			type: "validationResult"
+			isValid: boolean
+			previews?: { [key: string]: string }
+			packageName?: string
+			error?: string
+	  }

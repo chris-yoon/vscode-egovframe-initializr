@@ -207,6 +207,67 @@ export class Controller {
 				break
 			}
 
+			case "validateDDLOnly": {
+				if (message.ddl) {
+					try {
+						console.log("Starting DDL validation only:", message.ddl)
+						const { validateDDLOnly } = await import("../../utils/previewGenerator")
+						const result = await validateDDLOnly(message.ddl, this.context, message.packageName)
+						await this.postMessageToWebview({
+							type: "validationResult",
+							isValid: result.isValid,
+							packageName: result.packageName,
+							error: result.error
+						})
+					} catch (error) {
+						console.error("DDL validation error:", error)
+						await this.postMessageToWebview({
+							type: "validationResult",
+							isValid: false,
+							error: error instanceof Error ? error.message : "Validation failed"
+						})
+					}
+				} else {
+					await this.postMessageToWebview({
+						type: "validationResult",
+						isValid: false,
+						error: "No DDL provided for validation"
+					})
+				}
+				break
+			}
+
+			case "validateAndPreview": {
+				if (message.ddl) {
+					try {
+						console.log("Starting DDL validation and preview generation:", message.ddl)
+						const { validateDDLAndGeneratePreviews } = await import("../../utils/previewGenerator")
+						const result = await validateDDLAndGeneratePreviews(message.ddl, this.context, message.packageName)
+						await this.postMessageToWebview({
+							type: "validationResult",
+							isValid: result.isValid,
+							previews: result.previews,
+							packageName: result.packageName,
+							error: result.error
+						})
+					} catch (error) {
+						console.error("DDL validation and preview error:", error)
+						await this.postMessageToWebview({
+							type: "validationResult",
+							isValid: false,
+							error: error instanceof Error ? error.message : "Validation and preview failed"
+						})
+					}
+				} else {
+					await this.postMessageToWebview({
+						type: "validationResult",
+						isValid: false,
+						error: "No DDL provided for validation"
+					})
+				}
+				break
+			}
+
 			case "transferDDLToCodeView": {
 				// Forward DDL to CodeView via webview message
 				console.log("[Controller] Received transferDDLToCodeView message with DDL:", message.ddl)

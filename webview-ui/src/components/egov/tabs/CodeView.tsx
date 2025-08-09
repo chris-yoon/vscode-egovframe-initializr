@@ -6,6 +6,7 @@ import { WebviewMessage, ExtensionResponse } from "../../../utils/messageTypes"
 import { createSelectOutputPathMessage } from "../../../utils/egovUtils"
 import { vscode } from "../../../utils/vscode"
 import { useCodeViewState } from "../../../context/EgovTabsStateContext"
+import CodePreview from "../CodePreview"
 
 const CodeView = () => {
 	console.log("CodeView component rendering...")
@@ -18,7 +19,13 @@ const CodeView = () => {
 		isLoading,
 		error,
 		outputPath,
-		packageName
+		packageName,
+		// 미리보기 관련 상태
+		previews,
+		selectedPreviewTemplate,
+		isPreviewLoading,
+		previewError,
+		autoUpdatePreview
 	} = state
 
 	// Helper functions to update state
@@ -29,8 +36,15 @@ const CodeView = () => {
 	const setError = (value: string) => updateState({ error: value })
 	const setOutputPath = (value: string) => updateState({ outputPath: value })
 	const setPackageName = (value: string) => updateState({ packageName: value })
+	
+	// 미리보기 관련 Helper functions
+	const setPreviews = (value: { [key: string]: string } | null) => updateState({ previews: value })
+	const setSelectedPreviewTemplate = (value: string) => updateState({ selectedPreviewTemplate: value })
+	const setIsPreviewLoading = (value: boolean) => updateState({ isPreviewLoading: value })
+	const setPreviewError = (value: string) => updateState({ previewError: value })
+	const setAutoUpdatePreview = (value: boolean) => updateState({ autoUpdatePreview: value })
 
-	// DDL 유효성 검사 및 파싱
+	// DDL 유효성 검사 및 파싱 (빠른 검증만 수행)
 	useEffect(() => {
 		console.log("DDL validation effect running...", ddlContent.length)
 
@@ -38,28 +52,58 @@ const CodeView = () => {
 			setIsValid(false)
 			setParsedDDL(null)
 			setError("")
+			setPreviews(null)
+			setPreviewError("")
 			return
 		}
 
-		try {
-			const isValidDDL = validateDDL(ddlContent)
-			setIsValid(isValidDDL)
+		// DDL이 변경되면 기존 미리보기 무효화
+		setPreviews(null)
+		setPreviewError("")
 
-			if (isValidDDL) {
-				const parsed = parseDDL(ddlContent)
-				setParsedDDL(parsed)
-				setError("")
-			} else {
+		// 디바운스 적용 (300ms로 단축)
+		const debounceTimer = setTimeout(() => {
+			try {
+				const isValidDDL = validateDDL(ddlContent)
+				setIsValid(isValidDDL)
+
+				if (isValidDDL) {
+					const parsed = parseDDL(ddlContent)
+					setParsedDDL(parsed)
+					setError("")
+					
+					// 빠른 검증만 요청 (미리보기는 나중에)
+					vscode.postMessage({
+						type: "validateDDLOnly",
+						ddl: ddlContent,
+						packageName: packageName
+					})
+				} else {
+					setParsedDDL(null)
+					setError("Invalid DDL format")
+					setPreviews(null)
+					setPreviewError("")
+				}
+			} catch (err) {
+				console.error("DDL parsing error:", err)
+				setIsValid(false)
 				setParsedDDL(null)
-				setError("Invalid DDL format")
+				setError(err instanceof Error ? err.message : "Parsing error")
+				setPreviews(null)
+				setPreviewError("")
 			}
-		} catch (err) {
-			console.error("DDL parsing error:", err)
-			setIsValid(false)
-			setParsedDDL(null)
-			setError(err instanceof Error ? err.message : "Parsing error")
+		}, 300) // 500ms에서 300ms로 단축
+
+		return () => clearTimeout(debounceTimer)
+	}, [ddlContent, packageName])
+
+	// 자동 미리보기 업데이트 (DDL이 유효하고 자동 업데이트가 활성화된 경우)
+	useEffect(() => {
+		if (isValid && ddlContent.trim() && autoUpdatePreview && !previews) {
+			console.log("Auto-updating preview due to DDL change...")
+			handleRequestPreview()
 		}
-	}, [ddlContent])
+	}, [isValid, ddlContent, autoUpdatePreview, previews])
 
 	// VSCode 익스텐션으로부터 메시지 수신
 	useEffect(() => {
@@ -117,6 +161,28 @@ const CodeView = () => {
 							}, 100)
 						} else {
 							console.warn("[CodeView] transferDDLToCodeView message has no DDL")
+						}
+						break
+					case "validationResult":
+						console.log("[CodeView] Received validationResult message:", message)
+						setIsPreviewLoading(false)
+						if (message.isValid) {
+							setIsValid(true)
+							if (message.previews) {
+								setPreviews(message.previews)
+								setPreviewError("")
+							}
+							if (message.error && message.error.includes('⚠️ 경고:')) {
+								setError(message.error)
+							} else {
+								setError("")
+							}
+						} else {
+							setIsValid(false)
+							setPreviews(null)
+							if (message.error) {
+								setPreviewError(message.error)
+							}
 						}
 						break
 					default:
@@ -235,6 +301,19 @@ const CodeView = () => {
 			console.error("Error sending selectOutputPath message:", err)
 			setError(`Failed to send message to extension: ${err instanceof Error ? err.message : String(err)}`)
 		}
+	}
+
+	// 미리보기 요청 함수
+	const handleRequestPreview = () => {
+		if (!isValid || !ddlContent.trim()) return
+
+		setIsPreviewLoading(true)
+		setPreviewError("")
+		vscode.postMessage({
+			type: "validateAndPreview",
+			ddl: ddlContent,
+			packageName: packageName
+		})
 	}
 
 	console.log("CodeView rendering with state:", {
@@ -388,6 +467,20 @@ const CodeView = () => {
 						</div>
 					</div>
 				)}
+
+				{/* Code Preview */}
+				<CodePreview
+					previews={previews}
+					selectedTemplate={selectedPreviewTemplate}
+					onTemplateChange={setSelectedPreviewTemplate}
+					isLoading={isPreviewLoading}
+					error={previewError}
+					packageName={packageName}
+					onRequestPreview={handleRequestPreview}
+					isValid={isValid}
+					autoUpdatePreview={autoUpdatePreview}
+					onAutoUpdateChange={setAutoUpdatePreview}
+				/>
 
 				{/* Configuration Section */}
 				{isValid && parsedDDL && (

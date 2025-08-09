@@ -30,6 +30,18 @@ export interface SelectOutputPathMessage {
 	type: "selectOutputPath"
 }
 
+export interface ValidateAndPreviewMessage {
+	type: "validateAndPreview"
+	ddl: string
+	packageName?: string
+}
+
+export interface ValidateDDLOnlyMessage {
+	type: "validateDDLOnly"
+	ddl: string
+	packageName?: string
+}
+
 export type WebviewMessage =
 	| GenerateCodeMessage
 	| UploadTemplatesMessage
@@ -37,6 +49,8 @@ export type WebviewMessage =
 	| InsertSampleDDLMessage
 	| GetWorkspacePathMessage
 	| SelectOutputPathMessage
+	| ValidateAndPreviewMessage
+	| ValidateDDLOnlyMessage
 
 export interface ErrorResponse {
 	type: "error"
@@ -63,9 +77,18 @@ export interface CurrentWorkspacePathResponse {
 	text: string
 }
 
+export interface ValidationResultResponse {
+	type: "validationResult"
+	isValid: boolean
+	previews?: { [key: string]: string }
+	packageName?: string
+	error?: string
+}
+
 export type ExtensionResponse =
 	| ErrorResponse
 	| SuccessResponse
 	| SampleDDLResponse
 	| SelectedOutputPathResponse
 	| CurrentWorkspacePathResponse
+	| ValidationResultResponse
