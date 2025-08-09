@@ -9,7 +9,8 @@
 - 🚀 **프로젝트 생성**: eGovFrame 템플릿 기반 프로젝트 자동 생성
 - ⚙️ **설정 관리**: Spring Framework 설정 파일 (XML, Java Config, YAML, Properties) 생성
 - 📝 **코드 생성**: DDL 기반 CRUD 코드 자동 생성
-- 🎨 **통합 UI**: VS Code 내장 웹뷰 기반 사용자 인터페이스
+- 🎨 **VSCode 네이티브 UI**: VSCode 테마 통합 커스텀 React 컴포넌트 기반 사용자 인터페이스
+- 🌓 **다크/라이트 테마**: VSCode 테마 자동 연동 및 실시간 전환 지원
 
 ## 🏗️ 아키텍처 구조
 
@@ -97,21 +98,35 @@ src/
 webview-ui/
 ├── 📄 package.json             # React 앱 의존성
 ├── 📄 vite.config.ts           # Vite 빌드 설정
-├── 📄 tailwind.config.js       # TailwindCSS 설정
+├── 📄 tailwind.config.js       # TailwindCSS 설정 (VSCode 테마 통합)
 └── 📁 src/
     ├── 📄 App.tsx              # 메인 React 앱
     ├── 📄 main.tsx             # React 진입점
     ├── 📁 components/
+    │   ├── 📁 ui/                      # 커스텀 UI 컴포넌트 라이브러리
+    │   │   ├── 📄 Button.tsx           # VSCode 스타일 버튼
+    │   │   ├── 📄 TextField.tsx        # VSCode 스타일 입력 필드
+    │   │   ├── 📄 TextArea.tsx         # VSCode 스타일 텍스트 영역
+    │   │   ├── 📄 Select.tsx           # VSCode 스타일 드롭다운
+    │   │   ├── 📄 RadioGroup.tsx       # VSCode 스타일 라디오 그룹
+    │   │   ├── 📄 Checkbox.tsx         # VSCode 스타일 체크박스
+    │   │   ├── 📄 ProgressRing.tsx     # VSCode 스타일 프로그레스
+    │   │   ├── 📄 Link.tsx             # VSCode 스타일 링크
+    │   │   ├── 📄 Divider.tsx          # VSCode 스타일 구분선
+    │   │   ├── 📄 index.ts             # 컴포넌트 라이브러리 엔트리포인트
+    │   │   └── 📄 VSCodeThemeProvider.tsx # VSCode 테마 컨텍스트
     │   └── 📁 egov/
     │       ├── 📄 EgovView.tsx         # 메인 탭 인터페이스
     │       ├── 📁 tabs/
     │       │   ├── 📄 ProjectsView.tsx  # 프로젝트 생성 탭
-    │       │   ├── 📄 CodeView.tsx      # 코드 생성 탭
-    │       │   └── 📄 ConfigView.tsx    # 설정 생성 탭
-    │       ├── 📁 forms/               # 다양한 설정 폼들
+    │       │   ├── 📄 CodeView.tsx      # 코드 생성 탭 (네이티브 textarea)
+    │       │   └── 📄 ConfigView.tsx    # 설정 생성 탭 (네이티브 select)
+    │       ├── 📁 forms/               # 다양한 설정 폼들 (커스텀 컴포넌트 사용)
     │       │   ├── 📄 DatasourceForm.tsx
     │       │   ├── 📄 CacheForm.tsx
     │       │   ├── 📄 LoggingForm.tsx
+    │       │   ├── 📄 TransactionForm.tsx
+    │       │   ├── 📄 SchedulingForm.tsx
     │       │   └── 📄 ...
     │       └── 📁 templates/           # Handlebars 템플릿
     │           ├── 📄 templates-context-xml.json
@@ -126,7 +141,86 @@ webview-ui/
     └── 📁 utils/
         ├── 📄 templateUtils.ts
         ├── 📄 ddlParser.ts
+        ├── 📄 cn.ts                    # 클래스 네임 유틸리티
         └── 📄 egovUtils.ts
+```
+
+## 🎨 UI 컴포넌트 시스템
+
+### VSCode 테마 통합 아키텍처
+
+프로젝트는 VSCode의 네이티브 디자인 시스템과 완전히 통합된 커스텀 React 컴포넌트 라이브러리를 구축했습니다.
+
+#### 핵심 설계 원칙
+- **네이티브 VSCode 스타일**: 모든 UI 컴포넌트가 VSCode 기본 테마와 일관성 유지
+- **다크/라이트 테마 지원**: VSCode CSS 변수를 활용한 자동 테마 전환
+- **접근성 우선**: WCAG 2.1 가이드라인 준수
+- **타입 안전성**: 완전한 TypeScript 지원
+
+#### 커스텀 UI 컴포넌트 라이브러리
+
+| 컴포넌트 | 설명 | VSCode 테마 변수 |
+|----------|------|------------------|
+| **Button** | Primary, Secondary, Ghost 버튼 | `--vscode-button-*` |
+| **TextField** | 텍스트 입력 필드 | `--vscode-input-*` |
+| **TextArea** | 멀티라인 텍스트 입력 | `--vscode-input-*` |
+| **Select** | 드롭다운 선택 박스 | `--vscode-input-*` |
+| **RadioGroup** | 라디오 버튼 그룹 | `--vscode-checkbox-*` |
+| **Checkbox** | 체크박스 입력 | `--vscode-checkbox-*` |
+| **ProgressRing** | 로딩 인디케이터 | `--vscode-progressBar-*` |
+| **Link** | 링크 컴포넌트 | `--vscode-textLink-*` |
+| **Divider** | 구분선 | `--vscode-panel-border` |
+
+#### VSCode 테마 변수 활용
+```typescript
+// 예시: Button 컴포넌트의 테마 스타일
+const getButtonStyles = (variant: 'primary' | 'secondary') => ({
+  backgroundColor: variant === 'primary' 
+    ? 'var(--vscode-button-background)'
+    : 'var(--vscode-button-secondaryBackground)',
+  color: variant === 'primary'
+    ? 'var(--vscode-button-foreground)' 
+    : 'var(--vscode-button-secondaryForeground)',
+  border: '1px solid var(--vscode-button-border)',
+  // 호버 효과
+  '&:hover': {
+    backgroundColor: variant === 'primary'
+      ? 'var(--vscode-button-hoverBackground)'
+      : 'var(--vscode-button-secondaryHoverBackground)'
+  }
+})
+```
+
+#### 네이티브 HTML 엘리먼트 활용
+성능 최적화와 브라우저 호환성을 위해 핵심 입력 컴포넌트들은 네이티브 HTML 엘리먼트를 직접 사용:
+
+- **CodeView DDL TextArea**: `<textarea>` + VSCode 테마 인라인 스타일
+- **Select 박스들**: `<select>` + `appearance: none` + VSCode 테마 스타일
+- **모든 버튼들**: `<button>` + 동적 이벤트 핸들러
+
+#### 테마 시스템 구조
+```typescript
+// VSCode 테마 컨텍스트
+interface VSCodeTheme {
+  colors: {
+    // 배경색
+    background: string
+    inputBackground: string
+    buttonBackground: string
+    
+    // 전경색
+    foreground: string
+    inputForeground: string
+    buttonForeground: string
+    
+    // 테두리
+    inputBorder: string
+    focusBorder: string
+  }
+  spacing: { xs: string, sm: string, md: string, lg: string }
+  borderRadius: { sm: string, md: string, lg: string }
+  fontSize: { xs: string, sm: string, md: string, lg: string }
+}
 ```
 
 ## 🚀 주요 기능별 상세 설명
@@ -298,9 +392,10 @@ npm run lint
 
 #### 주요 특징
 - **React + SWC**: 빠른 개발 서버 및 빌드
-- **TailwindCSS**: 유틸리티 우선 CSS 프레임워크
+- **TailwindCSS + VSCode 테마**: 유틸리티 우선 CSS + VSCode 네이티브 스타일
+- **커스텀 UI 라이브러리**: VSCode 테마 통합 React 컴포넌트
 - **HMR**: Hot Module Replacement로 빠른 개발
-- **타입스크립트**: 완전한 타입 안정성
+- **타입스크립트**: 완전한 타입 안정성 (UI 컴포넌트 포함)
 - **테스트**: Vitest + JSdom 환경
 
 #### 빌드 명령어
@@ -409,11 +504,12 @@ vsce publish 1.0.1
 ### Frontend (Webview UI)
 - **프레임워크**: React 18
 - **언어**: TypeScript
-- **빌드**: Vite
-- **스타일링**: TailwindCSS + Styled Components
-- **UI 키트**: @vscode/webview-ui-toolkit, @heroui/react
-- **상태 관리**: React Context API
-- **폼 처리**: React Hook Form (추후 도입 권장)
+- **빌드**: Vite + SWC
+- **스타일링**: TailwindCSS + VSCode 테마 통합
+- **UI 컴포넌트**: 커스텀 React 컴포넌트 (VSCode 네이티브 스타일)
+- **테마 시스템**: VSCode CSS 변수 기반 다크/라이트 테마 지원
+- **상태 관리**: React Context API + 커스텀 훅
+- **폼 처리**: 네이티브 HTML 폼 + React 상태 관리
 - **테스트**: Vitest + Testing Library
 
 ### 개발 도구
@@ -474,8 +570,11 @@ VS Code > Help > Toggle Developer Tools > Console
 
 ### Webview UI 최적화
 - **코드 분할**: Vite의 동적 import 활용
+- **네이티브 HTML 엘리먼트**: 성능 최적화를 위해 textarea, select, button 직접 사용
+- **VSCode CSS 변수**: 런타임 테마 전환 최적화
 - **리소스 최적화**: 이미지 및 폰트 최적화
 - **메모이제이션**: React.memo, useMemo 적극 활용
+- **경량 UI 라이브러리**: 외부 UI 라이브러리 제거로 번들 크기 최소화
 
 ## 🤝 기여 가이드
 
@@ -512,6 +611,67 @@ VS Code > Help > Toggle Developer Tools > Console
 - **파일명**: kebab-case 권장
 - **커밋 메시지**: Conventional Commits 규칙 준수
 
+### 새로운 UI 컴포넌트 추가하기
+
+1. **컴포넌트 파일 생성**
+   ```tsx
+   // webview-ui/src/components/ui/NewComponent.tsx
+   import React from 'react'
+   import { cn } from '../../utils/cn'
+   import { useVSCodeTheme } from './VSCodeThemeProvider'
+
+   export interface NewComponentProps extends React.HTMLAttributes<HTMLDivElement> {
+     variant?: 'primary' | 'secondary'
+     size?: 'sm' | 'md' | 'lg'
+   }
+
+   export const NewComponent: React.FC<NewComponentProps> = ({ 
+     variant = 'primary', 
+     size = 'md',
+     className,
+     ...props 
+   }) => {
+     const theme = useVSCodeTheme()
+     
+     return (
+       <div
+         className={cn('custom-component', className)}
+         style={{
+           backgroundColor: 'var(--vscode-input-background)',
+           color: 'var(--vscode-input-foreground)',
+           border: '1px solid var(--vscode-input-border)',
+           // VSCode 테마 변수 활용
+         }}
+         {...props}
+       />
+     )
+   }
+   ```
+
+2. **컴포넌트 라이브러리 등록**
+   ```tsx
+   // webview-ui/src/components/ui/index.ts
+   export { NewComponent, type NewComponentProps } from './NewComponent'
+   ```
+
+3. **네이티브 HTML 엘리먼트 활용 (권장)**
+   ```tsx
+   // 성능 최적화를 위해 네이티브 엘리먼트 직접 사용
+   <input
+     style={{
+       backgroundColor: 'var(--vscode-input-background)',
+       color: 'var(--vscode-input-foreground)',
+       border: '1px solid var(--vscode-input-border)',
+       appearance: 'none',
+       WebkitAppearance: 'none',
+       MozAppearance: 'none',
+     }}
+     onFocus={(e) => {
+       (e.target as HTMLInputElement).style.borderColor = 'var(--vscode-focusBorder)'
+     }}
+   />
+   ```
+
 ### 새로운 템플릿 추가하기
 
 1. **템플릿 파일 생성**
@@ -534,9 +694,21 @@ VS Code > Help > Toggle Developer Tools > Console
    }
    ```
 
-3. **폼 컴포넌트 생성**
+3. **폼 컴포넌트 생성 (커스텀 UI 컴포넌트 사용)**
    ```tsx
    // webview-ui/src/components/egov/forms/CategoryTemplateForm.tsx
+   import { Button, TextField, Select, RadioGroup } from "../../ui"
+   
+   const CategoryTemplateForm: React.FC<FormProps> = ({ onSubmit }) => {
+     return (
+       <form onSubmit={onSubmit}>
+         <TextField label="Template Name" />
+         <Select options={[...]} />
+         <RadioGroup options={[...]} />
+         <Button variant="primary" type="submit">Generate</Button>
+       </form>
+     )
+   }
    ```
 
 ## 📚 참고 자료
