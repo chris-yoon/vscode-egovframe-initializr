@@ -1,6 +1,6 @@
 import { Button, TextArea, Link, ProgressRing, TextField } from "../../ui"
 import { useState, useEffect } from "react"
-import { parseDDL, validateDDL, generateSampleDDL, ParsedDDL } from "../../../utils/ddlParser"
+import { parseDDL, validateDDL, ParsedDDL } from "../../../utils/ddlParser"
 import { getTemplateContext } from "../../../utils/templateContext"
 import { WebviewMessage, ExtensionResponse } from "../../../utils/messageTypes"
 import { createSelectOutputPathMessage } from "../../../utils/egovUtils"
@@ -12,9 +12,7 @@ import CodePreview from "../CodePreview"
 const SAMPLE_DDLS = {
   board: {
     name: "게시판 테이블 (기본)",
-    ddl: `-- 간단한 게시판 테이블 예시
--- 이 예시를 수정하여 원하는 테이블 구조를 만들어보세요!
-
+    ddl: `
 CREATE TABLE board (
   id INT PRIMARY KEY AUTO_INCREMENT COMMENT '게시글 번호',
   title VARCHAR(200) NOT NULL COMMENT '제목',
@@ -27,8 +25,7 @@ CREATE TABLE board (
   },
   user: {
     name: "사용자 테이블",
-    ddl: `-- 사용자 관리 테이블 예시
-
+    ddl: `
 CREATE TABLE users (
   id INT PRIMARY KEY AUTO_INCREMENT COMMENT '사용자 번호',
   username VARCHAR(50) UNIQUE NOT NULL COMMENT '사용자명',
@@ -43,8 +40,7 @@ CREATE TABLE users (
   },
   product: {
     name: "상품 테이블",
-    ddl: `-- 상품 관리 테이블 예시
-
+    ddl: `
 CREATE TABLE products (
   id INT PRIMARY KEY AUTO_INCREMENT COMMENT '상품 번호',
   name VARCHAR(200) NOT NULL COMMENT '상품명',
@@ -60,8 +56,7 @@ CREATE TABLE products (
   },
   order: {
     name: "주문 테이블 (관계)",
-    ddl: `-- 주문 관리 테이블 예시 (관계 테이블)
-
+    ddl: `
 CREATE TABLE orders (
   id INT PRIMARY KEY AUTO_INCREMENT COMMENT '주문 번호',
   user_id INT NOT NULL COMMENT '사용자 번호',
@@ -77,8 +72,7 @@ CREATE TABLE orders (
   },
   comment: {
     name: "댓글 테이블 (관계)",
-    ddl: `-- 댓글 테이블 예시 (관계 테이블)
-
+    ddl: `
 CREATE TABLE comments (
   id INT PRIMARY KEY AUTO_INCREMENT COMMENT '댓글 번호',
   board_id INT NOT NULL COMMENT '게시글 번호',
@@ -334,13 +328,8 @@ const CodeView = () => {
 
 	const handleDownloadTemplateContext = () => {
 		console.log("Download template context clicked")
-		if (!isValid || !parsedDDL) return
-
 		try {
-			const context = getTemplateContext(parsedDDL.tableName, parsedDDL.attributes, parsedDDL.pkAttributes)
-
-			setIsLoading(true)
-			setError("")
+			const context = getTemplateContext(parsedDDL!.tableName, parsedDDL!.attributes, parsedDDL!.pkAttributes)
 			vscode.postMessage({
 				type: "downloadTemplateContext",
 				ddl: ddlContent,
@@ -349,17 +338,6 @@ const CodeView = () => {
 		} catch (err) {
 			console.error("Error in downloadTemplateContext:", err)
 			setError(err instanceof Error ? err.message : "Context generation error")
-		}
-	}
-
-	const handleInsertSampleDDL = () => {
-		console.log("Insert sample DDL clicked")
-		try {
-			const sampleDDL = generateSampleDDL()
-			setDdlContent(sampleDDL)
-		} catch (err) {
-			console.error("Error generating sample DDL:", err)
-			setError("Failed to generate sample DDL")
 		}
 	}
 
@@ -448,41 +426,6 @@ const CodeView = () => {
 							GitHub
 						</Link>
 					</p>
-				</div>
-
-				{/* Toolbar */}
-				<div style={{ display: "flex", gap: "8px", marginBottom: "16px" }}>
-					<button
-						style={{
-							backgroundColor: "var(--vscode-button-secondaryBackground)",
-							color: "var(--vscode-button-secondaryForeground)",
-							border: "1px solid var(--vscode-button-border)",
-							borderRadius: "4px",
-							padding: "8px 12px",
-							cursor: "pointer",
-							display: "inline-flex",
-							alignItems: "center",
-							fontSize: "13px",
-							fontFamily: "inherit",
-							outline: "none",
-						}}
-						onMouseOver={(e) => {
-							(e.target as HTMLButtonElement).style.backgroundColor = "var(--vscode-button-secondaryHoverBackground)"
-						}}
-						onMouseOut={(e) => {
-							(e.target as HTMLButtonElement).style.backgroundColor = "var(--vscode-button-secondaryBackground)"
-						}}
-						onFocus={(e) => {
-							(e.target as HTMLButtonElement).style.outline = "1px solid var(--vscode-focusBorder)"
-						}}
-						onBlur={(e) => {
-							(e.target as HTMLButtonElement).style.outline = "none"
-						}}
-						onClick={handleInsertSampleDDL}
-					>
-						<span className="codicon codicon-code" style={{ marginRight: "6px" }}></span>
-						Insert Sample DDL
-					</button>
 				</div>
 
 				{/* DDL Input Section */}
