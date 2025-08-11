@@ -1,8 +1,8 @@
-# eGovFrame Initializr - VS Code Extension
+# eGovFrame VSCode Initializr
 
 ## 📋 프로젝트 개요
 
-**eGovFrame Initializr**는 전자정부 표준프레임워크(eGovFrame) 프로젝트 생성 및 설정을 위한 Visual Studio Code 확장 프로그램입니다. 개발자가 eGovFrame 기반 프로젝트를 쉽고 빠르게 시작할 수 있도록 도와주는 통합 도구입니다.
+**eGovFrame VSCode Initializr**는 전자정부 표준프레임워크(eGovFrame) 프로젝트 생성 및 설정을 위한 Visual Studio Code 확장 프로그램입니다. 개발자가 eGovFrame 기반 프로젝트를 쉽고 빠르게 시작할 수 있도록 도와주는 통합 도구입니다.
 
 ### 주요 기능
 
@@ -60,7 +60,7 @@ graph TB
 
 ### 루트 구조
 ```
-vscode-egovframe-initializr/
+egovframe-vscode-initializr/
 ├── 📁 assets/              # 아이콘 및 리소스
 ├── 📁 src/                 # Extension 소스코드
 ├── 📁 webview-ui/          # React 웹뷰 UI
@@ -645,7 +645,7 @@ VS Code > Help > Toggle Developer Tools > Console
 ### 개발 참여 절차
 1. **포크 및 클론**
    ```bash
-   git clone https://github.com/your-username/vscode-egovframe-initializr.git
+   git clone https://github.com/egovframework/egovframe-vscode-initializr.git
    ```
 
 2. **브랜치 생성**
