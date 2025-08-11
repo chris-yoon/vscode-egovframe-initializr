@@ -28,11 +28,11 @@ const SchedulingForm: React.FC<FormComponentProps> = ({ onSubmit, onCancel, temp
 
 	// Determine form type based on template webView
 	const getFormType = () => {
-		if (template.webView.includes("beanJob")) return "beanJob"
-		if (template.webView.includes("methodJob")) return "methodJob"
-		if (template.webView.includes("cronTrigger")) return "cronTrigger"
-		if (template.webView.includes("simpleTrigger")) return "simpleTrigger"
-		if (template.webView.includes("scheduler")) return "scheduler"
+		if (template.webView.includes("beanJob")) {return "beanJob"}
+		if (template.webView.includes("methodJob")) {return "methodJob"}
+		if (template.webView.includes("cronTrigger")) {return "cronTrigger"}
+		if (template.webView.includes("simpleTrigger")) {return "simpleTrigger"}
+		if (template.webView.includes("scheduler")) {return "scheduler"}
 		return "beanJob"
 	}
 
@@ -169,27 +169,27 @@ const SchedulingForm: React.FC<FormComponentProps> = ({ onSubmit, onCancel, temp
 				<div style={{ marginBottom: "20px" }}>
 					<h3 style={{ color: "var(--vscode-foreground)", marginBottom: "10px" }}>Generation Type</h3>
 					<RadioGroup
-        label="Generation Type"
-        name="generationType"
-        value={formData.generationType}
-        onChange={(value: string) => handleGenerationTypeChange(value as ConfigGenerationType)}
-        orientation="horizontal"
-        options={[
-          { value: ConfigGenerationType.XML, label: "XML" },
-          { value: ConfigGenerationType.JAVA_CONFIG, label: "JavaConfig" }
-        ]}
-      />
+						label="Generation Type"
+						name="generationType"
+						value={formData.generationType}
+						onChange={(value: string) => handleGenerationTypeChange(value as ConfigGenerationType)}
+						orientation="horizontal"
+						options={[
+							{ value: ConfigGenerationType.XML, label: "XML" },
+							{ value: ConfigGenerationType.JAVA_CONFIG, label: "JavaConfig" },
+						]}
+					/>
 				</div>
 
 				<div style={{ marginBottom: "20px" }}>
 					<h3 style={{ color: "var(--vscode-foreground)", marginBottom: "10px" }}>Generation File</h3>
 					<TextField
-        label="File Name"
-        value={formData.txtFileName}
-        onChange={(e: any) => handleInputChange("txtFileName", e.target.value)}
-        placeholder="Enter file name"
-        isRequired
-      />
+						label="File Name"
+						value={formData.txtFileName}
+						onChange={(e: any) => handleInputChange("txtFileName", e.target.value)}
+						placeholder="Enter file name"
+						isRequired
+					/>
 				</div>
 
 				<div style={{ marginBottom: "20px" }}>
@@ -198,24 +198,24 @@ const SchedulingForm: React.FC<FormComponentProps> = ({ onSubmit, onCancel, temp
 					{(formType === "beanJob" || formType === "methodJob") && (
 						<div style={{ marginBottom: "15px" }}>
 							<TextField
-        label="Job Name"
-        value={formData.txtJobName}
-        onChange={(e: any) => handleInputChange("txtJobName", e.target.value)}
-        placeholder="Enter job name"
-        isRequired
-      />
+								label="Job Name"
+								value={formData.txtJobName}
+								onChange={(e: any) => handleInputChange("txtJobName", e.target.value)}
+								placeholder="Enter job name"
+								isRequired
+							/>
 						</div>
 					)}
 
 					{formType === "beanJob" && (
 						<div style={{ marginBottom: "15px" }}>
 							<TextField
-        label="Job Class"
-        value={formData.txtServiceClass}
-        onChange={(e: any) => handleInputChange("txtServiceClass", e.target.value)}
-        placeholder="Enter job class"
-        isRequired
-      />
+								label="Job Class"
+								value={formData.txtServiceClass}
+								onChange={(e: any) => handleInputChange("txtServiceClass", e.target.value)}
+								placeholder="Enter job class"
+								isRequired
+							/>
 						</div>
 					)}
 
@@ -223,22 +223,22 @@ const SchedulingForm: React.FC<FormComponentProps> = ({ onSubmit, onCancel, temp
 						<>
 							<div style={{ marginBottom: "15px" }}>
 								<TextField
-        label="Target Object"
-        value={formData.txtTargetObject}
-        onChange={(e: any) => handleInputChange("txtTargetObject", e.target.value)}
-        placeholder="Enter target object"
-        isRequired
-      />
+									label="Target Object"
+									value={formData.txtTargetObject}
+									onChange={(e: any) => handleInputChange("txtTargetObject", e.target.value)}
+									placeholder="Enter target object"
+									isRequired
+								/>
 							</div>
 
 							<div style={{ marginBottom: "15px" }}>
 								<TextField
-        label="Target Method"
-        value={formData.txtTargetMethod}
-        onChange={(e: any) => handleInputChange("txtTargetMethod", e.target.value)}
-        placeholder="Enter target method"
-        isRequired
-      />
+									label="Target Method"
+									value={formData.txtTargetMethod}
+									onChange={(e: any) => handleInputChange("txtTargetMethod", e.target.value)}
+									placeholder="Enter target method"
+									isRequired
+								/>
 							</div>
 						</>
 					)}
@@ -249,7 +249,9 @@ const SchedulingForm: React.FC<FormComponentProps> = ({ onSubmit, onCancel, temp
 								<Checkbox
 									label="Add Property"
 									checked={formData.chkProperty}
-									onChange={(e: React.ChangeEvent<HTMLInputElement>) => handleInputChange("chkProperty", e.target.checked)}
+									onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
+										handleInputChange("chkProperty", e.target.checked)
+									}
 								/>
 							</div>
 
@@ -257,18 +259,18 @@ const SchedulingForm: React.FC<FormComponentProps> = ({ onSubmit, onCancel, temp
 								<>
 									<div style={{ marginBottom: "15px" }}>
 										<TextField
-        label="Property Name"
-        value={formData.txtPropertyName}
-        onChange={(e: any) => handleInputChange("txtPropertyName", e.target.value)}
-      />
+											label="Property Name"
+											value={formData.txtPropertyName}
+											onChange={(e: any) => handleInputChange("txtPropertyName", e.target.value)}
+										/>
 									</div>
 
 									<div style={{ marginBottom: "15px" }}>
 										<TextField
-        label="Property Value"
-        value={formData.txtPropertyValue}
-        onChange={(e: any) => handleInputChange("txtPropertyValue", e.target.value)}
-      />
+											label="Property Value"
+											value={formData.txtPropertyValue}
+											onChange={(e: any) => handleInputChange("txtPropertyValue", e.target.value)}
+										/>
 									</div>
 								</>
 							)}
@@ -279,28 +281,28 @@ const SchedulingForm: React.FC<FormComponentProps> = ({ onSubmit, onCancel, temp
 						<>
 							<div style={{ marginBottom: "15px" }}>
 								<TextField
-        label="Trigger Name"
-        value={formData.txtTriggerName}
-        onChange={(e: any) => handleInputChange("txtTriggerName", e.target.value)}
-        placeholder="Enter trigger name"
-        isRequired
-      />
+									label="Trigger Name"
+									value={formData.txtTriggerName}
+									onChange={(e: any) => handleInputChange("txtTriggerName", e.target.value)}
+									placeholder="Enter trigger name"
+									isRequired
+								/>
 							</div>
 
 							<div style={{ marginBottom: "15px" }}>
 								<TextField
-        label="Trigger Group"
-        value={formData.txtGroup}
-        onChange={(e: any) => handleInputChange("txtGroup", e.target.value)}
-      />
+									label="Trigger Group"
+									value={formData.txtGroup}
+									onChange={(e: any) => handleInputChange("txtGroup", e.target.value)}
+								/>
 							</div>
 
 							<div style={{ marginBottom: "15px" }}>
 								<TextField
-        label="Job Group"
-        value={formData.txtJobGroup}
-        onChange={(e: any) => handleInputChange("txtJobGroup", e.target.value)}
-      />
+									label="Job Group"
+									value={formData.txtJobGroup}
+									onChange={(e: any) => handleInputChange("txtJobGroup", e.target.value)}
+								/>
 							</div>
 						</>
 					)}
@@ -308,12 +310,12 @@ const SchedulingForm: React.FC<FormComponentProps> = ({ onSubmit, onCancel, temp
 					{formType === "cronTrigger" && (
 						<div style={{ marginBottom: "15px" }}>
 							<TextField
-        label="Cron Expression"
-        value={formData.txtCronExpression}
-        onChange={(e: any) => handleInputChange("txtCronExpression", e.target.value)}
-        placeholder="Enter cron expression"
-        isRequired
-      />
+								label="Cron Expression"
+								value={formData.txtCronExpression}
+								onChange={(e: any) => handleInputChange("txtCronExpression", e.target.value)}
+								placeholder="Enter cron expression"
+								isRequired
+							/>
 						</div>
 					)}
 
@@ -321,20 +323,20 @@ const SchedulingForm: React.FC<FormComponentProps> = ({ onSubmit, onCancel, temp
 						<>
 							<div style={{ marginBottom: "15px" }}>
 								<TextField
-        label="Repeat Interval"
-        value={formData.txtRepeatInterval}
-        onChange={(e: any) => handleInputChange("txtRepeatInterval", e.target.value)}
-        placeholder="Enter repeat interval"
-        isRequired
-      />
+									label="Repeat Interval"
+									value={formData.txtRepeatInterval}
+									onChange={(e: any) => handleInputChange("txtRepeatInterval", e.target.value)}
+									placeholder="Enter repeat interval"
+									isRequired
+								/>
 							</div>
 
 							<div style={{ marginBottom: "15px" }}>
 								<TextField
-        label="Repeat Count"
-        value={formData.txtRepeatCount}
-        onChange={(e: any) => handleInputChange("txtRepeatCount", e.target.value)}
-      />
+									label="Repeat Count"
+									value={formData.txtRepeatCount}
+									onChange={(e: any) => handleInputChange("txtRepeatCount", e.target.value)}
+								/>
 							</div>
 						</>
 					)}
@@ -342,12 +344,12 @@ const SchedulingForm: React.FC<FormComponentProps> = ({ onSubmit, onCancel, temp
 					{formType === "scheduler" && (
 						<div style={{ marginBottom: "15px" }}>
 							<TextField
-        label="Scheduler Name"
-        value={formData.txtSchedulerName}
-        onChange={(e: any) => handleInputChange("txtSchedulerName", e.target.value)}
-        placeholder="Enter scheduler name"
-        isRequired
-      />
+								label="Scheduler Name"
+								value={formData.txtSchedulerName}
+								onChange={(e: any) => handleInputChange("txtSchedulerName", e.target.value)}
+								placeholder="Enter scheduler name"
+								isRequired
+							/>
 						</div>
 					)}
 				</div>

@@ -140,28 +140,28 @@ const LoggingForm: React.FC<LoggingFormProps> = ({ onSubmit, onCancel, loggingTy
 				<div style={{ marginBottom: "20px" }}>
 					<h3 style={{ color: "var(--vscode-foreground)", marginBottom: "10px" }}>Generation Type</h3>
 					<RadioGroup
-        label="Generation Type"
-        name="generationType"
-        value={formData.generationType}
-        onChange={(value: string) => handleGenerationTypeChange(value as ConfigGenerationType)}
-        orientation="horizontal"
-        options={[
-          { value: ConfigGenerationType.XML, label: "XML" },
-          { value: ConfigGenerationType.YAML, label: "YAML" },
-          { value: ConfigGenerationType.PROPERTIES, label: "Properties" }
-        ]}
-      />
+						label="Generation Type"
+						name="generationType"
+						value={formData.generationType}
+						onChange={(value: string) => handleGenerationTypeChange(value as ConfigGenerationType)}
+						orientation="horizontal"
+						options={[
+							{ value: ConfigGenerationType.XML, label: "XML" },
+							{ value: ConfigGenerationType.YAML, label: "YAML" },
+							{ value: ConfigGenerationType.PROPERTIES, label: "Properties" },
+						]}
+					/>
 				</div>
 
 				<div style={{ marginBottom: "20px" }}>
 					<h3 style={{ color: "var(--vscode-foreground)", marginBottom: "10px" }}>Generation File</h3>
 					<TextField
-        label="File Name"
-        value={formData.txtFileName}
-        onChange={(e: any) => handleInputChange("txtFileName", e.target.value)}
-        placeholder="Enter file name"
-        isRequired
-      />
+						label="File Name"
+						value={formData.txtFileName}
+						onChange={(e: any) => handleInputChange("txtFileName", e.target.value)}
+						placeholder="Enter file name"
+						isRequired
+					/>
 				</div>
 
 				<div style={{ marginBottom: "20px" }}>
@@ -187,7 +187,7 @@ const LoggingForm: React.FC<LoggingFormProps> = ({ onSubmit, onCancel, loggingTy
 								{ value: "DEBUG", label: "DEBUG" },
 								{ value: "INFO", label: "INFO" },
 								{ value: "WARN", label: "WARN" },
-								{ value: "ERROR", label: "ERROR" }
+								{ value: "ERROR", label: "ERROR" },
 							]}
 						/>
 					</div>
@@ -221,7 +221,7 @@ const LoggingForm: React.FC<LoggingFormProps> = ({ onSubmit, onCancel, loggingTy
 								{ value: "DEBUG", label: "DEBUG" },
 								{ value: "INFO", label: "INFO" },
 								{ value: "WARN", label: "WARN" },
-								{ value: "ERROR", label: "ERROR" }
+								{ value: "ERROR", label: "ERROR" },
 							]}
 						/>
 					</div>

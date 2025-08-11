@@ -21,9 +21,9 @@ const IdGenerationForm: React.FC<FormComponentProps> = ({ onSubmit, onCancel, te
 
 	// Determine form type based on template webView
 	const getFormType = () => {
-		if (template.webView.includes("sequence")) return "sequence"
-		if (template.webView.includes("table")) return "table"
-		if (template.webView.includes("uuid")) return "uuid"
+		if (template.webView.includes("sequence")) {return "sequence"}
+		if (template.webView.includes("table")) {return "table"}
+		if (template.webView.includes("uuid")) {return "uuid"}
 		return "sequence"
 	}
 
@@ -151,27 +151,27 @@ const IdGenerationForm: React.FC<FormComponentProps> = ({ onSubmit, onCancel, te
 				<div style={{ marginBottom: "20px" }}>
 					<h3 style={{ color: "var(--vscode-foreground)", marginBottom: "10px" }}>Generation Type</h3>
 					<RadioGroup
-        label="Generation Type"
-        name="generationType"
-        value={formData.generationType}
-        onChange={(value: string) => handleGenerationTypeChange(value as ConfigGenerationType)}
-        orientation="horizontal"
-        options={[
-          { value: ConfigGenerationType.XML, label: "XML" },
-          { value: ConfigGenerationType.JAVA_CONFIG, label: "JavaConfig" }
-        ]}
-      />
+						label="Generation Type"
+						name="generationType"
+						value={formData.generationType}
+						onChange={(value: string) => handleGenerationTypeChange(value as ConfigGenerationType)}
+						orientation="horizontal"
+						options={[
+							{ value: ConfigGenerationType.XML, label: "XML" },
+							{ value: ConfigGenerationType.JAVA_CONFIG, label: "JavaConfig" },
+						]}
+					/>
 				</div>
 
 				<div style={{ marginBottom: "20px" }}>
 					<h3 style={{ color: "var(--vscode-foreground)", marginBottom: "10px" }}>Generation File</h3>
 					<TextField
-        label="File Name"
-        value={formData.txtFileName}
-        onChange={(e: any) => handleInputChange("txtFileName", e.target.value)}
-        placeholder="Enter file name"
-        isRequired
-      />
+						label="File Name"
+						value={formData.txtFileName}
+						onChange={(e: any) => handleInputChange("txtFileName", e.target.value)}
+						placeholder="Enter file name"
+						isRequired
+					/>
 				</div>
 
 				<div style={{ marginBottom: "20px" }}>
@@ -179,35 +179,35 @@ const IdGenerationForm: React.FC<FormComponentProps> = ({ onSubmit, onCancel, te
 
 					<div style={{ marginBottom: "15px" }}>
 						<TextField
-        label="Bean Name"
-        value={formData.txtIdServiceName}
-        onChange={(e: any) => handleInputChange("txtIdServiceName", e.target.value)}
-        placeholder="Enter bean name"
-        isRequired
-      />
+							label="Bean Name"
+							value={formData.txtIdServiceName}
+							onChange={(e: any) => handleInputChange("txtIdServiceName", e.target.value)}
+							placeholder="Enter bean name"
+							isRequired
+						/>
 					</div>
 
 					{(formType === "sequence" || formType === "table") && (
 						<div style={{ marginBottom: "15px" }}>
 							<TextField
-        label="Data Source Name"
-        value={formData.txtDataSourceName}
-        onChange={(e: any) => handleInputChange("txtDataSourceName", e.target.value)}
-        placeholder="Enter data source name"
-        isRequired
-      />
+								label="Data Source Name"
+								value={formData.txtDataSourceName}
+								onChange={(e: any) => handleInputChange("txtDataSourceName", e.target.value)}
+								placeholder="Enter data source name"
+								isRequired
+							/>
 						</div>
 					)}
 
 					{formType === "sequence" && (
 						<div style={{ marginBottom: "15px" }}>
 							<TextField
-        label="Query"
-        value={formData.txtQuery}
-        onChange={(e: any) => handleInputChange("txtQuery", e.target.value)}
-        placeholder="Enter query"
-        isRequired
-      />
+								label="Query"
+								value={formData.txtQuery}
+								onChange={(e: any) => handleInputChange("txtQuery", e.target.value)}
+								placeholder="Enter query"
+								isRequired
+							/>
 						</div>
 					)}
 
@@ -215,32 +215,32 @@ const IdGenerationForm: React.FC<FormComponentProps> = ({ onSubmit, onCancel, te
 						<>
 							<div style={{ marginBottom: "15px" }}>
 								<TextField
-        label="Table Name"
-        value={formData.txtTableName}
-        onChange={(e: any) => handleInputChange("txtTableName", e.target.value)}
-        placeholder="Enter table name"
-        isRequired
-      />
+									label="Table Name"
+									value={formData.txtTableName}
+									onChange={(e: any) => handleInputChange("txtTableName", e.target.value)}
+									placeholder="Enter table name"
+									isRequired
+								/>
 							</div>
 
 							<div style={{ marginBottom: "15px" }}>
 								<TextField
-        label="Next ID Column Name"
-        value={formData.txtNextIdColumnName}
-        onChange={(e: any) => handleInputChange("txtNextIdColumnName", e.target.value)}
-        placeholder="Enter next id column name"
-        isRequired
-      />
+									label="Next ID Column Name"
+									value={formData.txtNextIdColumnName}
+									onChange={(e: any) => handleInputChange("txtNextIdColumnName", e.target.value)}
+									placeholder="Enter next id column name"
+									isRequired
+								/>
 							</div>
 
 							<div style={{ marginBottom: "15px" }}>
 								<TextField
-        label="Block Size"
-        value={formData.txtBlockSize}
-        onChange={(e: any) => handleInputChange("txtBlockSize", e.target.value)}
-        placeholder="Enter block size"
-        isRequired
-      />
+									label="Block Size"
+									value={formData.txtBlockSize}
+									onChange={(e: any) => handleInputChange("txtBlockSize", e.target.value)}
+									placeholder="Enter block size"
+									isRequired
+								/>
 							</div>
 						</>
 					)}
@@ -254,7 +254,7 @@ const IdGenerationForm: React.FC<FormComponentProps> = ({ onSubmit, onCancel, te
 								onChange={(value: string) => handleInputChange("rdoIdType", value)}
 								options={[
 									{ value: "BigDecimal", label: "BigDecimal" },
-									{ value: "Base", label: "Default" }
+									{ value: "Base", label: "Default" },
 								]}
 							/>
 						</div>

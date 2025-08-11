@@ -53,7 +53,9 @@ const EgovView = memo(({ onDone, initialTab }: EgovViewProps) => {
 					padding: "10px 17px 5px 20px",
 				}}>
 				<h3 style={{ color: theme.colors.foreground, margin: 0 }}>eGovFrame Initializr</h3>
-				<Button onClick={onDone} variant="secondary" size="sm">Done</Button>
+				<Button onClick={onDone} variant="secondary" size="sm">
+					Done
+				</Button>
 			</div>
 
 			<div style={{ flex: 1, overflow: "auto" }}>
@@ -103,29 +105,28 @@ export const TabButton = ({
 	onClick: () => void
 }) => {
 	const theme = useVSCodeTheme()
-	
+
 	return (
 		<button
 			onClick={onClick}
 			style={{
-				background: 'none',
-				border: 'none',
-				borderBottom: `2px solid ${isActive ? theme.colors.foreground : 'transparent'}`,
+				background: "none",
+				border: "none",
+				borderBottom: `2px solid ${isActive ? theme.colors.foreground : "transparent"}`,
 				color: isActive ? theme.colors.foreground : theme.colors.descriptionForeground,
-				padding: '8px 16px',
-				cursor: 'pointer',
+				padding: "8px 16px",
+				cursor: "pointer",
 				fontSize: theme.fontSize.sm,
-				marginBottom: '-1px',
-				fontFamily: 'inherit',
-				transition: 'color 0.2s ease',
+				marginBottom: "-1px",
+				fontFamily: "inherit",
+				transition: "color 0.2s ease",
 			}}
 			onMouseEnter={(e) => {
 				e.currentTarget.style.color = theme.colors.foreground
 			}}
 			onMouseLeave={(e) => {
 				e.currentTarget.style.color = isActive ? theme.colors.foreground : theme.colors.descriptionForeground
-			}}
-		>
+			}}>
 			{children}
 		</button>
 	)

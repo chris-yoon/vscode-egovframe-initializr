@@ -93,16 +93,18 @@ export async function generateEgovProject(
 		progressCallback?.("✅ Project generated successfully!")
 
 		// Notify completion
-		vscode.window.showInformationMessage(`eGovFrame project '${config.projectName}' created successfully!`, "Open Project").then((selection) => {
-			if (selection === "Open Project") {
-				vscode.commands.executeCommand("vscode.openFolder", vscode.Uri.file(projectRoot), true)
-			}
-		})
+		vscode.window
+			.showInformationMessage(`eGovFrame project '${config.projectName}' created successfully!`, "Open Project")
+			.then((selection) => {
+				if (selection === "Open Project") {
+					vscode.commands.executeCommand("vscode.openFolder", vscode.Uri.file(projectRoot), true)
+				}
+			})
 
 		return {
 			success: true,
 			message: "Project generated successfully",
-			projectPath: projectRoot
+			projectPath: projectRoot,
 		}
 	} catch (error) {
 		console.error("Error generating eGovFrame project:", error)
@@ -110,7 +112,7 @@ export async function generateEgovProject(
 		return {
 			success: false,
 			message: "Project generation failed",
-			error: errorMessage
+			error: errorMessage,
 		}
 	}
 }
@@ -198,7 +200,11 @@ async function generatePomFile(
 	}
 }
 
-async function updatePackageNames(projectRoot: string, packageName: string, progressCallback?: (message: string) => void): Promise<void> {
+async function updatePackageNames(
+	projectRoot: string,
+	packageName: string,
+	progressCallback?: (message: string) => void,
+): Promise<void> {
 	try {
 		progressCallback?.("📦 Updating package names...")
 
@@ -305,24 +311,24 @@ export async function startInteractiveProjectGeneration(context: vscode.Extensio
 	try {
 		// Get available templates
 		const templates = await getAvailableTemplates(context.extensionPath)
-		
+
 		if (templates.length === 0) {
 			vscode.window.showErrorMessage("No project templates found")
 			return
 		}
 
 		// Step 1: Select template
-		const templateItems = templates.map(template => ({
+		const templateItems = templates.map((template) => ({
 			label: template.name,
 			description: template.description,
-			detail: `Category: ${template.category || 'General'} | File: ${template.fileName}`,
-			template
+			detail: `Category: ${template.category || "General"} | File: ${template.fileName}`,
+			template,
 		}))
 
 		const selectedTemplateItem = await vscode.window.showQuickPick(templateItems, {
 			placeHolder: "Select a project template",
 			matchOnDescription: true,
-			matchOnDetail: true
+			matchOnDetail: true,
 		})
 
 		if (!selectedTemplateItem) {
@@ -340,7 +346,7 @@ export async function startInteractiveProjectGeneration(context: vscode.Extensio
 					return "Project name can only contain letters, numbers, hyphens, and underscores"
 				}
 				return null
-			}
+			},
 		})
 
 		if (!projectName) {
@@ -358,7 +364,7 @@ export async function startInteractiveProjectGeneration(context: vscode.Extensio
 						return "Please enter a valid package name (e.g., com.company.project)"
 					}
 					return null
-				}
+				},
 			})
 
 			if (!inputPackageName) {
@@ -372,7 +378,7 @@ export async function startInteractiveProjectGeneration(context: vscode.Extensio
 			canSelectFolders: true,
 			canSelectFiles: false,
 			canSelectMany: false,
-			openLabel: "Select Output Directory"
+			openLabel: "Select Output Directory",
 		})
 
 		if (!folderOptions || folderOptions.length === 0) {
@@ -386,34 +392,37 @@ export async function startInteractiveProjectGeneration(context: vscode.Extensio
 			projectName: projectName.trim(),
 			outputPath,
 			packageName,
-			template: selectedTemplateItem.template
+			template: selectedTemplateItem.template,
 		}
 
-		vscode.window.withProgress({
-			location: vscode.ProgressLocation.Notification,
-			title: "Generating eGovFrame project...",
-			cancellable: false
-		}, async (progress) => {
-			const result = await generateEgovProject(config, context.extensionPath, (message) => {
-				progress.report({ message })
-			})
+		vscode.window.withProgress(
+			{
+				location: vscode.ProgressLocation.Notification,
+				title: "Generating eGovFrame project...",
+				cancellable: false,
+			},
+			async (progress) => {
+				const result = await generateEgovProject(config, context.extensionPath, (message) => {
+					progress.report({ message })
+				})
 
-			if (result.success) {
-				const selection = await vscode.window.showInformationMessage(
-					`Project '${projectName}' generated successfully!`,
-					"Open Project",
-					"Open in New Window"
-				)
+				if (result.success) {
+					const selection = await vscode.window.showInformationMessage(
+						`Project '${projectName}' generated successfully!`,
+						"Open Project",
+						"Open in New Window",
+					)
 
-				if (selection === "Open Project") {
-					await openProjectInVSCode(result.projectPath!)
-				} else if (selection === "Open in New Window") {
-					await vscode.commands.executeCommand("vscode.openFolder", vscode.Uri.file(result.projectPath!), true)
+					if (selection === "Open Project") {
+						await openProjectInVSCode(result.projectPath!)
+					} else if (selection === "Open in New Window") {
+						await vscode.commands.executeCommand("vscode.openFolder", vscode.Uri.file(result.projectPath!), true)
+					}
+				} else {
+					vscode.window.showErrorMessage(`Failed to generate project: ${result.error}`)
 				}
-			} else {
-				vscode.window.showErrorMessage(`Failed to generate project: ${result.error}`)
-			}
-		})
+			},
+		)
 	} catch (error) {
 		console.error("Error in interactive project generation:", error)
 		vscode.window.showErrorMessage(`Interactive generation failed: ${error}`)
@@ -503,8 +512,8 @@ export async function getProjectSize(projectPath: string): Promise<{ files: numb
 		const getFolderSize = require("get-folder-size")
 		const size = await new Promise<number>((resolve, reject) => {
 			getFolderSize(projectPath, (err: Error | null, size: number) => {
-				if (err) reject(err)
-				else resolve(size)
+				if (err) {reject(err)}
+				else {resolve(size)}
 			})
 		})
 

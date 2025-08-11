@@ -1,11 +1,5 @@
 import React, { useState, useEffect } from "react"
-import {
-	Button,
-	TextField,
-	RadioGroup,
-	Select,
-	Checkbox,
-} from "../../ui"
+import { Button, TextField, RadioGroup, Select, Checkbox } from "../../ui"
 import { ConfigFormData, ConfigGenerationType, FormComponentProps } from "../types/templates"
 import { vscode } from "../../../utils/vscode"
 
@@ -145,7 +139,7 @@ const CacheForm: React.FC<FormComponentProps> = ({ onSubmit, onCancel, template,
 								orientation="horizontal"
 								options={[
 									{ value: ConfigGenerationType.XML, label: "XML" },
-									{ value: ConfigGenerationType.JAVA_CONFIG, label: "JavaConfig" }
+									{ value: ConfigGenerationType.JAVA_CONFIG, label: "JavaConfig" },
 								]}
 							/>
 						</div>
@@ -176,12 +170,12 @@ const CacheForm: React.FC<FormComponentProps> = ({ onSubmit, onCancel, template,
 
 							<div style={{ marginBottom: "15px" }}>
 								<TextField
-        label="Default Cache Max Elements"
-        value={formData.txtDftMaxElements}
-        onChange={(e) => handleInputChange("txtDftMaxElements", e.target.value)}
-        placeholder="Enter default cache max elements"
-        isRequired
-      />
+									label="Default Cache Max Elements"
+									value={formData.txtDftMaxElements}
+									onChange={(e) => handleInputChange("txtDftMaxElements", e.target.value)}
+									placeholder="Enter default cache max elements"
+									isRequired
+								/>
 							</div>
 
 							<div style={{ marginBottom: "15px" }}>
@@ -254,22 +248,22 @@ const CacheForm: React.FC<FormComponentProps> = ({ onSubmit, onCancel, template,
 
 							<div style={{ marginBottom: "15px" }}>
 								<TextField
-        label="Cache Name"
-        value={formData.txtCacheName}
-        onChange={(e) => handleInputChange("txtCacheName", e.target.value)}
-        placeholder="Enter cache name"
-        isRequired
-      />
+									label="Cache Name"
+									value={formData.txtCacheName}
+									onChange={(e) => handleInputChange("txtCacheName", e.target.value)}
+									placeholder="Enter cache name"
+									isRequired
+								/>
 							</div>
 
 							<div style={{ marginBottom: "15px" }}>
 								<TextField
-        label="Max Elements"
-        value={formData.txtMaxElements}
-        onChange={(e) => handleInputChange("txtMaxElements", e.target.value)}
-        placeholder="Enter max elements"
-        isRequired
-      />
+									label="Max Elements"
+									value={formData.txtMaxElements}
+									onChange={(e) => handleInputChange("txtMaxElements", e.target.value)}
+									placeholder="Enter max elements"
+									isRequired
+								/>
 							</div>
 
 							<div style={{ marginBottom: "15px" }}>
@@ -281,22 +275,22 @@ const CacheForm: React.FC<FormComponentProps> = ({ onSubmit, onCancel, template,
 
 							<div style={{ marginBottom: "15px" }}>
 								<TextField
-        label="Idle Time (sec)"
-        value={formData.txtIdleTime}
-        onChange={(e) => handleInputChange("txtIdleTime", e.target.value)}
-        placeholder="Enter idle time (sec)"
-        isRequired
-      />
+									label="Idle Time (sec)"
+									value={formData.txtIdleTime}
+									onChange={(e) => handleInputChange("txtIdleTime", e.target.value)}
+									placeholder="Enter idle time (sec)"
+									isRequired
+								/>
 							</div>
 
 							<div style={{ marginBottom: "15px" }}>
 								<TextField
-        label="Live Time (sec)"
-        value={formData.txtLiveTime}
-        onChange={(e) => handleInputChange("txtLiveTime", e.target.value)}
-        placeholder="Enter live time (sec)"
-        isRequired
-      />
+									label="Live Time (sec)"
+									value={formData.txtLiveTime}
+									onChange={(e) => handleInputChange("txtLiveTime", e.target.value)}
+									placeholder="Enter live time (sec)"
+									isRequired
+								/>
 							</div>
 
 							<div style={{ marginBottom: "15px" }}>

@@ -173,15 +173,16 @@ const ConfigView: React.FC = () => {
 							MozAppearance: "none",
 						}}
 						onFocus={(e) => {
-							(e.target as HTMLSelectElement).style.borderColor = "var(--vscode-focusBorder)"
+							;(e.target as HTMLSelectElement).style.borderColor = "var(--vscode-focusBorder)"
 						}}
 						onBlur={(e) => {
-							(e.target as HTMLSelectElement).style.borderColor = "var(--vscode-input-border)"
-						}}
-					>
+							;(e.target as HTMLSelectElement).style.borderColor = "var(--vscode-input-border)"
+						}}>
 						<option value="">Choose a category...</option>
-						{categories.map(category => (
-							<option key={category} value={category}>{category}</option>
+						{categories.map((category) => (
+							<option key={category} value={category}>
+								{category}
+							</option>
 						))}
 					</select>
 				</div>
@@ -209,15 +210,16 @@ const ConfigView: React.FC = () => {
 								MozAppearance: "none",
 							}}
 							onFocus={(e) => {
-								(e.target as HTMLSelectElement).style.borderColor = "var(--vscode-focusBorder)"
+								;(e.target as HTMLSelectElement).style.borderColor = "var(--vscode-focusBorder)"
 							}}
 							onBlur={(e) => {
-								(e.target as HTMLSelectElement).style.borderColor = "var(--vscode-input-border)"
-							}}
-						>
+								;(e.target as HTMLSelectElement).style.borderColor = "var(--vscode-input-border)"
+							}}>
 							<option value="">Choose a configuration type...</option>
-							{subcategories.map(subcategory => (
-								<option key={subcategory} value={subcategory}>{subcategory}</option>
+							{subcategories.map((subcategory) => (
+								<option key={subcategory} value={subcategory}>
+									{subcategory}
+								</option>
 							))}
 						</select>
 					</div>
@@ -225,7 +227,7 @@ const ConfigView: React.FC = () => {
 
 				{selectedTemplate && (
 					<div style={{ marginTop: "20px" }}>
-						<Divider  />
+						<Divider />
 						<div
 							style={{
 								marginTop: "20px",

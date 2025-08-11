@@ -21,37 +21,28 @@ import { useProjectsViewState } from "../../../context/EgovTabsStateContext"
 
 export const ProjectsView = () => {
 	const { state, updateState } = useProjectsViewState()
-	const {
-		selectedCategory,
-		outputPath,
-		packageName,
-		groupId,
-		artifactId,
-		version,
-		description,
-		generationMode
-	} = state
+	const { selectedCategory, outputPath, packageName, groupId, artifactId, version, description, generationMode } = state
 
 	// Map groupId to groupID for compatibility
 	const groupID = groupId
 	const setGroupID = (value: string) => updateState({ groupId: value })
-	
+
 	// Get selectedTemplate from state
 	const { selectedTemplate } = state
-	
+
 	// Local states that don't need persistence
 	const [validationErrors, setValidationErrors] = useState<string[]>([])
 	const [isGenerating, setIsGenerating] = useState<boolean>(false)
 	const [generationStatus, setGenerationStatus] = useState<string>("")
-	
+
 	// Extract projectName from artifactId for compatibility
 	const projectName = artifactId
 	const setProjectName = (value: string) => updateState({ artifactId: value })
-	
+
 	// Map generationMethod to generationMode
 	const generationMethod = generationMode
 	const setGenerationMethod = (value: "form" | "command") => updateState({ generationMode: value })
-	
+
 	// Helper functions
 	const setSelectedCategory = (value: string) => updateState({ selectedCategory: value })
 	const setSelectedTemplate = (template: ProjectTemplate | null) => updateState({ selectedTemplate: template })
@@ -251,15 +242,15 @@ export const ProjectsView = () => {
 			<div style={{ marginBottom: "20px" }}>
 				<h4 style={{ color: "var(--vscode-foreground)", marginBottom: "10px", marginTop: 0 }}>Generation Method</h4>
 				<RadioGroup
-        label="Generation Method"
-        name="generationMethod"
-        value={generationMethod}
-        onChange={(value: string) => setGenerationMethod(value as "form" | "command")}
-        options={[
-          { value: "form", label: "Form-based Generation (Recommended)" },
-          { value: "command", label: "Command-based Generation" }
-        ]}
-      />
+					label="Generation Method"
+					name="generationMethod"
+					value={generationMethod}
+					onChange={(value: string) => setGenerationMethod(value as "form" | "command")}
+					options={[
+						{ value: "form", label: "Form-based Generation (Recommended)" },
+						{ value: "command", label: "Command-based Generation" },
+					]}
+				/>
 			</div>
 
 			{generationMethod === "command" ? (
@@ -290,19 +281,19 @@ export const ProjectsView = () => {
 									outline: "none",
 								}}
 								onMouseOver={(e) => {
-									(e.target as HTMLButtonElement).style.backgroundColor = "var(--vscode-button-hoverBackground)"
+									;(e.target as HTMLButtonElement).style.backgroundColor =
+										"var(--vscode-button-hoverBackground)"
 								}}
 								onMouseOut={(e) => {
-									(e.target as HTMLButtonElement).style.backgroundColor = "var(--vscode-button-background)"
+									;(e.target as HTMLButtonElement).style.backgroundColor = "var(--vscode-button-background)"
 								}}
 								onFocus={(e) => {
-									(e.target as HTMLButtonElement).style.outline = "1px solid var(--vscode-focusBorder)"
+									;(e.target as HTMLButtonElement).style.outline = "1px solid var(--vscode-focusBorder)"
 								}}
 								onBlur={(e) => {
-									(e.target as HTMLButtonElement).style.outline = "none"
+									;(e.target as HTMLButtonElement).style.outline = "none"
 								}}
-								onClick={handleGenerateByCommand}
-							>
+								onClick={handleGenerateByCommand}>
 								<span className="codicon codicon-debug-step-over" style={{ marginRight: "6px" }}></span>
 								Start Interactive Generation
 							</button>
@@ -354,14 +345,15 @@ export const ProjectsView = () => {
 								MozAppearance: "none",
 							}}
 							onFocus={(e) => {
-								(e.target as HTMLSelectElement).style.borderColor = "var(--vscode-focusBorder)"
+								;(e.target as HTMLSelectElement).style.borderColor = "var(--vscode-focusBorder)"
 							}}
 							onBlur={(e) => {
-								(e.target as HTMLSelectElement).style.borderColor = "var(--vscode-input-border)"
-							}}
-						>
-							{PROJECT_CATEGORIES.map(category => (
-								<option key={category} value={category}>{category}</option>
+								;(e.target as HTMLSelectElement).style.borderColor = "var(--vscode-input-border)"
+							}}>
+							{PROJECT_CATEGORIES.map((category) => (
+								<option key={category} value={category}>
+									{category}
+								</option>
 							))}
 						</select>
 					</div>
@@ -473,19 +465,20 @@ export const ProjectsView = () => {
 											outline: "none",
 										}}
 										onMouseOver={(e) => {
-											(e.target as HTMLButtonElement).style.backgroundColor = "var(--vscode-button-secondaryHoverBackground)"
+											;(e.target as HTMLButtonElement).style.backgroundColor =
+												"var(--vscode-button-secondaryHoverBackground)"
 										}}
 										onMouseOut={(e) => {
-											(e.target as HTMLButtonElement).style.backgroundColor = "var(--vscode-button-secondaryBackground)"
+											;(e.target as HTMLButtonElement).style.backgroundColor =
+												"var(--vscode-button-secondaryBackground)"
 										}}
 										onFocus={(e) => {
-											(e.target as HTMLButtonElement).style.outline = "1px solid var(--vscode-focusBorder)"
+											;(e.target as HTMLButtonElement).style.outline = "1px solid var(--vscode-focusBorder)"
 										}}
 										onBlur={(e) => {
-											(e.target as HTMLButtonElement).style.outline = "none"
+											;(e.target as HTMLButtonElement).style.outline = "none"
 										}}
-										onClick={handleSelectOutputPath}
-									>
+										onClick={handleSelectOutputPath}>
 										<span className="codicon codicon-folder-opened" style={{ marginRight: "6px" }}></span>
 										Browse
 									</button>
@@ -562,7 +555,8 @@ export const ProjectsView = () => {
 								border: "1px solid var(--vscode-button-border)",
 								borderRadius: "4px",
 								padding: "12px 16px",
-								cursor: isGenerating || !selectedTemplate || !projectName || !outputPath ? "not-allowed" : "pointer",
+								cursor:
+									isGenerating || !selectedTemplate || !projectName || !outputPath ? "not-allowed" : "pointer",
 								display: "inline-flex",
 								alignItems: "center",
 								justifyContent: "center",
@@ -573,21 +567,21 @@ export const ProjectsView = () => {
 							}}
 							onMouseOver={(e) => {
 								if (!(isGenerating || !selectedTemplate || !projectName || !outputPath)) {
-									(e.target as HTMLButtonElement).style.backgroundColor = "var(--vscode-button-hoverBackground)"
+									;(e.target as HTMLButtonElement).style.backgroundColor =
+										"var(--vscode-button-hoverBackground)"
 								}
 							}}
 							onMouseOut={(e) => {
 								if (!(isGenerating || !selectedTemplate || !projectName || !outputPath)) {
-									(e.target as HTMLButtonElement).style.backgroundColor = "var(--vscode-button-background)"
+									;(e.target as HTMLButtonElement).style.backgroundColor = "var(--vscode-button-background)"
 								}
 							}}
 							onFocus={(e) => {
-								(e.target as HTMLButtonElement).style.outline = "1px solid var(--vscode-focusBorder)"
+								;(e.target as HTMLButtonElement).style.outline = "1px solid var(--vscode-focusBorder)"
 							}}
 							onBlur={(e) => {
-								(e.target as HTMLButtonElement).style.outline = "none"
-							}}
-						>
+								;(e.target as HTMLButtonElement).style.outline = "none"
+							}}>
 							{isGenerating ? (
 								<>
 									<span
@@ -619,18 +613,19 @@ export const ProjectsView = () => {
 								outline: "none",
 							}}
 							onMouseOver={(e) => {
-								(e.target as HTMLButtonElement).style.backgroundColor = "var(--vscode-button-secondaryHoverBackground)"
+								;(e.target as HTMLButtonElement).style.backgroundColor =
+									"var(--vscode-button-secondaryHoverBackground)"
 							}}
 							onMouseOut={(e) => {
-								(e.target as HTMLButtonElement).style.backgroundColor = "var(--vscode-button-secondaryBackground)"
+								;(e.target as HTMLButtonElement).style.backgroundColor =
+									"var(--vscode-button-secondaryBackground)"
 							}}
 							onFocus={(e) => {
-								(e.target as HTMLButtonElement).style.outline = "1px solid var(--vscode-focusBorder)"
+								;(e.target as HTMLButtonElement).style.outline = "1px solid var(--vscode-focusBorder)"
 							}}
 							onBlur={(e) => {
-								(e.target as HTMLButtonElement).style.outline = "none"
-							}}
-						>
+								;(e.target as HTMLButtonElement).style.outline = "none"
+							}}>
 							<span className="codicon codicon-beaker" style={{ marginRight: "6px" }}></span>
 							Sample
 						</button>

@@ -101,7 +101,7 @@ const EhcacheForm: React.FC<FormComponentProps> = ({ onSubmit, onCancel, templat
 						orientation="horizontal"
 						options={[
 							{ value: ConfigGenerationType.XML, label: "XML" },
-							{ value: ConfigGenerationType.JAVA_CONFIG, label: "JavaConfig" }
+							{ value: ConfigGenerationType.JAVA_CONFIG, label: "JavaConfig" },
 						]}
 					/>
 				</div>

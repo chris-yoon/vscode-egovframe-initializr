@@ -123,7 +123,7 @@ const DatasourceForm: React.FC<DatasourceFormProps> = ({ onSubmit, onCancel }) =
 						orientation="horizontal"
 						options={[
 							{ value: ConfigGenerationType.XML, label: "XML" },
-							{ value: ConfigGenerationType.JAVA_CONFIG, label: "JavaConfig" }
+							{ value: ConfigGenerationType.JAVA_CONFIG, label: "JavaConfig" },
 						]}
 					/>
 				</div>
@@ -160,7 +160,7 @@ const DatasourceForm: React.FC<DatasourceFormProps> = ({ onSubmit, onCancel }) =
 							options={[
 								{ value: "DBCP", label: "DBCP" },
 								{ value: "C3P0", label: "C3P0" },
-								{ value: "JDBC", label: "JDBC" }
+								{ value: "JDBC", label: "JDBC" },
 							]}
 						/>
 					</div>

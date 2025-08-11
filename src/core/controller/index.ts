@@ -217,21 +217,21 @@ export class Controller {
 							type: "validationResult",
 							isValid: result.isValid,
 							packageName: result.packageName,
-							error: result.error
+							error: result.error,
 						})
 					} catch (error) {
 						console.error("DDL validation error:", error)
 						await this.postMessageToWebview({
 							type: "validationResult",
 							isValid: false,
-							error: error instanceof Error ? error.message : "Validation failed"
+							error: error instanceof Error ? error.message : "Validation failed",
 						})
 					}
 				} else {
 					await this.postMessageToWebview({
 						type: "validationResult",
 						isValid: false,
-						error: "No DDL provided for validation"
+						error: "No DDL provided for validation",
 					})
 				}
 				break
@@ -248,21 +248,21 @@ export class Controller {
 							isValid: result.isValid,
 							previews: result.previews,
 							packageName: result.packageName,
-							error: result.error
+							error: result.error,
 						})
 					} catch (error) {
 						console.error("DDL validation and preview error:", error)
 						await this.postMessageToWebview({
 							type: "validationResult",
 							isValid: false,
-							error: error instanceof Error ? error.message : "Validation and preview failed"
+							error: error instanceof Error ? error.message : "Validation and preview failed",
 						})
 					}
 				} else {
 					await this.postMessageToWebview({
 						type: "validationResult",
 						isValid: false,
-						error: "No DDL provided for validation"
+						error: "No DDL provided for validation",
 					})
 				}
 				break

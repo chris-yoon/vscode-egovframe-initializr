@@ -1,4 +1,4 @@
-import { clsx, type ClassValue } from 'clsx'
+import { clsx, type ClassValue } from "clsx"
 
 /**
  * Utility function to merge CSS classes
@@ -6,5 +6,5 @@ import { clsx, type ClassValue } from 'clsx'
  * @returns Merged class string
  */
 export function cn(...inputs: ClassValue[]) {
-  return clsx(inputs)
+	return clsx(inputs)
 }

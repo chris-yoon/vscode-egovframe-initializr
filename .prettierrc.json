@@ -4,5 +4,13 @@
 	"printWidth": 130,
 	"semi": false,
 	"bracketSameLine": true,
-	"endOfLine": "lf"
+	"endOfLine": "lf",
+	"overrides": [
+		{
+			"files": "*.hbs",
+			"options": {
+				"parser": "html"
+			}
+		}
+	]
 }

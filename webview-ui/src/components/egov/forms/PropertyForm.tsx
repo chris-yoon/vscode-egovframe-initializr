@@ -112,7 +112,7 @@ const PropertyForm: React.FC<FormComponentProps> = ({ onSubmit, onCancel, templa
 						orientation="horizontal"
 						options={[
 							{ value: ConfigGenerationType.XML, label: "XML" },
-							{ value: ConfigGenerationType.JAVA_CONFIG, label: "JavaConfig" }
+							{ value: ConfigGenerationType.JAVA_CONFIG, label: "JavaConfig" },
 						]}
 					/>
 				</div>
@@ -140,20 +140,20 @@ const PropertyForm: React.FC<FormComponentProps> = ({ onSubmit, onCancel, templa
 						/>
 					</div>
 
-									<div style={{ marginBottom: "15px" }}>
-					<RadioGroup
-						label="Type"
-						name="propertyType"
-						value={formData.rdoPropertyType}
-						onChange={(value) => handleInputChange("rdoPropertyType", value)}
-						orientation="vertical"
-						isRequired
-						options={[
-							{ value: "Internal Properties", label: "Internal Properties" },
-							{ value: "External File", label: "External File" }
-						]}
-					/>
-				</div>
+					<div style={{ marginBottom: "15px" }}>
+						<RadioGroup
+							label="Type"
+							name="propertyType"
+							value={formData.rdoPropertyType}
+							onChange={(value) => handleInputChange("rdoPropertyType", value)}
+							orientation="vertical"
+							isRequired
+							options={[
+								{ value: "Internal Properties", label: "Internal Properties" },
+								{ value: "External File", label: "External File" },
+							]}
+						/>
+					</div>
 
 					{isInternalProperties && (
 						<div>
@@ -187,7 +187,7 @@ const PropertyForm: React.FC<FormComponentProps> = ({ onSubmit, onCancel, templa
 									options={[
 										{ value: "UTF-8", label: "UTF-8" },
 										{ value: "ISO-8859-1", label: "ISO-8859-1" },
-										{ value: "Windows-1252", label: "Windows-1252" }
+										{ value: "Windows-1252", label: "Windows-1252" },
 									]}
 								/>
 							</div>

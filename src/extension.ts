@@ -19,7 +19,7 @@ export async function activate(context: vscode.ExtensionContext) {
 			webviewOptions: { retainContextWhenHidden: true },
 		}),
 	)
-	
+
 	outputChannel.appendLine("WebviewProvider registered successfully")
 
 	// Register the eGovFrame button command

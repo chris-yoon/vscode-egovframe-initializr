@@ -101,16 +101,16 @@ const JndiDatasourceForm: React.FC<FormComponentProps> = ({ onSubmit, onCancel, 
 				<div style={{ marginBottom: "20px" }}>
 					<h3 style={{ color: "var(--vscode-foreground)", marginBottom: "10px" }}>Generation Type</h3>
 					<RadioGroup
-        label="Generation Type"
-        name="generationType"
-        value={formData.generationType}
-        onChange={(value: string) => handleGenerationTypeChange(value as ConfigGenerationType)}
-        orientation="horizontal"
-        options={[
-          { value: ConfigGenerationType.XML, label: "XML" },
-          { value: ConfigGenerationType.JAVA_CONFIG, label: "JavaConfig" }
-        ]}
-      />
+						label="Generation Type"
+						name="generationType"
+						value={formData.generationType}
+						onChange={(value: string) => handleGenerationTypeChange(value as ConfigGenerationType)}
+						orientation="horizontal"
+						options={[
+							{ value: ConfigGenerationType.XML, label: "XML" },
+							{ value: ConfigGenerationType.JAVA_CONFIG, label: "JavaConfig" },
+						]}
+					/>
 				</div>
 
 				<div style={{ marginBottom: "20px" }}>
@@ -129,22 +129,22 @@ const JndiDatasourceForm: React.FC<FormComponentProps> = ({ onSubmit, onCancel, 
 
 					<div style={{ marginBottom: "15px" }}>
 						<TextField
-        label="DataSource Name"
-        value={formData.txtDatasourceName}
-        onChange={(e: any) => handleInputChange("txtDatasourceName", e.target.value)}
-        placeholder="Enter datasource name"
-        isRequired
-      />
+							label="DataSource Name"
+							value={formData.txtDatasourceName}
+							onChange={(e: any) => handleInputChange("txtDatasourceName", e.target.value)}
+							placeholder="Enter datasource name"
+							isRequired
+						/>
 					</div>
 
 					<div style={{ marginBottom: "15px" }}>
 						<TextField
-        label="JNDI Name"
-        value={formData.txtJndiName}
-        onChange={(e: any) => handleInputChange("txtJndiName", e.target.value)}
-        placeholder="Enter jndi name"
-        isRequired
-      />
+							label="JNDI Name"
+							value={formData.txtJndiName}
+							onChange={(e: any) => handleInputChange("txtJndiName", e.target.value)}
+							placeholder="Enter jndi name"
+							isRequired
+						/>
 					</div>
 				</div>
 

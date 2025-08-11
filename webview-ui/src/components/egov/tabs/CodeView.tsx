@@ -10,9 +10,9 @@ import CodePreview from "../CodePreview"
 
 // 샘플 DDL 정의
 const SAMPLE_DDLS = {
-  board: {
-    name: "게시판 테이블 (기본)",
-    ddl: `
+	board: {
+		name: "게시판 테이블 (기본)",
+		ddl: `
 CREATE TABLE board (
   id INT PRIMARY KEY AUTO_INCREMENT COMMENT '게시글 번호',
   title VARCHAR(200) NOT NULL COMMENT '제목',
@@ -21,11 +21,11 @@ CREATE TABLE board (
   view_count INT DEFAULT 0 COMMENT '조회수',
   created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP COMMENT '작성일시',
   updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '수정일시'
-) COMMENT '게시판 테이블';`
-  },
-  user: {
-    name: "사용자 테이블",
-    ddl: `
+) COMMENT '게시판 테이블';`,
+	},
+	user: {
+		name: "사용자 테이블",
+		ddl: `
 CREATE TABLE users (
   id INT PRIMARY KEY AUTO_INCREMENT COMMENT '사용자 번호',
   username VARCHAR(50) UNIQUE NOT NULL COMMENT '사용자명',
@@ -36,11 +36,11 @@ CREATE TABLE users (
   is_active BOOLEAN DEFAULT TRUE COMMENT '활성화 여부',
   created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP COMMENT '가입일시',
   updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '수정일시'
-) COMMENT '사용자 테이블';`
-  },
-  product: {
-    name: "상품 테이블",
-    ddl: `
+) COMMENT '사용자 테이블';`,
+	},
+	product: {
+		name: "상품 테이블",
+		ddl: `
 CREATE TABLE products (
   id INT PRIMARY KEY AUTO_INCREMENT COMMENT '상품 번호',
   name VARCHAR(200) NOT NULL COMMENT '상품명',
@@ -52,11 +52,11 @@ CREATE TABLE products (
   is_active BOOLEAN DEFAULT TRUE COMMENT '판매 여부',
   created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP COMMENT '등록일시',
   updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '수정일시'
-) COMMENT '상품 테이블';`
-  },
-  order: {
-    name: "주문 테이블 (관계)",
-    ddl: `
+) COMMENT '상품 테이블';`,
+	},
+	order: {
+		name: "주문 테이블 (관계)",
+		ddl: `
 CREATE TABLE orders (
   id INT PRIMARY KEY AUTO_INCREMENT COMMENT '주문 번호',
   user_id INT NOT NULL COMMENT '사용자 번호',
@@ -68,11 +68,11 @@ CREATE TABLE orders (
   created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP COMMENT '생성일시',
   updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '수정일시',
   FOREIGN KEY (user_id) REFERENCES users(id)
-) COMMENT '주문 테이블';`
-  },
-  comment: {
-    name: "댓글 테이블 (관계)",
-    ddl: `
+) COMMENT '주문 테이블';`,
+	},
+	comment: {
+		name: "댓글 테이블 (관계)",
+		ddl: `
 CREATE TABLE comments (
   id INT PRIMARY KEY AUTO_INCREMENT COMMENT '댓글 번호',
   board_id INT NOT NULL COMMENT '게시글 번호',
@@ -84,8 +84,8 @@ CREATE TABLE comments (
   FOREIGN KEY (board_id) REFERENCES board(id),
   FOREIGN KEY (user_id) REFERENCES users(id),
   FOREIGN KEY (parent_id) REFERENCES comments(id)
-) COMMENT '댓글 테이블';`
-  }
+) COMMENT '댓글 테이블';`,
+	},
 }
 
 const CodeView = () => {
@@ -105,7 +105,7 @@ const CodeView = () => {
 		selectedPreviewTemplate,
 		isPreviewLoading,
 		previewError,
-		autoUpdatePreview
+		autoUpdatePreview,
 	} = state
 
 	// Helper functions to update state
@@ -116,7 +116,7 @@ const CodeView = () => {
 	const setError = (value: string) => updateState({ error: value })
 	const setOutputPath = (value: string) => updateState({ outputPath: value })
 	const setPackageName = (value: string) => updateState({ packageName: value })
-	
+
 	// 미리보기 관련 Helper functions
 	const setPreviews = (value: { [key: string]: string } | null) => updateState({ previews: value })
 	const setSelectedPreviewTemplate = (value: string) => updateState({ selectedPreviewTemplate: value })
@@ -151,12 +151,12 @@ const CodeView = () => {
 					const parsed = parseDDL(ddlContent)
 					setParsedDDL(parsed)
 					setError("")
-					
+
 					// 빠른 검증만 요청 (미리보기는 나중에)
 					vscode.postMessage({
 						type: "validateDDLOnly",
 						ddl: ddlContent,
-						packageName: packageName
+						packageName: packageName,
 					})
 				} else {
 					setParsedDDL(null)
@@ -252,7 +252,7 @@ const CodeView = () => {
 								setPreviews(message.previews)
 								setPreviewError("")
 							}
-							if (message.error && message.error.includes('⚠️ 경고:')) {
+							if (message.error && message.error.includes("⚠️ 경고:")) {
 								setError(message.error)
 							} else {
 								setError("")
@@ -280,7 +280,7 @@ const CodeView = () => {
 
 	const handleGenerateCode = () => {
 		console.log("Generate code clicked")
-		if (!isValid || !ddlContent.trim()) return
+		if (!isValid || !ddlContent.trim()) {return}
 
 		// Validate required fields
 		if (!packageName.trim()) {
@@ -310,7 +310,7 @@ const CodeView = () => {
 
 	const handleUploadTemplates = () => {
 		console.log("Upload templates clicked")
-		if (!isValid || !ddlContent.trim()) return
+		if (!isValid || !ddlContent.trim()) {return}
 
 		setIsLoading(true)
 		setError("")
@@ -369,14 +369,14 @@ const CodeView = () => {
 
 	// 미리보기 요청 함수
 	const handleRequestPreview = () => {
-		if (!isValid || !ddlContent.trim()) return
+		if (!isValid || !ddlContent.trim()) {return}
 
 		setIsPreviewLoading(true)
 		setPreviewError("")
 		vscode.postMessage({
 			type: "validateAndPreview",
 			ddl: ddlContent,
-			packageName: packageName
+			packageName: packageName,
 		})
 	}
 
@@ -430,12 +430,13 @@ const CodeView = () => {
 
 				{/* DDL Input Section */}
 				<div style={{ marginBottom: "20px" }}>
-					<div style={{ 
-						display: "flex", 
-						justifyContent: "space-between", 
-						alignItems: "center", 
-						marginBottom: "10px" 
-					}}>
+					<div
+						style={{
+							display: "flex",
+							justifyContent: "space-between",
+							alignItems: "center",
+							marginBottom: "10px",
+						}}>
 						<h4 style={{ color: "var(--vscode-foreground)", margin: 0 }}>
 							DDL Input
 							{ddlContent.trim() && (
@@ -449,17 +450,16 @@ const CodeView = () => {
 								</span>
 							)}
 						</h4>
-						
+
 						{/* 샘플 DDL 선택 드롭다운 */}
 						<div style={{ display: "flex", alignItems: "center", gap: "8px" }}>
-							<label 
+							<label
 								htmlFor="sample-ddl-select"
 								style={{
 									fontSize: "12px",
 									color: "var(--vscode-foreground)",
-									userSelect: "none"
-								}}
-							>
+									userSelect: "none",
+								}}>
 								샘플 선택:
 							</label>
 							<select
@@ -473,15 +473,14 @@ const CodeView = () => {
 									border: "1px solid var(--vscode-input-border)",
 									borderRadius: "4px",
 									outline: "none",
-									cursor: "pointer"
+									cursor: "pointer",
 								}}
 								onFocus={(e) => {
 									e.target.style.borderColor = "var(--vscode-focusBorder)"
 								}}
 								onBlur={(e) => {
 									e.target.style.borderColor = "var(--vscode-input-border)"
-								}}
-							>
+								}}>
 								<option value="">직접 입력</option>
 								{Object.entries(SAMPLE_DDLS).map(([key, sample]) => (
 									<option key={key} value={key}>
@@ -616,19 +615,20 @@ const CodeView = () => {
 										outline: "none",
 									}}
 									onMouseOver={(e) => {
-										(e.target as HTMLButtonElement).style.backgroundColor = "var(--vscode-button-secondaryHoverBackground)"
+										;(e.target as HTMLButtonElement).style.backgroundColor =
+											"var(--vscode-button-secondaryHoverBackground)"
 									}}
 									onMouseOut={(e) => {
-										(e.target as HTMLButtonElement).style.backgroundColor = "var(--vscode-button-secondaryBackground)"
+										;(e.target as HTMLButtonElement).style.backgroundColor =
+											"var(--vscode-button-secondaryBackground)"
 									}}
 									onFocus={(e) => {
-										(e.target as HTMLButtonElement).style.outline = "1px solid var(--vscode-focusBorder)"
+										;(e.target as HTMLButtonElement).style.outline = "1px solid var(--vscode-focusBorder)"
 									}}
 									onBlur={(e) => {
-										(e.target as HTMLButtonElement).style.outline = "none"
+										;(e.target as HTMLButtonElement).style.outline = "none"
 									}}
-									onClick={handleSelectOutputPath}
-								>
+									onClick={handleSelectOutputPath}>
 									<span className="codicon codicon-folder-opened" style={{ marginRight: "6px" }}></span>
 									Browse
 								</button>
@@ -653,7 +653,10 @@ const CodeView = () => {
 								border: "1px solid var(--vscode-button-border)",
 								borderRadius: "4px",
 								padding: "12px 16px",
-								cursor: !isValid || isLoading || !packageName.trim() || !outputPath.trim() ? "not-allowed" : "pointer",
+								cursor:
+									!isValid || isLoading || !packageName.trim() || !outputPath.trim()
+										? "not-allowed"
+										: "pointer",
 								display: "inline-flex",
 								alignItems: "center",
 								justifyContent: "center",
@@ -664,26 +667,26 @@ const CodeView = () => {
 							}}
 							onMouseOver={(e) => {
 								if (!(!isValid || isLoading || !packageName.trim() || !outputPath.trim())) {
-									(e.target as HTMLButtonElement).style.backgroundColor = "var(--vscode-button-hoverBackground)"
+									;(e.target as HTMLButtonElement).style.backgroundColor =
+										"var(--vscode-button-hoverBackground)"
 								}
 							}}
 							onMouseOut={(e) => {
 								if (!(!isValid || isLoading || !packageName.trim() || !outputPath.trim())) {
-									(e.target as HTMLButtonElement).style.backgroundColor = "var(--vscode-button-background)"
+									;(e.target as HTMLButtonElement).style.backgroundColor = "var(--vscode-button-background)"
 								}
 							}}
 							onFocus={(e) => {
-								(e.target as HTMLButtonElement).style.outline = "1px solid var(--vscode-focusBorder)"
+								;(e.target as HTMLButtonElement).style.outline = "1px solid var(--vscode-focusBorder)"
 							}}
 							onBlur={(e) => {
-								(e.target as HTMLButtonElement).style.outline = "none"
+								;(e.target as HTMLButtonElement).style.outline = "none"
 							}}
 							onClick={handleGenerateCode}
-							disabled={!isValid || isLoading || !packageName.trim() || !outputPath.trim()}
-						>
+							disabled={!isValid || isLoading || !packageName.trim() || !outputPath.trim()}>
 							{isLoading ? (
 								<>
-									         <ProgressRing className="mr-2 w-4 h-4" />
+									<ProgressRing className="mr-2 w-4 h-4" />
 									Generating...
 								</>
 							) : (
@@ -713,23 +716,24 @@ const CodeView = () => {
 							}}
 							onMouseOver={(e) => {
 								if (!(!isValid || isLoading)) {
-									(e.target as HTMLButtonElement).style.backgroundColor = "var(--vscode-button-secondaryHoverBackground)"
+									;(e.target as HTMLButtonElement).style.backgroundColor =
+										"var(--vscode-button-secondaryHoverBackground)"
 								}
 							}}
 							onMouseOut={(e) => {
 								if (!(!isValid || isLoading)) {
-									(e.target as HTMLButtonElement).style.backgroundColor = "var(--vscode-button-secondaryBackground)"
+									;(e.target as HTMLButtonElement).style.backgroundColor =
+										"var(--vscode-button-secondaryBackground)"
 								}
 							}}
 							onFocus={(e) => {
-								(e.target as HTMLButtonElement).style.outline = "1px solid var(--vscode-focusBorder)"
+								;(e.target as HTMLButtonElement).style.outline = "1px solid var(--vscode-focusBorder)"
 							}}
 							onBlur={(e) => {
-								(e.target as HTMLButtonElement).style.outline = "none"
+								;(e.target as HTMLButtonElement).style.outline = "none"
 							}}
 							onClick={handleUploadTemplates}
-							disabled={!isValid || isLoading}
-						>
+							disabled={!isValid || isLoading}>
 							<span className="codicon codicon-file-code" style={{ marginRight: "6px" }}></span>
 							Generate with Custom Templates
 						</button>
@@ -753,23 +757,24 @@ const CodeView = () => {
 							}}
 							onMouseOver={(e) => {
 								if (!(!isValid || isLoading)) {
-									(e.target as HTMLButtonElement).style.backgroundColor = "var(--vscode-button-secondaryHoverBackground)"
+									;(e.target as HTMLButtonElement).style.backgroundColor =
+										"var(--vscode-button-secondaryHoverBackground)"
 								}
 							}}
 							onMouseOut={(e) => {
 								if (!(!isValid || isLoading)) {
-									(e.target as HTMLButtonElement).style.backgroundColor = "var(--vscode-button-secondaryBackground)"
+									;(e.target as HTMLButtonElement).style.backgroundColor =
+										"var(--vscode-button-secondaryBackground)"
 								}
 							}}
 							onFocus={(e) => {
-								(e.target as HTMLButtonElement).style.outline = "1px solid var(--vscode-focusBorder)"
+								;(e.target as HTMLButtonElement).style.outline = "1px solid var(--vscode-focusBorder)"
 							}}
 							onBlur={(e) => {
-								(e.target as HTMLButtonElement).style.outline = "none"
+								;(e.target as HTMLButtonElement).style.outline = "none"
 							}}
 							onClick={handleDownloadTemplateContext}
-							disabled={!isValid || isLoading}
-						>
+							disabled={!isValid || isLoading}>
 							<span className="codicon codicon-json" style={{ marginRight: "6px" }}></span>
 							Download Template Context
 						</button>

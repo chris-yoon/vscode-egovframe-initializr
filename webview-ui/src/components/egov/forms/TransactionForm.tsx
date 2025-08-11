@@ -1,7 +1,7 @@
-import React, { useState, useEffect } from "react";
-import { Button, TextField, RadioGroup, Select, Checkbox } from "../../ui";
-import { ConfigFormData, ConfigGenerationType, FormComponentProps } from "../types/templates";
-import { vscode } from "../../../utils/vscode";
+import React, { useState, useEffect } from "react"
+import { Button, TextField, RadioGroup, Select, Checkbox } from "../../ui"
+import { ConfigFormData, ConfigGenerationType, FormComponentProps } from "../types/templates"
+import { vscode } from "../../../utils/vscode"
 
 const TransactionForm: React.FC<FormComponentProps> = ({ onSubmit, onCancel, template, initialData }) => {
 	const [formData, setFormData] = useState<ConfigFormData>({
@@ -33,8 +33,8 @@ const TransactionForm: React.FC<FormComponentProps> = ({ onSubmit, onCancel, tem
 
 	// Determine form type based on template webView
 	const getFormType = () => {
-		if (template.webView.includes("jpa")) return "jpa"
-		if (template.webView.includes("jta")) return "jta"
+		if (template.webView.includes("jpa")) {return "jpa"}
+		if (template.webView.includes("jta")) {return "jta"}
 		return "datasource"
 	}
 
@@ -153,27 +153,27 @@ const TransactionForm: React.FC<FormComponentProps> = ({ onSubmit, onCancel, tem
 				<div style={{ marginBottom: "20px" }}>
 					<h3 style={{ color: "var(--vscode-foreground)", marginBottom: "10px" }}>Generation Type</h3>
 					<RadioGroup
-        label="Generation Type"
-        name="generationType"
-        value={formData.generationType}
-        onChange={(value: string) => handleGenerationTypeChange(value as ConfigGenerationType)}
-        orientation="horizontal"
-        options={[
-          { value: ConfigGenerationType.XML, label: "XML" },
-          { value: ConfigGenerationType.JAVA_CONFIG, label: "JavaConfig" }
-        ]}
-      />
+						label="Generation Type"
+						name="generationType"
+						value={formData.generationType}
+						onChange={(value: string) => handleGenerationTypeChange(value as ConfigGenerationType)}
+						orientation="horizontal"
+						options={[
+							{ value: ConfigGenerationType.XML, label: "XML" },
+							{ value: ConfigGenerationType.JAVA_CONFIG, label: "JavaConfig" },
+						]}
+					/>
 				</div>
 
 				<div style={{ marginBottom: "20px" }}>
 					<h3 style={{ color: "var(--vscode-foreground)", marginBottom: "10px" }}>Generation File</h3>
 					<TextField
-        label="File Name"
-        value={formData.txtFileName}
-        onChange={(e: any) => handleInputChange("txtFileName", e.target.value)}
-        placeholder="Enter file name"
-        isRequired
-      />
+						label="File Name"
+						value={formData.txtFileName}
+						onChange={(e: any) => handleInputChange("txtFileName", e.target.value)}
+						placeholder="Enter file name"
+						isRequired
+					/>
 				</div>
 
 				<div style={{ marginBottom: "20px" }}>
@@ -181,44 +181,44 @@ const TransactionForm: React.FC<FormComponentProps> = ({ onSubmit, onCancel, tem
 
 					<div style={{ marginBottom: "15px" }}>
 						<TextField
-        label="Transaction Manager Name"
-        value={formData.txtTransactionName}
-        onChange={(e: any) => handleInputChange("txtTransactionName", e.target.value)}
-        placeholder="Enter transaction manager name"
-        isRequired
-      />
+							label="Transaction Manager Name"
+							value={formData.txtTransactionName}
+							onChange={(e: any) => handleInputChange("txtTransactionName", e.target.value)}
+							placeholder="Enter transaction manager name"
+							isRequired
+						/>
 					</div>
 
 					<div style={{ marginBottom: "15px" }}>
 						<TextField
-        label="Data Source Name"
-        value={formData.txtDataSourceName}
-        onChange={(e: any) => handleInputChange("txtDataSourceName", e.target.value)}
-        placeholder="Enter data source name"
-        isRequired
-      />
+							label="Data Source Name"
+							value={formData.txtDataSourceName}
+							onChange={(e: any) => handleInputChange("txtDataSourceName", e.target.value)}
+							placeholder="Enter data source name"
+							isRequired
+						/>
 					</div>
 
 					{formType === "jpa" && (
 						<>
 							<div style={{ marginBottom: "15px" }}>
 								<TextField
-        label="Entity Manager Factory Name"
-        value={formData.txtEttMgrFactory}
-        onChange={(e: any) => handleInputChange("txtEttMgrFactory", e.target.value)}
-        placeholder="Enter entity manager factory name"
-        isRequired
-      />
+									label="Entity Manager Factory Name"
+									value={formData.txtEttMgrFactory}
+									onChange={(e: any) => handleInputChange("txtEttMgrFactory", e.target.value)}
+									placeholder="Enter entity manager factory name"
+									isRequired
+								/>
 							</div>
 
 							<div style={{ marginBottom: "15px" }}>
 								<TextField
-        label="Entity Packages to Scan"
-        value={formData.txtEntityPackages}
-        onChange={(e: any) => handleInputChange("txtEntityPackages", e.target.value)}
-        placeholder="Enter entity packages to scan"
-        isRequired
-      />
+									label="Entity Packages to Scan"
+									value={formData.txtEntityPackages}
+									onChange={(e: any) => handleInputChange("txtEntityPackages", e.target.value)}
+									placeholder="Enter entity packages to scan"
+									isRequired
+								/>
 							</div>
 
 							<div style={{ marginBottom: "15px" }}>
@@ -230,12 +230,12 @@ const TransactionForm: React.FC<FormComponentProps> = ({ onSubmit, onCancel, tem
 
 							<div style={{ marginBottom: "15px" }}>
 								<TextField
-        label="Repository Package"
-        value={formData.txtRepositoryPackage}
-        onChange={(e: any) => handleInputChange("txtRepositoryPackage", e.target.value)}
-        placeholder="Enter repository package"
-        isRequired
-      />
+									label="Repository Package"
+									value={formData.txtRepositoryPackage}
+									onChange={(e: any) => handleInputChange("txtRepositoryPackage", e.target.value)}
+									placeholder="Enter repository package"
+									isRequired
+								/>
 							</div>
 						</>
 					)}
@@ -246,12 +246,12 @@ const TransactionForm: React.FC<FormComponentProps> = ({ onSubmit, onCancel, tem
 
 					<div style={{ marginBottom: "15px" }}>
 						<TextField
-        label="Pointcut Name"
-        value={formData.txtPointCutName}
-        onChange={(e: any) => handleInputChange("txtPointCutName", e.target.value)}
-        placeholder="Enter pointcut name"
-        isRequired
-      />
+							label="Pointcut Name"
+							value={formData.txtPointCutName}
+							onChange={(e: any) => handleInputChange("txtPointCutName", e.target.value)}
+							placeholder="Enter pointcut name"
+							isRequired
+						/>
 					</div>
 
 					<div style={{ marginBottom: "15px" }}>
@@ -268,18 +268,22 @@ const TransactionForm: React.FC<FormComponentProps> = ({ onSubmit, onCancel, tem
 
 					<div style={{ marginBottom: "15px" }}>
 						<Checkbox
-        label="Read-Only"
-        checked={formData.chkReadOnly}
-        onChange={(e: React.ChangeEvent<HTMLInputElement>) => handleInputChange("chkReadOnly", e.target.checked)}
-      />
+							label="Read-Only"
+							checked={formData.chkReadOnly}
+							onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
+								handleInputChange("chkReadOnly", e.target.checked)
+							}
+						/>
 					</div>
 
 					<div style={{ marginBottom: "15px" }}>
 						<Checkbox
-        label="Rollback For Exception"
-        checked={formData.chkRollbackFor}
-        onChange={(e: React.ChangeEvent<HTMLInputElement>) => handleInputChange("chkRollbackFor", e.target.checked)}
-      />
+							label="Rollback For Exception"
+							checked={formData.chkRollbackFor}
+							onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
+								handleInputChange("chkRollbackFor", e.target.checked)
+							}
+						/>
 					</div>
 
 					{formData.chkRollbackFor && (
@@ -290,10 +294,12 @@ const TransactionForm: React.FC<FormComponentProps> = ({ onSubmit, onCancel, tem
 
 					<div style={{ marginBottom: "15px" }}>
 						<Checkbox
-        label="No Rollback For Exception"
-        checked={formData.chkNoRollbackFor}
-        onChange={(e: React.ChangeEvent<HTMLInputElement>) => handleInputChange("chkNoRollbackFor", e.target.checked)}
-      />
+							label="No Rollback For Exception"
+							checked={formData.chkNoRollbackFor}
+							onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
+								handleInputChange("chkNoRollbackFor", e.target.checked)
+							}
+						/>
 					</div>
 
 					{formData.chkNoRollbackFor && (
@@ -306,7 +312,9 @@ const TransactionForm: React.FC<FormComponentProps> = ({ onSubmit, onCancel, tem
 						<Checkbox
 							label="Set Timeout"
 							checked={formData.chkTimeout}
-							onChange={(e: React.ChangeEvent<HTMLInputElement>) => handleInputChange("chkTimeout", e.target.checked)}
+							onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
+								handleInputChange("chkTimeout", e.target.checked)
+							}
 						/>
 					</div>
 
@@ -332,8 +340,12 @@ const TransactionForm: React.FC<FormComponentProps> = ({ onSubmit, onCancel, tem
 				</div>
 
 				<div style={{ display: "flex", gap: "10px", justifyContent: "flex-end" }}>
-					<Button variant="secondary" onClick={onCancel}>Cancel</Button>
-					<Button type="submit" variant="primary">Generate</Button>
+					<Button variant="secondary" onClick={onCancel}>
+						Cancel
+					</Button>
+					<Button type="submit" variant="primary">
+						Generate
+					</Button>
 				</div>
 			</form>
 		</div>
