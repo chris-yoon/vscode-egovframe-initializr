@@ -450,7 +450,38 @@ cd egovframe-vscode-initializr
 npm run install:all
 ```
 
-### 2. 개발 모드 실행
+### 2. Git Hooks 설정 (자동 코드 형식 맞춤)
+프로젝트는 커밋하기 전에 자동으로 코드 형식을 맞추는 Git hooks가 설정되어 있습니다.
+
+#### 설정된 기능
+- **husky**: Git hooks 관리
+- **lint-staged**: 스테이징된 파일들에만 특정 작업 실행
+- **pre-commit hook**: 커밋 전 자동 코드 형식 맞춤
+
+#### 작동 방식
+`git commit` 실행 시 자동으로:
+1. **JavaScript/TypeScript 파일들**: `prettier --write` + `eslint --fix`
+2. **JSON, MD, YAML 파일들**: `prettier --write`
+3. 수정된 파일들이 자동으로 스테이징되고 커밋됨
+
+#### 사용법
+```bash
+# 평소처럼 개발 후
+git add .
+git commit -m "커밋 메시지"
+# → 자동으로 코드 형식이 맞춰지고 커밋됨
+```
+
+#### 수동 실행
+```bash
+# 전체 프로젝트 코드 형식 맞춤
+npm run format:fix
+
+# 린팅 오류 수정
+npm run lint
+```
+
+### 3. 개발 모드 실행
 ```bash
 # Terminal 1: Extension 감시 빌드
 npm run watch
@@ -459,7 +490,7 @@ npm run watch
 npm run dev:webview
 ```
 
-### 3. 디버깅 설정
+### 4. 디버깅 설정
 VS Code에서 F5 키를 눌러 Extension Development Host 실행
 
 **`.vscode/launch.json`** 설정이 필요한 경우:
@@ -479,7 +510,7 @@ VS Code에서 F5 키를 눌러 Extension Development Host 실행
 }
 ```
 
-### 4. 테스트 실행
+### 5. 테스트 실행
 ```bash
 # Extension 테스트 (향후 추가 예정)
 npm test
