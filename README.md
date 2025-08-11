@@ -444,7 +444,7 @@ CREATE TABLE users (
 ```bash
 # 프로젝트 클론
 git clone <repository-url>
-cd vscode-egovframe-initializr
+cd egovframe-vscode-initializr
 
 # 전체 의존성 설치
 npm run install:all
